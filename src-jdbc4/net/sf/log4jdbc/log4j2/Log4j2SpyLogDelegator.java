@@ -136,6 +136,13 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	 * (corresponds to the "jdbc.resultset" logger in the standard implementation)
 	 */
 	private static final Marker RESULTSET_MARKER = MarkerManager.getMarker("LOG4JDBC_RESULTSET", JDBC_MARKER);
+	/**
+     * <code>Marker</code> to log <code>Exception</code>s.
+     * These are not specific to one logger in the standard implementation,
+     * and they are not logged by the loggers "jdbc.resultset" and "jdbc.connection"
+     * (bug, or a hope for no exception to occur for these events?)
+     */
+    private static final Marker EXCEPTION_MARKER = MarkerManager.getMarker("LOG4JDBC_EXCEPTION");
 
 	public boolean isJdbcLoggingEnabled() {
 		return LOGGER.isErrorEnabled();
@@ -144,7 +151,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	public void exceptionOccured(Spy spy, String methodCall, Exception e,
 			String sql, long execTime) {
 		
-		LOGGER.error(new ExceptionOccuredMessage(spy, methodCall, 
+		LOGGER.error(EXCEPTION_MARKER, new ExceptionOccuredMessage(spy, methodCall, 
 	        sql, execTime, LOGGER.isDebugEnabled()), e);
 	}
 
