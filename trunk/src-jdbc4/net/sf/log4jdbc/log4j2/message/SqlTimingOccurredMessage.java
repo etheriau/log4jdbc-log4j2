@@ -4,6 +4,14 @@ import net.sf.log4jdbc.Spy;
 
 import org.apache.logging.log4j.message.Message;
 
+/**
+ * <code>SqlMessage</code> related to the logging of SQL statements, with execution time information.
+ * 
+ * @author Frederic Bastian
+ * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#sqlTimingOccurred(Spy, long, String, String)
+ * @version 1.0
+ * @since 1.0
+ */
 public class SqlTimingOccurredMessage extends SqlMessage implements Message 
 {
     private static final long serialVersionUID = 6455975917838453692L;

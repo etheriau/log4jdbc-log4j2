@@ -1,11 +1,17 @@
 package net.sf.log4jdbc.log4j2.message;
 
-import net.sf.log4jdbc.ResultSetSpy;
 import net.sf.log4jdbc.Spy;
 
 import org.apache.logging.log4j.message.Message;
-import org.slf4j.Logger;
 
+/**
+ * <code>SqlMessage</code> related to the logging of methods calls returns.
+ * 
+ * @author Frederic Bastian
+ * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#methodReturned(Spy, String, String)
+ * @version 1.0
+ * @since 1.0
+ */
 public class MethodReturnedMessage extends SqlMessage implements Message {
 
 	private static final long serialVersionUID = 3672279172754686950L;
