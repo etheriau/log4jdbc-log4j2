@@ -10,6 +10,12 @@ import net.sf.log4jdbc.DriverSpy;
 /**
  * Parent class of all <code>Message</code>s associated with the log4jdbc log events, 
  * to perform common operations such as sql formatting.
+ * <p>
+ * Subclasses must implement the abstract <code>buildMessage()</code> method, 
+ * that will then be called by the method <code>getFormattedMessage()</code> of this class, 
+ * to populate the <code>message</code> attribute, once. 
+ * This way, messages are generated only once, and only when needed 
+ * (avoid useless strings concatenations for instance).
  * 
  * @author Frederic Bastian
  * @version 1.0

@@ -5,6 +5,15 @@ import net.sf.log4jdbc.Spy;
 
 import org.apache.logging.log4j.message.Message;
 
+/**
+ * <code>SqlMessage</code> related to connection events.
+ * 
+ * @author Frederic Bastian
+ * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#connectionOpened(Spy, long)
+ * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#connectionClosed(Spy, long)
+ * @version 1.0
+ * @since 1.0
+ */
 public class ConnectionMessage extends SqlMessage implements Message 
 {
 	private static final long serialVersionUID = 6278727380958233518L;
