@@ -74,9 +74,19 @@ public class SpyLogFactory
   private static SpyLogDelegator defineSpyLogDelegator() 
   {
 	if (DriverSpy.isUseLog4j2()) {
-		return new Log4j2SpyLogDelegator();
+		return getLog4j2SpyLogDelegator();
 	}
-	return new Slf4jSpyLogDelegator();
+	return getSlf4jSpyLogDelegator();
+  }
+  
+  public static SpyLogDelegator getLog4j2SpyLogDelegator()
+  {
+	  return new Log4j2SpyLogDelegator();
+  }
+  
+  public static SpyLogDelegator getSlf4jSpyLogDelegator()
+  {
+	  return new Slf4jSpyLogDelegator();
   }
 }
 
