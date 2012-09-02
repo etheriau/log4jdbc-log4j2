@@ -51,7 +51,7 @@ public class Test
 	    try {
 			Class.forName("net.sf.log4jdbc.DriverSpy").newInstance();System.out.println("done, connect");
 	    Connection conn = DriverManager.getConnection(connectionString);System.out.println("done");
-	    PreparedStatement preparedStatement = conn.prepareStatement("show tabless");
+	    PreparedStatement preparedStatement = conn.prepareStatement("show tables");
 	    ResultSet resultSet = preparedStatement.executeQuery();
 	    resultSet.next();
 	    conn.close();

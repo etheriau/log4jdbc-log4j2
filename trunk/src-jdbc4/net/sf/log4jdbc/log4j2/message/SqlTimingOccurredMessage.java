@@ -83,10 +83,11 @@ public class SqlTimingOccurredMessage extends SqlMessage implements Message
 	    {
 	      out.append(SqlMessage.getDebugInfo());
 	      out.append(SqlMessage.nl);
-	      out.append(this.spy.getConnectionNumber());
-	      out.append(". ");
 	    }
 
+	    out.append(this.spy.getConnectionNumber());
+	    out.append(". ");
+	      
 	    out.append(this.processSql(this.sql));
 	    out.append(" {executed in ");
 	    out.append(this.execTime);
