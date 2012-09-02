@@ -70,7 +70,7 @@ public class MethodReturnedMessage extends SqlMessage implements Message {
 				this.methodCall + " returned " + this.returnMsg;
 
 		if (this.isDebugEnabled()) {
-			this.setMessage(header + " " + SqlMessage.getDebugInfo());
+			this.setMessage(SqlMessage.getDebugInfo() + SqlMessage.nl + header);
 
 		} else {
 			this.setMessage(header);
