@@ -77,16 +77,17 @@ public class SqlTimingOccurredMessage extends SqlMessage implements Message
 
 	protected void buildMessage() 
 	{
-	    StringBuffer out = new StringBuffer();
+		StringBuffer out = new StringBuffer();
 
 	    if (this.isDebugEnabled())
 	    {
 	      out.append(SqlMessage.getDebugInfo());
 	      out.append(SqlMessage.nl);
-	      out.append(this.spy.getConnectionNumber());
-	      out.append(". ");
 	    }
 
+	    out.append(this.spy.getConnectionNumber());
+	    out.append(". ");
+	      
 	    out.append(this.processSql(this.sql));
 	    out.append(" {executed in ");
 	    out.append(this.execTime);
