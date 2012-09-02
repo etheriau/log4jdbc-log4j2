@@ -185,7 +185,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * @param spy              the Spy wrapping the class that called the method that returned.
    * @param constructionInfo information about the object construction
    */
-  public void constructorReturned(Spy spy, String constructionInfo)
+  @SuppressWarnings("unused")
+public void constructorReturned(Spy spy, String constructionInfo)
   {
     // not used in this implementation -- yet
   }
@@ -518,10 +519,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
       return dump.toString();
     }
-    else
-    {
-      return null;
-    }
+    return null;
   }
 
   /**
@@ -534,7 +532,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     debugLogger.debug(msg);
   }
 
-  public void connectionOpened(Spy spy, long execTime)
+  @SuppressWarnings("unused")
+public void connectionOpened(Spy spy, long execTime)
   {
 	  //we just delegate to the already existing method, 
 	  //so that we do not change the behavior of the standard implementation
@@ -560,7 +559,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     }
   }
 
-  public void connectionClosed(Spy spy, long execTime)
+  @SuppressWarnings("unused")
+public void connectionClosed(Spy spy, long execTime)
   {
 	  //we just delegate to the already existing method, 
 	  //so that we do not change the behavior of the standard implementation
