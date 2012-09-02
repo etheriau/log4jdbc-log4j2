@@ -89,8 +89,45 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * time.  This will not usually be a problem, since the driver is retrieved by
  * it's URL from the DriverManager in the first place (thus establishing an
  * underlying real driver), and in most applications their is only one database.
+ * <p>
+ * Modifications for log4j2: 
+ * <ul>
+ * <li>Addition of public getters for the following attributes: <code>TrimSql</code>, 
+ * <code>DumpSqlMaxLineLength</code>, <code>DumpSqlAddSemicolon</code>, 
+ * <code>TrimExtraBlankLinesInSql</code>, <code>DumpFullDebugStackTrace</code>, 
+ * <code>TraceFromApplication</code>, 
+ * <code>DebugStackPrefix</code>, <code>DumpSqlFilteringOn</code>, 
+ * <code>DumpSqlSelect</code>, <code>DumpSqlInsert</code>, <code>DumpSqlUpdate</code>, 
+ * <code>DumpSqlCreate</code>, <code>DumpSqlDelete</code>, 
+ * <code>SqlTimingErrorThresholdEnabled</code>, <code>SqlTimingErrorThresholdMsec</code>, 
+ * <code>SqlTimingWarnThresholdEnabled</code>, <code>SqlTimingWarnThresholdMsec</code>.
+ * <li>Addition of a new attribute, <code>useLog4j2</code>, and the corresponding getter, 
+ * <code>isUseLog4j2()</code>. Corresponds to the property "log4jdbc.log4j2". 
+ * Define whether log4j2 should be used 
+ * (through the use of <code>net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator</code>), 
+ * or the standard slf4j 
+ * (through the use of <code>net.sf.log4jdbc.Slf4jSpyLogDelegator</code>).
+ * Default is <code>true</code> (use of log4j2). 
+ * <code>net.sf.log4jdbc.SpyLogFactory</code> has been modified accordingly. 
+ * <li>The <code>SpyLogDelegator</code> attribute <code>log</code> of this class 
+ * is used in different methods (mainly, the initializer). 
+ * The <code>debug()</code> method is used. Because the <code>SpyLogFactory</code> 
+ * now needs to access the <code>useLog4j2</code> attribute of this class to determine 
+ * which <code>SpyLogDelegator</code> to return (either <code>Log4j2SpyLogDelegator</code>, 
+ * or <code>Slf4jSpyLogDelegator</code>), the factory cannot be used here. 
+ * The <code>log</code> attribute is now initialized with a <code>Log4j2SpyLogDelegator</code>, 
+ * whatever the value of <code>useLog4j2</code>. This means that if a user wants to use 
+ * the standard slf4j logger, he could never display the debug internal logs of this class 
+ * (as the default log4j2 level, when no configuration file is present, is ERROR). 
+ * Logging debug message internal to log4jdbc is not an essential feature, 
+ * and is lost only in this class, and only if the user does not use Log4j2.
+ * <li>Modification of the method <code>connect(String, Properties)</code> 
+ * in order to compute the time taken to open a connection to the database. 
+ * Constructors of <code>ConnectionSpy</code> have been modified accordingly. 
+ * </ul>
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class DriverSpy implements Driver
 {
@@ -244,9 +281,13 @@ public class DriverSpy implements Driver
   
   /**
    * A <code>boolean</code> added for this modified version, to define which logging system should be used: 
-   * if <code>true</code>, this modified logger is used (using log4j2), 
-   * if <code>false</code>, the standard logger is used (using slf4). 
-   * Default is <code>true</code>.
+   * if <code>true</code>, log4j2 is used, 
+   * if <code>false</code>, the standard logger is used, slf4. 
+   * Default is <code>true</code> (use log4j2). This attribute is used by the <code>SpyLogFactory</code> 
+   * to determine which <code>SpyLogDelegator</code> to return 
+   * (either <code>Log4j2SpyLogDelegator</code>, or <code>Slf4jSpyLogDelegator</code>)
+   * 
+   * @see SpyLogFactory
    */
   static boolean useLog4j2;
 

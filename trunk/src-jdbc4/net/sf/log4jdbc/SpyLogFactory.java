@@ -28,7 +28,9 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * <ul>
  * <li>addition of the <code>defineSpyLogDelegator()</code> method 
  * to choose between the standard <code>Slf4jSpyLogDelegator</code>, 
- * or the custom <code>Log4j2SpyLogDelegator</code>.
+ * or the custom <code>Log4j2SpyLogDelegator</code>. 
+ * This method use <code>DriverSpy#isUseLog4j2()</code> to determine which 
+ * logger to return. 
  * <li>Use of this method to set the <code>logger</code> attribute.
  * </ul>
  *
@@ -46,7 +48,6 @@ public class SpyLogFactory
    * The logging system of choice.
    */
   private static final SpyLogDelegator logger = defineSpyLogDelegator();
-  //new Log4jSpyLogDelegator();
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.
