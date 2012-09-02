@@ -33,8 +33,22 @@ import java.util.Set;
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
  *
  * This version is for jdbc 3.
+ * <p>
+ * Modifications for log4j2: 
+ * <ul>
+ * <li>Addition of new constructors, to accept a parameter <code>execTime</code>, 
+ * a <code>long</code> defining the time elapsed to open the connection in ms. 
+ * (see <code>SpyLogDelegator#connectionOpened(Spy, long)</code> for more details, 
+ * and modifications in <code>DriverSpy#connect(String, Properties)</code>).
+ * <li>Modification of the method <code>close()</code> in order to compute 
+ * execution time to close the connection (see <code>SpyLogDelegator#connectionClosed(Spy, long), 
+ * or before an <code>Exception</code> is thrown if a problem occurs. </code>)
+ * <li>Addition of a new method <code>ConnectionSpy#reportException(String, SQLException, long)</code> 
+ * to log execution time before an <code>Exception</code> is thrown when the connection closing failed. 
+ * </ul>
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class ConnectionSpy implements Connection, Spy
 {
@@ -107,6 +121,18 @@ public class ConnectionSpy implements Connection, Spy
   {
     this(realConnection, DriverSpy.defaultRdbmsSpecifics);
   }
+  
+  /**
+   * Create a new ConnectionSpy that wraps a given Connection.
+   *
+   * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
+   * @param execTime 	a <code>long</code> defining the time in ms 
+   * 					taken to open the connection to <code>realConnection</code>. 
+   */
+  public ConnectionSpy(Connection realConnection, long execTime)
+  {
+    this(realConnection, null, execTime);
+  }
 
   /**
    * Create a new ConnectionSpy that wraps a given Connection.
@@ -115,6 +141,21 @@ public class ConnectionSpy implements Connection, Spy
    * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used.
    */
   public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
+  {
+    this(realConnection, rdbmsSpecifics, -1L);
+  }
+
+  /**
+   * Create a new ConnectionSpy that wraps a given Connection.
+   *
+   * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
+   * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used.
+   * @param execTime 	a <code>long</code> defining the time in ms 
+   * 					taken to open the connection to <code>realConnection</code>. 
+   * 					Should be equals to -1 if not used. 
+   */
+  public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics, 
+		  long execTime)
   {
     if (rdbmsSpecifics == null)
     {
@@ -133,7 +174,7 @@ public class ConnectionSpy implements Connection, Spy
       connectionNumber = new Integer(++lastConnectionNumber);
       connectionTracker.put(connectionNumber, this);
     }
-    log.connectionOpened(this);
+    log.connectionOpened(this, execTime);
     reportReturn("new Connection");
   }
 
@@ -177,6 +218,11 @@ public class ConnectionSpy implements Connection, Spy
   protected void reportException(String methodCall, SQLException exception)
   {
     log.exceptionOccured(this, methodCall, exception, null, -1L);
+  }
+
+  protected void reportException(String methodCall, SQLException exception, long execTime)
+  {
+    log.exceptionOccured(this, methodCall, exception, null, execTime);
   }
 
   protected void reportAllReturns(String methodCall, String returnValue)
@@ -730,24 +776,25 @@ public class ConnectionSpy implements Connection, Spy
 
   public void close() throws SQLException
   {
-    String methodCall = "close()";
-    try
-    {
-      realConnection.close();
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
-    finally
-    {
-      synchronized (connectionTracker)
-      {
-        connectionTracker.remove(connectionNumber);
-      }
-      log.connectionClosed(this);
-    }
-    reportReturn(methodCall);
+	    String methodCall = "close()";
+	    long tstart = System.currentTimeMillis();
+	    try
+	    {
+	      realConnection.close();
+	    }
+	    catch (SQLException s)
+	    {
+	      reportException(methodCall, s, System.currentTimeMillis() - tstart);
+	      throw s;
+	    }
+	    finally
+	    {
+	      synchronized (connectionTracker)
+	      {
+	        connectionTracker.remove(connectionNumber);
+	      }
+	      log.connectionClosed(this, System.currentTimeMillis() - tstart);
+	    }
+	    reportReturn(methodCall);
   }
 }
