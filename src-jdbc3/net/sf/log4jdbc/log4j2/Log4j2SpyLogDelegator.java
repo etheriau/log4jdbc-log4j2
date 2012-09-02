@@ -165,10 +165,12 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	    		new MethodReturnedMessage(spy, methodCall, returnMsg, LOGGER.isDebugEnabled(marker)));
 	}
 
+	@SuppressWarnings("unused")
 	public void constructorReturned(Spy spy, String constructionInfo) {
         //not yet used in the current implementation of log4jdbc
 	}
 
+	@SuppressWarnings("unused")
 	public void sqlOccurred(Spy spy, String methodCall, String sql) {
 		//not implemented, 
 		//as the features provided by the logger "jdbc.sqlonly" are not reproduced.

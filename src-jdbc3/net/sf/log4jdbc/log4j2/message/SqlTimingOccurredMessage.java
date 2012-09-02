@@ -24,6 +24,7 @@ public class SqlTimingOccurredMessage extends SqlMessage implements Message
      * @see #buildMessage()
      */
 
+	@SuppressWarnings("unused")
 	private String methodCall;
 	/**
      * how long it took the sql to run, in ms. 
