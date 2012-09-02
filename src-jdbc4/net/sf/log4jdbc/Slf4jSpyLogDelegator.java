@@ -25,8 +25,23 @@ import org.slf4j.Logger;
 
 /**
  * Delegates JDBC spy logging events to the the Simple Logging Facade for Java (slf4j).
+ * <p>
+ * Modifications for log4j2: 
+ * <ul>
+ * <li>Modification of the signature of the method <code>connectionOpened(Spy)</code> into 
+ * <code>connectionOpened(Spy, long)</code>, to accept a parameter <code>execTime</code>, 
+ * defining the time elapsed to open the connection in ms. This new method simply delegates 
+ * to the formerly existing method, now private, so that the behavior of the slf4j logger is not modified. 
+ * See <code>SpyLogDelegator</code> for more details. 
+ * <li>Modification of the signature of the method <code>connectionClosed(Spy)</code> into 
+ * <code>connectionClosed(Spy, long)</code>, to accept a parameter <code>execTime</code>, 
+ * defining the time elapsed to open the connection in ms. This new method simply delegates 
+ * to the formerly existing method, now private, so that the behavior of the slf4j logger is not modified. 
+ * See <code>SpyLogDelegator</code> for more details. 
+ * </ul>
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class Slf4jSpyLogDelegator implements SpyLogDelegator
 {

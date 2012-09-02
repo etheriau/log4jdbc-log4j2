@@ -33,7 +33,6 @@ import java.sql.SQLXML;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -42,8 +41,18 @@ import java.util.Set;
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
  *
  * This version is for jdbc 4.
+ * <p>
+ * Modifications for log4j2: 
+ * <ul>
+ * <li>Addition of new constructors, to accept a parameter <code>execTime</code>, 
+ * a <code>long</code> defining the time elapsed to open the connection in ms. 
+ * (see <code>SpyLogDelegator#connectionOpened(Spy, long)</code> for more details).
+ * <li>Modification of the method <code>close()</code> in order to compute 
+ * execution time to close the connection (see <code>SpyLogDelegator#connectionClosed(Spy, long)</code>)
+ * </ul>
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class ConnectionSpy implements Connection, Spy
 {
