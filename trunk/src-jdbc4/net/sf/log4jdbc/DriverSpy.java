@@ -31,6 +31,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
+
 /**
  * A JDBC driver which is a facade that delegates to one or more real underlying
  * JDBC drivers.  The driver will spy on any other JDBC driver that is loaded,
@@ -103,7 +105,24 @@ public class DriverSpy implements Driver
    */
   private static Map rdbmsSpecifics;
 
-  static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+    /**
+     * A <code>SpyLogDelegator</code> used here for logs internal to log4jdbc 
+     * (see <code>debug(String)</code> method of <code>SpyLogDelegator</code>).
+     * <p>
+     * Here we cannot use the <code>SpyLogFactory</code>: 
+	 * the <code>SpyLogFactory</code> now needs to access a property 
+	 * initialized by this class (<code>useLog4j2</code>).
+	 * Thus we cannot use <code>SpyLogFactory</code> to get the chosen <code>SpyLogDelegator</code> 
+	 * before initializing <code>DriverSpy</code>, thus we cannot use <code>SpyLogFactory</code> 
+	 * to get the chosen <code>SpyLogDelegator</code> here. 
+	 * Either we desactivate debug logging here, 
+	 * or we put the property useLog4j2 in a different class, 
+	 * or we manually instantiate <code>SpyLogDelegator</code> here...
+	 * none of those are satisfying, but we will go for the manual instantiation 
+	 * of a <code>Log4j2SpyLogDelegator</code>.
+	 * 
+	 */
+  static final SpyLogDelegator log = new Log4j2SpyLogDelegator();
 
   /**
    * Optional package prefix to use for finding application generating point of
@@ -367,7 +386,7 @@ public class DriverSpy implements Driver
 
   static
   {
-    log.debug("... log4jdbc initializing ...");
+	log.debug("... log4jdbc initializing ...");
 
     InputStream propStream =
       DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
@@ -381,7 +400,7 @@ public class DriverSpy implements Driver
       }
       catch (IOException e)
       {
-        log.debug("ERROR!  io exception loading " +
+    	  log.debug("ERROR!  io exception loading " +
           "log4jdbc.properties from classpath: " + e.getMessage());
       }
       finally
@@ -392,7 +411,7 @@ public class DriverSpy implements Driver
         }
         catch (IOException e)
         {
-          log.debug("ERROR!  io exception closing property file stream: " +
+        	log.debug("ERROR!  io exception closing property file stream: " +
             e.getMessage());
         }
       }
@@ -400,7 +419,7 @@ public class DriverSpy implements Driver
     }
     else
     {
-      log.debug("  log4jdbc.properties not found on classpath");
+    	log.debug("  log4jdbc.properties not found on classpath");
     }
 
     // look for additional driver specified in properties
@@ -533,7 +552,7 @@ public class DriverSpy implements Driver
 
     if (subDrivers.size() == 0)
     {
-      log.debug("WARNING!  " +
+    	log.debug("WARNING!  " +
         "log4jdbc couldn't find any underlying jdbc drivers.");
     }
 

@@ -270,7 +270,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
         linelength++;
         if (linelength > DriverSpy.DumpSqlMaxLineLength)
         {
-          output.append("\n");
+          output.append(nl);
           linelength = 0;
         }
       }
@@ -315,7 +315,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           	contiguousBlankLines = 0;
           	output.append(line);
           }
-          output.append("\n");
+          output.append(nl);
         }
       }
       catch (IOException e)

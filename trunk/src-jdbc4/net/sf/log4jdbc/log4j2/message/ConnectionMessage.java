@@ -92,6 +92,11 @@ public class ConnectionMessage extends SqlMessage implements Message
 	{
 		StringBuffer buildMsg = new StringBuffer();
 		
+		if (this.isDebugEnabled()) {
+			buildMsg.append(SqlMessage.getDebugInfo());
+			buildMsg.append(SqlMessage.nl);
+		}
+		
 		buildMsg.append(spy.getConnectionNumber()).append(". Connection ");
 		if (this.operation == OPENING) {
 			buildMsg.append("opened.");
@@ -104,7 +109,6 @@ public class ConnectionMessage extends SqlMessage implements Message
 			buildMsg.append(" {executed in ").append(this.execTime).append("ms} ");
 		}
 		if (this.isDebugEnabled()) {
-			buildMsg.append(SqlMessage.getDebugInfo());
 			buildMsg.append(SqlMessage.nl);
 			buildMsg.append(ConnectionSpy.getOpenConnectionsDump());
 		}

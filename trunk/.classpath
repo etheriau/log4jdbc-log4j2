@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-2.0-alpha2-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-core-2.0-alpha2-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/bgee/WEB-INF/lib/mysql-connector-java.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -152,7 +152,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 			String sql, long execTime) {
 		
 		LOGGER.error(EXCEPTION_MARKER, new ExceptionOccuredMessage(spy, methodCall, 
-	        sql, execTime, LOGGER.isDebugEnabled()), e);
+	        sql, execTime, LOGGER.isDebugEnabled(EXCEPTION_MARKER)), e);
 	}
 
 	public void methodReturned(Spy spy, String methodCall, String returnMsg) 
@@ -191,7 +191,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 		
 		Marker marker = this.getStatementMarker(operation);
 		SqlTimingOccurredMessage message = 
-				new SqlTimingOccurredMessage(spy, execTime, methodCall, sql, LOGGER.isDebugEnabled());
+				new SqlTimingOccurredMessage(spy, execTime, methodCall, sql, LOGGER.isDebugEnabled(marker));
 
 		if (DriverSpy.isSqlTimingErrorThresholdEnabled() &&
 				execTime >= DriverSpy.getSqlTimingErrorThresholdMsec()) {
@@ -319,7 +319,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	private void connectionOpenedOrClosed(Spy spy, long execTime, int operation)
 	{
 		LOGGER.info(CONNECTION_MARKER, 
-				    new ConnectionMessage(spy, execTime, operation, LOGGER.isDebugEnabled()));
+				    new ConnectionMessage(spy, execTime, operation, LOGGER.isDebugEnabled(CONNECTION_MARKER)));
 	}
 
 	public void debug(String msg) 

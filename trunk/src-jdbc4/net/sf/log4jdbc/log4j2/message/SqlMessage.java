@@ -117,7 +117,7 @@ public abstract class SqlMessage
     			output.append(" ");
     			linelength++;
     			if (linelength > DriverSpy.getDumpSqlMaxLineLength()) {
-    				output.append("\n");
+    				output.append(nl);
     				linelength = 0;
     			}
     		}
@@ -135,11 +135,17 @@ public abstract class SqlMessage
     		output = new StringBuilder();
 
     		int contiguousBlankLines = 0;
+    		int lineCount = 0;
     		try {
     			while (true) {
     				String line = lineReader.readLine();
     				if (line==null) {
     					break;
+    				}
+    				//add a line return only if several lines;
+    				//it is the responsibility of the caller to add a final line return if needed
+    				if (lineCount > 0) {
+        				output.append(nl);
     				}
 
     				// is this line blank?
@@ -153,7 +159,7 @@ public abstract class SqlMessage
     					contiguousBlankLines = 0;
     					output.append(line);
     				}
-    				output.append("\n");
+    				lineCount++;
     			}
     		}
     		catch (IOException e)
@@ -229,7 +235,11 @@ public abstract class SqlMessage
     			int j = lastApplicationCall;
 
     			if (j == 0) { // if app not found, then use whoever was the last guy that called a log4jdbc class.
-    				j = 1 + firstLog4jdbcCall;
+    				if (stackTrace.length > 1 + firstLog4jdbcCall) {
+    				    j = 1 + firstLog4jdbcCall;
+    				} else {
+    					j = firstLog4jdbcCall;
+    				}
     			}
 
     			dump.append(stackTrace[j].getClassName()).append(".").append(stackTrace[j].getMethodName()).append("(").
