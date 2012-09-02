@@ -325,12 +325,12 @@ public class StatementSpy implements Statement, Spy
 
   private void _reportSql(String sql, String methodCall)
   {
-    log.sqlOccured(this, methodCall, sql);
+    log.sqlOccurred(this, methodCall, sql);
   }
 
   private void _reportSqlTiming(long execTime, String sql, String methodCall)
   {
-    log.sqlTimingOccured(this, execTime, methodCall, sql);
+    log.sqlTimingOccurred(this, execTime, methodCall, sql);
   }
 
   // implementation of interface methods

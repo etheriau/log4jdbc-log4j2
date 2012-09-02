@@ -25,8 +25,23 @@ import org.slf4j.Logger;
 
 /**
  * Delegates JDBC spy logging events to the the Simple Logging Facade for Java (slf4j).
+ * <p>
+ * Modifications for log4j2: 
+ * <ul>
+ * <li>Modification of the signature of the method <code>connectionOpened(Spy)</code> into 
+ * <code>connectionOpened(Spy, long)</code>, to accept a parameter <code>execTime</code>, 
+ * defining the time elapsed to open the connection in ms. This new method simply delegates 
+ * to the formerly existing method, now private, so that the behavior of the slf4j logger is not modified. 
+ * See <code>SpyLogDelegator</code> for more details. 
+ * <li>Modification of the signature of the method <code>connectionClosed(Spy)</code> into 
+ * <code>connectionClosed(Spy, long)</code>, to accept a parameter <code>execTime</code>, 
+ * defining the time elapsed to open the connection in ms. This new method simply delegates 
+ * to the formerly existing method, now private, so that the behavior of the slf4j logger is not modified. 
+ * See <code>SpyLogDelegator</code> for more details. 
+ * </ul>
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class Slf4jSpyLogDelegator implements SpyLogDelegator
 {
@@ -212,7 +227,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * @param methodCall a description of the name and call parameters of the method that generated the SQL.
    * @param sql        sql that occured.
    */
-  public void sqlOccured(Spy spy, String methodCall, String sql)
+  public void sqlOccurred(Spy spy, String methodCall, String sql)
   {
     if (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql))
     {
@@ -247,7 +262,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       sql = sql.trim();
     }
 
-    StringBuffer output = new StringBuffer();
+    StringBuilder output = new StringBuilder();
 
     if (DriverSpy.DumpSqlMaxLineLength <= 0)
     {
@@ -270,7 +285,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
         linelength++;
         if (linelength > DriverSpy.DumpSqlMaxLineLength)
         {
-          output.append("\n");
+          output.append(nl);
           linelength = 0;
         }
       }
@@ -287,7 +302,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     {
       LineNumberReader lineReader = new LineNumberReader(new StringReader(stringOutput));
 
-      output = new StringBuffer();
+      output = new StringBuilder();
 
       int contiguousBlankLines = 0;
       try
@@ -315,7 +330,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           	contiguousBlankLines = 0;
           	output.append(line);
           }
-          output.append("\n");
+          output.append(nl);
         }
       }
       catch (IOException e)
@@ -341,7 +356,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    *
    * @param sql        SQL that occurred.
    */
-  public void sqlTimingOccured(Spy spy, long execTime, String methodCall, String sql)
+  public void sqlTimingOccurred(Spy spy, long execTime, String methodCall, String sql)
   {
     if (sqlTimingLogger.isErrorEnabled() &&
         (!DriverSpy.DumpSqlFilteringOn || shouldSqlBeLogged(sql)))
@@ -519,12 +534,19 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     debugLogger.debug(msg);
   }
 
+  public void connectionOpened(Spy spy, long execTime)
+  {
+	  //we just delegate to the already existing method, 
+	  //so that we do not change the behavior of the standard implementation
+	  this.connectionOpened(spy);
+  }
+
   /**
    * Called whenever a new connection spy is created.
    *
    * @param spy ConnectionSpy that was created.
    */
-  public void connectionOpened(Spy spy)
+  private void connectionOpened(Spy spy)
   {
     if (connectionLogger.isDebugEnabled())
     {
@@ -538,12 +560,19 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     }
   }
 
+  public void connectionClosed(Spy spy, long execTime)
+  {
+	  //we just delegate to the already existing method, 
+	  //so that we do not change the behavior of the standard implementation
+	  this.connectionClosed(spy);
+  }
+
   /**
    * Called whenever a connection spy is closed.
    *
    * @param spy ConnectionSpy that was closed.
    */
-  public void connectionClosed(Spy spy)
+  private void connectionClosed(Spy spy)
   {
     if (connectionLogger.isDebugEnabled())
     {

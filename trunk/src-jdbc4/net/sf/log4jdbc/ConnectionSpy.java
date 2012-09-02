@@ -46,9 +46,13 @@ import java.util.Set;
  * <ul>
  * <li>Addition of new constructors, to accept a parameter <code>execTime</code>, 
  * a <code>long</code> defining the time elapsed to open the connection in ms. 
- * (see <code>SpyLogDelegator#connectionOpened(Spy, long)</code> for more details).
+ * (see <code>SpyLogDelegator#connectionOpened(Spy, long)</code> for more details, 
+ * and modifications in <code>DriverSpy#connect(String, Properties)</code>).
  * <li>Modification of the method <code>close()</code> in order to compute 
- * execution time to close the connection (see <code>SpyLogDelegator#connectionClosed(Spy, long)</code>)
+ * execution time to close the connection (see <code>SpyLogDelegator#connectionClosed(Spy, long), 
+ * or before an <code>Exception</code> is thrown if a problem occurs. </code>)
+ * <li>Addition of a new method <code>ConnectionSpy#reportException(String, SQLException, long)</code> 
+ * to log execution time before an <code>Exception</code> is thrown when the connection closing failed. 
  * </ul>
  *
  * @author Arthur Blake
