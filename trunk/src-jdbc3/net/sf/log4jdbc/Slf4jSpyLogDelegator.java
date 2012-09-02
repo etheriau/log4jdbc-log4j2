@@ -185,8 +185,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * @param spy              the Spy wrapping the class that called the method that returned.
    * @param constructionInfo information about the object construction
    */
-  @SuppressWarnings("unused")
-public void constructorReturned(Spy spy, String constructionInfo)
+  public void constructorReturned(Spy spy, String constructionInfo)
   {
     // not used in this implementation -- yet
   }
