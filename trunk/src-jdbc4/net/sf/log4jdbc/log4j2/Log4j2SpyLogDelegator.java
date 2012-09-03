@@ -152,7 +152,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 			String sql, long execTime) {
 		
 		LOGGER.error(EXCEPTION_MARKER, new ExceptionOccuredMessage(spy, methodCall, 
-	        sql, execTime, LOGGER.isDebugEnabled(EXCEPTION_MARKER))/*, e*/);//there is currently a bug in log4j2, cannot use e.
+	        sql, execTime, LOGGER.isDebugEnabled(EXCEPTION_MARKER)), e);
 	}
 
 	public void methodReturned(Spy spy, String methodCall, String returnMsg) 

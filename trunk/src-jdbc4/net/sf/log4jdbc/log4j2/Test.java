@@ -37,6 +37,7 @@ public class Test
 		
 		log.debug("... fdsfs...");
 		Logger logger = LogManager.getLogger("log4jdbc.log4j2");
+		logger.error("test", new Exception("test"));
 		logger.error(MarkerManager.getMarker("TEST"), new SimpleMessage("test1"), new Exception());
 		logger.error(MarkerManager.getMarker("TEST"), "test2", new Exception());
 		logger.error(new SimpleMessage("test3"), new Exception());
@@ -51,7 +52,7 @@ public class Test
 	    try {
 			Class.forName("net.sf.log4jdbc.DriverSpy").newInstance();System.out.println("done, connect");
 	    Connection conn = DriverManager.getConnection(connectionString);System.out.println("done");
-	    PreparedStatement preparedStatement = conn.prepareStatement("show tables");
+	    PreparedStatement preparedStatement = conn.prepareStatement("show tabless");
 	    ResultSet resultSet = preparedStatement.executeQuery();
 	    resultSet.next();
 	    conn.close();
