@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import net.sf.log4jdbc.DriverSpy;
 
@@ -230,7 +231,7 @@ public abstract class SqlMessage
     					firstLog4jdbcCall = i;
     					
     				} else if (DriverSpy.isTraceFromApplication() &&
-    						className.startsWith(DriverSpy.getDebugStackPrefix())) {
+    						Pattern.matches(DriverSpy.getDebugStackPrefix(), className)) {
     					lastApplicationCall = i;
     					break;
     				}
