@@ -124,6 +124,10 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * <li>Modification of the method <code>connect(String, Properties)</code> 
  * in order to compute the time taken to open a connection to the database. 
  * Constructors of <code>ConnectionSpy</code> have been modified accordingly. 
+ * <li><code>DebugStackPrefix</code> is now a <code>String</code> corresponding to a REGEX, 
+ * not only to the begining of the package name (this can obviously done using "^"). 
+ * This is true only if log4j2 is used (see <code>useLog4j2</code>), 
+ * otherwise it has the standard behavior.
  * </ul>
  *
  * @author Arthur Blake
