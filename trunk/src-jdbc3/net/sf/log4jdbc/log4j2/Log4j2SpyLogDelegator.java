@@ -35,6 +35,9 @@ import org.apache.logging.log4j.MarkerManager;
  * a child of the <code>Marker</code> <code>JDBC_MARKER</code>, named "LOG4JDBC_JDBC"
  * <li>The <code>Marker</code> <code>AUDIT_MARKER</code>, named "LOG4JDBC_AUDIT", 
  * a child of the <code>Marker</code> <code>JDBC_MARKER</code>, named "LOG4JDBC_JDBC"
+ * <li><code>JDBC_MARKER</code> and <code>CONNECTION_MARKER</code> are children of 
+ * <code>NON_STATEMENT_MARKER</code>, named "LOG4JDBC_NON_STATEMENT". 
+ * This is to easily reproduce standard log4jdbc loggers behavior.
  * </ul> 
  * <li>The behavior of the logger "jdbc.sqlonly" 
  * (see for instance <code>Slf4jSpyLogDelegator</code> <code>sqlOnlyLogger</code> attribute) 
@@ -118,14 +121,20 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	 */
 	private static final Marker CREATE_MARKER = MarkerManager.getMarker("LOG4JDBC_CREATE", SQL_MARKER);
 	/**
+	 * <code>Marker</code> parent of the <code>CONNECTION_MARKER</code> and 
+	 * <code>JDBC_MARKER</code>, to easily disable logging of connection, JDBC, and ResultSet calls. 
+	 * This is to easily reproduce log4jdbc standard loggers behaviors. 
+	 */
+	private static final Marker NON_STATEMENT_MARKER = MarkerManager.getMarker("LOG4JDBC_NON_STATEMENT");
+	/**
 	 * <code>Marker</code> to log connections events
 	 * (corresponds to the "jdbc.connection" logger in the standard implementation)
 	 */
-	private static final Marker CONNECTION_MARKER = MarkerManager.getMarker("LOG4JDBC_CONNECTION");
+	private static final Marker CONNECTION_MARKER = MarkerManager.getMarker("LOG4JDBC_CONNECTION", NON_STATEMENT_MARKER);
 	/**
 	 * <code>Marker</code> to log all JDBC calls including <code>ResultSet</code>s
 	 */
-	private static final Marker JDBC_MARKER = MarkerManager.getMarker("LOG4JDBC_JDBC");
+	private static final Marker JDBC_MARKER = MarkerManager.getMarker("LOG4JDBC_JDBC", NON_STATEMENT_MARKER);
 	/**
 	 * <code>Marker</code> to log all JDBC calls except for <code>ResultSet</code>s
 	 * (corresponds to the "jdbc.audit" logger in the standard implementation)
