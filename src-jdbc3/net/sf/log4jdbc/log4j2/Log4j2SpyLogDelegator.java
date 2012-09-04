@@ -66,7 +66,8 @@ import org.apache.logging.log4j.MarkerManager;
  * They would have priority over the <code>Marker</code>s.
  * <li>The interface <code>SpyLogDelegator</code>, 
  * and the classes <code>Slf4jSpyLogDelegator</code>, <code>DriverSpy</code>, 
- * <code>ConnectionSpy</code>, and <code>SpyLogFactory</code>, 
+ * <code>ConnectionSpy</code>, <code>SpyLogFactory</code>, 
+ * <code>StatementSpy</code> and <code>PreparedStatementSpy</code>
  * have been modified. See their corresponding javadoc for information about the changes.
  * </ul>
  *
