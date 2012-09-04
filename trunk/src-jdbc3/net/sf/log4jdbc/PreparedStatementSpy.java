@@ -37,6 +37,11 @@ import java.util.List;
 
 /**
  * Wraps a PreparedStatement and reports method calls, returns and exceptions.
+ * <p>
+ * MODIFICATIONS FOR LOG4J2: 
+ * This class now overrides <code>Statement.getGeneratedKeys()</code> 
+ * in order to use the convenient method <code>Statement.getGeneratedKeys(String)</code>, 
+ * by providing the String returned by <code>dumpedSql()</code>.
  *
  * @author Arthur Blake
  */
@@ -729,6 +734,11 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
       reportException(methodCall, s, dumpedSql, System.currentTimeMillis() - tstart);
       throw s;
     }
+  }
+  
+  public ResultSet getGeneratedKeys() throws SQLException
+  {
+	  return this.getGeneratedKeys(dumpedSql());
   }
 
   public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException
