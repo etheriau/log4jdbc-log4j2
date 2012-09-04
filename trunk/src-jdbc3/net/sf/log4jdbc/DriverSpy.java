@@ -129,6 +129,12 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * This is true only if log4j2 is used (see <code>useLog4j2</code>), 
  * otherwise it has the standard behavior.
  * </ul>
+ * <p>
+ * UPDATE: actually, <code>useLog4j2</code> is not currently used, 
+ * in order to avoid to have to install slf4j. However, it is easy to enable again. 
+ * A consequence is that the <code>SpyLogFactory</code> can actually be used to instantiate 
+ * the logger of this class. It should be changed back if the <code>SpyLogFactory</code> 
+ * was modified again to use <code>useLog4j2</code>.
  *
  * @author Arthur Blake
  * @author Frederic Bastian
@@ -161,9 +167,15 @@ public class DriverSpy implements Driver
 	 * or we manually instantiate <code>SpyLogDelegator</code> here...
 	 * none of those are satisfying, but we will go for the manual instantiation 
 	 * of a <code>Log4j2SpyLogDelegator</code>.
+	 * <p>
+	 * UPDATE: actually, the <code>SpyLogFactory</code> does not currently use 
+	 * <code>useLog4j2</code>, so it can be used here. 
+	 * This should be changed back if the  <code>SpyLogFactory</code> 
+     * was modified again to use <code>useLog4j2</code>.
 	 * 
 	 */
-  static final SpyLogDelegator log = new Log4j2SpyLogDelegator();
+  static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+  //static final SpyLogDelegator log = new Log4j2SpyLogDelegator();
 
   /**
    * Optional package prefix to use for finding application generating point of

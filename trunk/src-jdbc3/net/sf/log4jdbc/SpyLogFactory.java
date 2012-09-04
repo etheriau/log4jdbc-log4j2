@@ -33,6 +33,12 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * logger to return. 
  * <li>Use of this method to set the <code>logger</code> attribute.
  * </ul>
+ * <p>
+ * UPDATE: actually, all the previous modifications have been commented. 
+ * This is because of a decision change, 
+ * of not allowing to use the standard <code>Slf4jSpyLogDelegator</code>, 
+ * otherwise the users will have to both install Log4j2 AND slf4j. 
+ * They could just use the standard log4jdbc instead. 
  *
  * @author Arthur Blake
  * @author Frederic Bastian
@@ -47,7 +53,8 @@ public class SpyLogFactory
   /**
    * The logging system of choice.
    */
-  private static final SpyLogDelegator logger = defineSpyLogDelegator();
+  private static final SpyLogDelegator logger = getLog4j2SpyLogDelegator();
+  //private static final SpyLogDelegator logger = defineSpyLogDelegator();
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.
@@ -72,22 +79,22 @@ public class SpyLogFactory
    * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
    * @see DriverSpy#useLog4j2
    */
-  private static SpyLogDelegator defineSpyLogDelegator() 
+  /*private static SpyLogDelegator defineSpyLogDelegator() 
   {
 	if (DriverSpy.isUseLog4j2()) {
 		return getLog4j2SpyLogDelegator();
 	}
 	return getSlf4jSpyLogDelegator();
-  }
+  }*/
   
-  public static SpyLogDelegator getLog4j2SpyLogDelegator()
+  private static SpyLogDelegator getLog4j2SpyLogDelegator()
   {
 	  return new Log4j2SpyLogDelegator();
   }
   
-  public static SpyLogDelegator getSlf4jSpyLogDelegator()
+  /*public static SpyLogDelegator getSlf4jSpyLogDelegator()
   {
 	  return new Slf4jSpyLogDelegator();
-  }
+  }*/
 }
 
