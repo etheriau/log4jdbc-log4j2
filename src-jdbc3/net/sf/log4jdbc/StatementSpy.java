@@ -61,6 +61,11 @@ public class StatementSpy implements Statement, Spy
   protected Statement realStatement;
 
   /**
+   * The SQL query. 
+   */
+  protected String sql;
+
+  /**
    * Get the real Statement that this StatementSpy wraps.
    *
    * @return the real Statement that this StatementSpy wraps.
