@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src-jdbc4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.6"/>
-	<classpathentry kind="lib" path="lib/log4j-api-2.0-beta2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-core-2.0-beta2.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.0.jar"/>
 	<classpathentry kind="lib" path="/bgee/WEB-INF/lib/mysql-connector-java.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/log4j-api-2.0-alpha3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-core-2.0-alpha3-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
