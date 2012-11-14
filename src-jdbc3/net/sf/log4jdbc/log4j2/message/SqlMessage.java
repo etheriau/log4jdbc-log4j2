@@ -77,7 +77,7 @@ public abstract class SqlMessage
 		return this.getMessage();
 	}
 
-	public String getMessageFormat() {
+	public String getFormat() {
 		return this.getFormattedMessage();
 	}
 
