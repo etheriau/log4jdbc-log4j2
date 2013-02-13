@@ -84,6 +84,14 @@ public abstract class SqlMessage
 	public Object[] getParameters() {
 		return null;
 	}
+	
+	/**
+	 * Always return <code>null</code>, no messages store a <code>Throwable</code> in this project.
+	 * @return 	always <code>null</code>
+	 */
+	public Throwable getThrowable() {
+		return null;
+	}
     
     /**
      * Break an SQL statement up into multiple lines in an attempt to make it
