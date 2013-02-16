@@ -45,6 +45,7 @@ import java.util.ArrayList;
  *
  * @author Arthur Blake
  * @author Frederic Bastian
+ * @author Mathieu Seppey
  */
 public class StatementSpy implements Statement, Spy
 {
@@ -144,6 +145,17 @@ public class StatementSpy implements Statement, Spy
     log.exceptionOccured(this, methodCall, exception, sql, -1L);
   }
 
+  /**
+   * Report an exception to be logged.
+   * @param methodCall description of method call and arguments passed to it that generated the exception.
+   * @param exception exception that was generated
+   * @param execTime amount of time that the jdbc driver was chugging on the SQL before it threw an exception.
+   */ 
+  protected void reportException(String methodCall, SQLException exception, long execTime)
+  {
+    log.exceptionOccured(this, methodCall, exception, null, execTime);
+  }
+  
   /**
    * Report an exception to be logged.
    *
@@ -351,6 +363,11 @@ public class StatementSpy implements Statement, Spy
   {
     log.sqlTimingOccurred(this, execTime, methodCall, sql);
   }
+  
+  private void reportClosed(long execTime)
+  {
+    log.connectionClosed(this, execTime);
+  }    
 
   // implementation of interface methods
   public SQLWarning getWarnings() throws SQLException
@@ -1056,6 +1073,38 @@ public class StatementSpy implements Statement, Spy
     {
       reportException(methodCall,s);
       throw s;
+    }
+  }
+
+  @Override
+  public void closeOnCompletion() throws SQLException
+  {
+    String methodCall = "closeOnCompletion()";
+    long tstart = System.currentTimeMillis();
+    try
+    {
+      realStatement.closeOnCompletion();  
+      reportClosed(System.currentTimeMillis() - tstart);
+    }
+    catch (SQLException s)
+      {
+        reportException(methodCall, s, System.currentTimeMillis() - tstart);
+        throw s;      
+    } 
+  }
+
+  @Override
+  public boolean isCloseOnCompletion() throws SQLException
+  {
+    String methodCall = "isCloseOnCompletion()";  
+    try
+    {
+      return reportReturn(methodCall,realStatement.isCloseOnCompletion());  
+    }
+    catch (SQLException s)
+    {
+      reportException(methodCall,s);
+      throw s;      
     }
   }
 
