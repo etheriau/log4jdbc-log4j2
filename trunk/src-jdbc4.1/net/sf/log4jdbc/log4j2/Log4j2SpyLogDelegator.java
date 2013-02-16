@@ -5,6 +5,7 @@ import net.sf.log4jdbc.ResultSetSpy;
 import net.sf.log4jdbc.Spy;
 import net.sf.log4jdbc.SpyLogDelegator;
 import net.sf.log4jdbc.log4j2.message.ConnectionMessage;
+import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
 import net.sf.log4jdbc.log4j2.message.ExceptionOccuredMessage;
 import net.sf.log4jdbc.log4j2.message.MethodReturnedMessage;
 import net.sf.log4jdbc.log4j2.message.SqlTimingOccurredMessage;
@@ -72,6 +73,7 @@ import org.apache.logging.log4j.MarkerManager;
  * </ul>
  *
  * @author Frederic Bastian
+ * @author Mathieu Seppey
  * @see #LOGGER
  * @see #DEBUGLOGGER
  * @see net.sf.log4jdbc.Slf4jSpyLogDelegator
@@ -307,28 +309,19 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	      (DriverSpy.isDumpSqlDelete() && "delete".equals(operation)) ||
 	      (DriverSpy.isDumpSqlCreate() && "create".equals(operation));
 	  }
-
-	public void connectionOpened(Spy spy, long execTime) 
-	{
-		this.connectionOpenedOrClosed(spy, execTime, ConnectionMessage.OPENING);
-	}
-
-	public void connectionClosed(Spy spy, long execTime) 
-	{
-		this.connectionOpenedOrClosed(spy, execTime, ConnectionMessage.CLOSING);
-	}
 	
 	/**
 	 * 
-	 * @param spy 			<code>ConnectionSpy</code> that was opened or closed.
+	 * @param spy 			<code>ConnectionSpy</code> that was modified.
 	 * @param execTime 		A <code>long</code> defining the time elapsed to open or close the connection in ms
 	 * 						Caller should pass -1 if not used
-	 * @param operation 	an <code>int</code> to define if the operation was to open, or to close connection. 
-	 * 						Should be equals to <code>ConnectionMessage.OPENING</code> 
+	 * @param operation 	an <code>Operation</code> to define if the operation was to open, close or to abort connection. 
+	 * 						Should be equals to <code>Operation.OPENING</code> 
 	 * 						if the operation was to open the connection, 
-	 * 						to <code>ConnectionMessage.CLOSING</code> if the operation was to close the connection.
+	 * 						to <code>Operation.CLOSING</code> if the operation was to close the connection and
+	 *            to <code>Operation.ABORTING</code> if the operation was to abort the connection
 	 */
-	private void connectionOpenedOrClosed(Spy spy, long execTime, int operation)
+	public void connectionModified(Spy spy, long execTime, Operation operation)
 	{
 		LOGGER.info(CONNECTION_MARKER, 
 				    new ConnectionMessage(spy, execTime, operation, LOGGER.isDebugEnabled(CONNECTION_MARKER)));
@@ -338,5 +331,5 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	{
 		DEBUGLOGGER.debug(msg);
 	}
-
+	
 }

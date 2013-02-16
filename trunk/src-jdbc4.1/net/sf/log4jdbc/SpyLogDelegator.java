@@ -15,6 +15,8 @@
  */
 package net.sf.log4jdbc;
 
+import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
+
 /**
  * Delegates Spy events to a logger.
  * This interface is used for all logging activity used by log4jdbc and hides the specific implementation
@@ -41,6 +43,7 @@ package net.sf.log4jdbc;
  *
  * @author Arthur Blake
  * @author Frederic Bastian
+ * @author Mathieu Seppey
  */
 public interface SpyLogDelegator
 {
@@ -101,24 +104,15 @@ public interface SpyLogDelegator
   public void sqlTimingOccurred(Spy spy, long execTime, String methodCall, String sql);
 
   /**
-   * Called whenever a new connection spy is created.
-   * 
-   * @param spy ConnectionSpy that was created.
-   * @param execTime 	A <code>long</code> defining the time elapsed to open the connection in ms
-   * 					(useful information, as a connection might take some time to be opened sometimes). 
-   *                   	Caller should pass -1 if not used or unknown.
-   */
-  public void connectionOpened(Spy spy, long execTime);
-
-  /**
-   * Called whenever a connection spy is closed.
+   * Called whenever a connection spy is opened, closed or aborted.
    * 
    * @param spy 		<code>ConnectionSpy</code> that was closed.
    * @param execTime 	A <code>long</code> defining the time elapsed to close the connection in ms
    * 					(useful information, as a connection might take some time to be closed sometimes). 
    *                   	Caller should pass -1 if not used or unknown.
+   * @param operation The kind of operation that happened on the connection
    */
-  public void connectionClosed(Spy spy, long execTime);
+  public void connectionModified(Spy spy, long execTime, Operation operation);
 
   /**
    * Log a Setup and/or administrative log message for log4jdbc.

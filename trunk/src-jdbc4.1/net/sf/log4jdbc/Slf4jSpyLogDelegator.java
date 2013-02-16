@@ -20,6 +20,8 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
+import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -42,6 +44,7 @@ import org.slf4j.Logger;
  *
  * @author Arthur Blake
  * @author Frederic Bastian
+ * @author Mathieu Seppey
  */
 public class Slf4jSpyLogDelegator implements SpyLogDelegator
 {
@@ -534,57 +537,52 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     debugLogger.debug(msg);
   }
 
-  @SuppressWarnings("unused")
-  public void connectionOpened(Spy spy, long execTime)
+  public void connectionModified(Spy spy, long execTime, Operation operation)
   {
-	  //we just delegate to the already existing method, 
-	  //so that we do not change the behavior of the standard implementation
-	  this.connectionOpened(spy);
-  }
-
+    //we just delegate to the already existing method, 
+    //so that we do not change the behavior of the standard implementation
+    this.connectionModified(spy, operation);
+  }  
+  
   /**
-   * Called whenever a new connection spy is created.
+   * Called whenever a connection spy is modified.
    *
-   * @param spy ConnectionSpy that was created.
+   * @param spy ConnectionSpy that was modified.
    */
-  private void connectionOpened(Spy spy)
+  private void connectionModified(Spy spy, Operation operation)
   {
-    if (connectionLogger.isDebugEnabled())
-    {
-      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened " +
-        getDebugInfo());
-      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
+ 
+    String connectionMessage = "";
+    
+    switch(operation){
+    
+    case OPENING :
+      connectionMessage = "Connection opened";  
+    break;
+    
+    case CLOSING :
+      connectionMessage = "Connection closed";      
+    break;
+
+    case ABORTING :
+      connectionMessage = "Connection aborted";      
+    break;
+    
+    default:  
+      connectionMessage = "Connection opened, closed or aborted.";   
+    
+    }
+    
+    if (connectionLogger.isDebugEnabled()){
+       
+      connectionLogger.info(spy.getConnectionNumber() + ". " + connectionMessage + 
+          getDebugInfo());
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());      
+      
     }
     else
     {
-      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened");
-    }
-  }
-
-  @SuppressWarnings("unused")
-  public void connectionClosed(Spy spy, long execTime)
-  {
-	  //we just delegate to the already existing method, 
-	  //so that we do not change the behavior of the standard implementation
-	  this.connectionClosed(spy);
-  }
-
-  /**
-   * Called whenever a connection spy is closed.
-   *
-   * @param spy ConnectionSpy that was closed.
-   */
-  private void connectionClosed(Spy spy)
-  {
-    if (connectionLogger.isDebugEnabled())
-    {
-      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed " +
-        getDebugInfo());
-      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
-    }
-    else
-    {
-      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed");
+      connectionLogger.info(spy.getConnectionNumber() + ". " + connectionMessage);
     }
   }
 }
