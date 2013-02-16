@@ -38,6 +38,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
+
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.
  *
@@ -184,7 +186,7 @@ public class ConnectionSpy implements Connection, Spy
       connectionNumber = new Integer(++lastConnectionNumber);
       connectionTracker.put(connectionNumber, this);
     }
-    log.connectionOpened(this, execTime);
+    log.connectionModified(this, execTime, Operation.OPENING);
     reportReturn("new Connection");
   }
 
@@ -265,8 +267,13 @@ public class ConnectionSpy implements Connection, Spy
   
   private void reportClosed(long execTime)
   {
-    log.connectionClosed(this, execTime);
-  }   
+    log.connectionModified(this, execTime, Operation.CLOSING);
+  }  
+  
+  private void reportAborted(long execTime)
+  {
+    log.connectionModified(this, execTime, Operation.ABORTING);
+  }     
 
   // forwarding methods
 
@@ -958,7 +965,7 @@ public class ConnectionSpy implements Connection, Spy
       {
         connectionTracker.remove(connectionNumber);
       }
-      log.connectionClosed(this, System.currentTimeMillis() - tstart);
+      log.connectionModified(this, System.currentTimeMillis() - tstart, Operation.CLOSING);
     }
     reportReturn(methodCall);
   }
@@ -1030,7 +1037,7 @@ public class ConnectionSpy implements Connection, Spy
 		try
 		{
 			realConnection.abort(executor);	
-			reportClosed(System.currentTimeMillis() - tstart);
+			reportAborted(System.currentTimeMillis() - tstart);
 		}
 		catch (SQLException s)
 		{

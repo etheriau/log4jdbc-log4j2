@@ -25,6 +25,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
 
+import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
+
 /**
  * Wraps a Statement and reports method calls, returns and exceptions.
  *
@@ -366,7 +368,7 @@ public class StatementSpy implements Statement, Spy
   
   private void reportClosed(long execTime)
   {
-    log.connectionClosed(this, execTime);
+    log.connectionModified(this, execTime, Operation.CLOSING);
   }    
 
   // implementation of interface methods
