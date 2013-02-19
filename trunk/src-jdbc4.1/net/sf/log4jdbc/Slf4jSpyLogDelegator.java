@@ -20,8 +20,6 @@ import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -99,7 +97,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   public boolean isJdbcLoggingEnabled()
   {
     return jdbcLogger.isErrorEnabled() || resultSetLogger.isErrorEnabled() || sqlOnlyLogger.isErrorEnabled() ||
-      sqlTimingLogger.isErrorEnabled() || connectionLogger.isErrorEnabled();
+        sqlTimingLogger.isErrorEnabled() || connectionLogger.isErrorEnabled();
   }
 
   /**
@@ -166,11 +164,11 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   {
     String classType = spy.getClassType();
     Logger logger=ResultSetSpy.classTypeDescription.equals(classType)?
-      resultSetLogger:jdbcLogger;
+        resultSetLogger:jdbcLogger;
     if (logger.isInfoEnabled())
     {
       String header = spy.getConnectionNumber() + ". " + classType + "." +
-        methodCall + " returned " + returnMsg;
+          methodCall + " returned " + returnMsg;
       if (logger.isDebugEnabled())
       {
         logger.debug(header + " " + getDebugInfo());
@@ -216,11 +214,11 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     }
     sql = sql.substring(0,6).toLowerCase();
     return
-      (DriverSpy.DumpSqlSelect && "select".equals(sql)) ||
-      (DriverSpy.DumpSqlInsert && "insert".equals(sql)) ||
-      (DriverSpy.DumpSqlUpdate && "update".equals(sql)) ||
-      (DriverSpy.DumpSqlDelete && "delete".equals(sql)) ||
-      (DriverSpy.DumpSqlCreate && "create".equals(sql));
+        (DriverSpy.DumpSqlSelect && "select".equals(sql)) ||
+        (DriverSpy.DumpSqlInsert && "insert".equals(sql)) ||
+        (DriverSpy.DumpSqlUpdate && "update".equals(sql)) ||
+        (DriverSpy.DumpSqlDelete && "delete".equals(sql)) ||
+        (DriverSpy.DumpSqlCreate && "create".equals(sql));
   }
 
   /**
@@ -237,7 +235,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
       if (sqlOnlyLogger.isDebugEnabled())
       {
         sqlOnlyLogger.debug(getDebugInfo() + nl + spy.getConnectionNumber() +
-          ". " + processSql(sql));
+            ". " + processSql(sql));
       }
       else if (sqlOnlyLogger.isInfoEnabled())
       {
@@ -300,7 +298,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     }
 
     String stringOutput = output.toString();
-    
+
     if (DriverSpy.TrimExtraBlankLinesInSql)
     {
       LineNumberReader lineReader = new LineNumberReader(new StringReader(stringOutput));
@@ -321,25 +319,25 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           // is this line blank?
           if (line.trim().length() == 0)
           {
-          	contiguousBlankLines ++;
-          	// skip contiguous blank lines
-          	if (contiguousBlankLines > 1)
-          	{
+            contiguousBlankLines ++;
+            // skip contiguous blank lines
+            if (contiguousBlankLines > 1)
+            {
               continue;
-          	}
+            }
           }
           else
           {
-          	contiguousBlankLines = 0;
-          	output.append(line);
+            contiguousBlankLines = 0;
+            output.append(line);
           }
           output.append(nl);
         }
       }
       catch (IOException e)
       {
-      	// since we are reading from a buffer, this isn't likely to happen,
-      	// but if it does we just ignore it and treat it like its the end of the stream
+        // since we are reading from a buffer, this isn't likely to happen,
+        // but if it does we just ignore it and treat it like its the end of the stream
       }
       stringOutput = output.toString();
     }
@@ -368,25 +366,25 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
           execTime >= DriverSpy.SqlTimingErrorThresholdMsec)
       {
         sqlTimingLogger.error(
-          buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
+            buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
       }
       else if (sqlTimingLogger.isWarnEnabled())
       {
         if (DriverSpy.SqlTimingWarnThresholdEnabled &&
-          execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
+            execTime >= DriverSpy.SqlTimingWarnThresholdMsec)
         {
           sqlTimingLogger.warn(
-            buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
+              buildSqlTimingDump(spy, execTime, methodCall, sql, sqlTimingLogger.isDebugEnabled()));
         }
         else if (sqlTimingLogger.isDebugEnabled())
         {
           sqlTimingLogger.debug(
-            buildSqlTimingDump(spy, execTime, methodCall, sql, true));
+              buildSqlTimingDump(spy, execTime, methodCall, sql, true));
         }
         else if (sqlTimingLogger.isInfoEnabled())
         {
           sqlTimingLogger.info(
-            buildSqlTimingDump(spy, execTime, methodCall, sql, false));
+              buildSqlTimingDump(spy, execTime, methodCall, sql, false));
         }
       }
     }
@@ -410,7 +408,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * @return a SQL timing dump String for logging.
    */
   private String buildSqlTimingDump(Spy spy, long execTime, String methodCall,
-    String sql, boolean debugInfo)
+      String sql, boolean debugInfo)
   {
     StringBuffer out = new StringBuffer();
 
@@ -502,7 +500,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
             firstLog4jdbcCall = i;
           }
           else if (DriverSpy.TraceFromApplication &&
-            className.startsWith(DriverSpy.DebugStackPrefix))
+              className.startsWith(DriverSpy.DebugStackPrefix))
           {
             lastApplicationCall = i;
             break;
@@ -516,7 +514,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
         }
 
         dump.append(stackTrace[j].getClassName()).append(".").append(stackTrace[j].getMethodName()).append("(").
-          append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber()).append(")");
+        append(stackTrace[j].getFileName()).append(":").append(stackTrace[j].getLineNumber()).append(")");
       }
 
       return dump.toString();
@@ -537,52 +535,84 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     debugLogger.debug(msg);
   }
 
-  public void connectionModified(Spy spy, long execTime, Operation operation)
+  @SuppressWarnings("unused")
+  public void connectionOpened(Spy spy, long execTime)
   {
     //we just delegate to the already existing method, 
     //so that we do not change the behavior of the standard implementation
-    this.connectionModified(spy, operation);
-  }  
-  
-  /**
-   * Called whenever a connection spy is modified.
-   *
-   * @param spy ConnectionSpy that was modified.
-   */
-  private void connectionModified(Spy spy, Operation operation)
-  {
- 
-    String connectionMessage = "";
-    
-    switch(operation){
-    
-    case OPENING :
-      connectionMessage = "Connection opened";  
-    break;
-    
-    case CLOSING :
-      connectionMessage = "Connection closed";      
-    break;
+    this.connectionOpened(spy);
+  }
 
-    case ABORTING :
-      connectionMessage = "Connection aborted";      
-    break;
-    
-    default:  
-      connectionMessage = "Connection opened, closed or aborted.";   
-    
-    }
-    
-    if (connectionLogger.isDebugEnabled()){
-       
-      connectionLogger.info(spy.getConnectionNumber() + ". " + connectionMessage + 
+  /**
+   * Called whenever a new connection spy is created.
+   *
+   * @param spy ConnectionSpy that was created.
+   */
+  private void connectionOpened(Spy spy)
+  {
+    if (connectionLogger.isDebugEnabled())
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened " +
           getDebugInfo());
-      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());      
-      
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
     }
     else
     {
-      connectionLogger.info(spy.getConnectionNumber() + ". " + connectionMessage);
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection opened");
     }
   }
+
+  @SuppressWarnings("unused")
+  public void connectionClosed(Spy spy, long execTime)
+  {
+    //we just delegate to the already existing method, 
+    //so that we do not change the behavior of the standard implementation
+    this.connectionClosed(spy);
+  }
+
+  /**
+   * Called whenever a connection spy is closed.
+   *
+   * @param spy ConnectionSpy that was closed.
+   */
+  private void connectionClosed(Spy spy)
+  {
+    if (connectionLogger.isDebugEnabled())
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed " +
+          getDebugInfo());
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
+    }
+    else
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection closed");
+    }
+  }
+  
+  @SuppressWarnings("unused")
+  public void connectionAborted(Spy spy, long execTime)
+  {
+    //we just delegate to the already existing method, 
+    //so that we do not change the behavior of the standard implementation
+    this.connectionAborted(spy);
+  }
+
+  /**
+   * Called whenever a connection spy is aborted.
+   *
+   * @param spy ConnectionSpy that was closed.
+   */
+  private void connectionAborted(Spy spy)
+  {
+    if (connectionLogger.isDebugEnabled())
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection aborted " +
+          getDebugInfo());
+      connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
+    }
+    else
+    {
+      connectionLogger.info(spy.getConnectionNumber() + ". Connection aborted");
+    }
+  }  
 }
