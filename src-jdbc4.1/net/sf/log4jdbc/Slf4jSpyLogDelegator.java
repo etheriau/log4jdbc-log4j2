@@ -600,7 +600,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   /**
    * Called whenever a connection spy is aborted.
    *
-   * @param spy ConnectionSpy that was closed.
+   * @param spy ConnectionSpy that was aborted.
    */
   private void connectionAborted(Spy spy)
   {

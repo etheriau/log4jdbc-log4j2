@@ -128,8 +128,8 @@ public interface SpyLogDelegator
    * Called whenever a connection spy is aborted.
    * 
    * @param spy     <code>ConnectionSpy</code> that was aborted.
-   * @param execTime  A <code>long</code> defining the time elapsed to close the connection in ms
-   *          (useful information, as a connection might take some time to be closed sometimes). 
+   * @param execTime  A <code>long</code> defining the time elapsed to abort the connection in ms
+   *          (useful information, as a connection might take some time to be aborted sometimes). 
    *                    Caller should pass -1 if not used or unknown.
    */
   public void connectionAborted(Spy spy, long execTime);  
