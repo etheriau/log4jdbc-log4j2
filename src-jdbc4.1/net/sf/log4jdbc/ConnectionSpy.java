@@ -186,7 +186,7 @@ public class ConnectionSpy implements Connection, Spy
       connectionNumber = new Integer(++lastConnectionNumber);
       connectionTracker.put(connectionNumber, this);
     }
-    log.connectionModified(this, execTime, Operation.OPENING);
+    log.connectionOpened(this, execTime);
     reportReturn("new Connection");
   }
 
@@ -267,12 +267,12 @@ public class ConnectionSpy implements Connection, Spy
   
   private void reportClosed(long execTime)
   {
-    log.connectionModified(this, execTime, Operation.CLOSING);
+    log.connectionClosed(this, execTime);
   }  
   
   private void reportAborted(long execTime)
   {
-    log.connectionModified(this, execTime, Operation.ABORTING);
+    log.connectionAborted(this, execTime);
   }     
 
   // forwarding methods
@@ -965,7 +965,7 @@ public class ConnectionSpy implements Connection, Spy
       {
         connectionTracker.remove(connectionNumber);
       }
-      log.connectionModified(this, System.currentTimeMillis() - tstart, Operation.CLOSING);
+      log.connectionClosed(this, System.currentTimeMillis() - tstart);
     }
     reportReturn(methodCall);
   }

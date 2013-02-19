@@ -368,7 +368,7 @@ public class StatementSpy implements Statement, Spy
   
   private void reportClosed(long execTime)
   {
-    log.connectionModified(this, execTime, Operation.CLOSING);
+    log.connectionClosed(this, execTime);
   }    
 
   // implementation of interface methods

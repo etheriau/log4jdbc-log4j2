@@ -103,16 +103,36 @@ public interface SpyLogDelegator
    */
   public void sqlTimingOccurred(Spy spy, long execTime, String methodCall, String sql);
 
+
   /**
-   * Called whenever a connection spy is opened, closed or aborted.
+   * Called whenever a new connection spy is created.
    * 
-   * @param spy 		<code>ConnectionSpy</code> that was closed.
-   * @param execTime 	A <code>long</code> defining the time elapsed to close the connection in ms
-   * 					(useful information, as a connection might take some time to be closed sometimes). 
-   *                   	Caller should pass -1 if not used or unknown.
-   * @param operation The kind of operation that happened on the connection
+   * @param spy ConnectionSpy that was created.
+   * @param execTime  A <code>long</code> defining the time elapsed to open the connection in ms
+   *          (useful information, as a connection might take some time to be opened sometimes). 
+   *                    Caller should pass -1 if not used or unknown.
    */
-  public void connectionModified(Spy spy, long execTime, Operation operation);
+  public void connectionOpened(Spy spy, long execTime);
+
+  /**
+   * Called whenever a connection spy is closed.
+   * 
+   * @param spy     <code>ConnectionSpy</code> that was closed.
+   * @param execTime  A <code>long</code> defining the time elapsed to close the connection in ms
+   *          (useful information, as a connection might take some time to be closed sometimes). 
+   *                    Caller should pass -1 if not used or unknown.
+   */
+  public void connectionClosed(Spy spy, long execTime);
+  
+  /**
+   * Called whenever a connection spy is aborted.
+   * 
+   * @param spy     <code>ConnectionSpy</code> that was aborted.
+   * @param execTime  A <code>long</code> defining the time elapsed to close the connection in ms
+   *          (useful information, as a connection might take some time to be closed sometimes). 
+   *                    Caller should pass -1 if not used or unknown.
+   */
+  public void connectionAborted(Spy spy, long execTime);  
 
   /**
    * Log a Setup and/or administrative log message for log4jdbc.
