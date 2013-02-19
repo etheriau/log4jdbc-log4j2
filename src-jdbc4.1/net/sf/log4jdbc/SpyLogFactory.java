@@ -20,8 +20,8 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
 /**
  * A provider for a SpyLogDelegator.  This allows a single switch point to abstract
  * away which logging system to use for spying on JDBC calls.
- *
- * The SLF4J logging facade is used, which is a very good general purpose facade for plugging into
+ * 
+ * * The SLF4J logging facade is used, which is a very good general purpose facade for plugging into
  * numerous java logging systems, simply and easily.
  * <p>
  * Modifications for log4j2: 
@@ -40,8 +40,18 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * otherwise the users will have to both install Log4j2 AND slf4j. 
  * They could just use the standard log4jdbc instead. 
  *
+ * <p>
+ * UPDATE 
+ * <ul>
+ * <li>Removal of commented and unused code</li>
+ * <li>Selection of the <code>SpyLogDelegator</code> through <code>setSpyLogDelegator</code>. Default value is a <code>Log4j2SpyLogDelegator</code>
+ * </ul>
+ * <p> 
+ *
  * @author Arthur Blake
  * @author Frederic Bastian
+ * @author Tim Azzopardi from log4jdbc-remix
+ * @author Mathieu Seppey
  */
 public class SpyLogFactory
 {
@@ -52,9 +62,9 @@ public class SpyLogFactory
 
   /**
    * The logging system of choice.
+   * Default value is Log4j2SpyLogDelegator
    */
-  private static final SpyLogDelegator logger = getLog4j2SpyLogDelegator();
-  //private static final SpyLogDelegator logger = defineSpyLogDelegator();
+  private static SpyLogDelegator logger = getLog4j2SpyLogDelegator();
 
   /**
    * Get the default SpyLogDelegator for logging to the logger.
@@ -79,22 +89,23 @@ public class SpyLogFactory
    * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
    * @see DriverSpy#useLog4j2
    */
-  /*private static SpyLogDelegator defineSpyLogDelegator() 
-  {
-	if (DriverSpy.isUseLog4j2()) {
-		return getLog4j2SpyLogDelegator();
-	}
-	return getSlf4jSpyLogDelegator();
-  }*/
+
   
   private static SpyLogDelegator getLog4j2SpyLogDelegator()
   {
 	  return new Log4j2SpyLogDelegator();
   }
+    
+  /**
+   * @param logDelegator the log delegator responsible for actually logging
+   * JDBC events.
+   */
+  public static void setSpyLogDelegator(SpyLogDelegator logDelegator) {
+    if (logDelegator == null) {
+      throw new IllegalArgumentException("log4jdbc: logDelegator cannot be null.");
+    }
+    logger = logDelegator;
+  }  
   
-  /*public static SpyLogDelegator getSlf4jSpyLogDelegator()
-  {
-	  return new Slf4jSpyLogDelegator();
-  }*/
 }
 
