@@ -87,6 +87,11 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
    * Logger just for debugging things within log4jdbc itself (admin, setup, etc.)
    */
   private final Logger debugLogger = LoggerFactory.getLogger("log4jdbc.debug");
+  
+  /**
+   * Logger that shows the forward scrolled result sets in a table
+   */
+  private final Logger resultSetTableLogger = LoggerFactory.getLogger("jdbc.resultsettable");  
 
   /**
    * Determine if any of the 5 log4jdbc spy loggers are turned on (jdbc.audit | jdbc.resultset |
@@ -614,5 +619,30 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
     {
       connectionLogger.info(spy.getConnectionNumber() + ". Connection aborted");
     }
-  }  
+  }
+
+  @Override
+  public boolean isResultSetCollectionEnabled() {
+      return resultSetTableLogger.isInfoEnabled();
+  }
+
+  @Override
+  public boolean isResultSetCollectionEnabledWithUnreadValueFillIn() {
+      return resultSetTableLogger.isDebugEnabled();
+  }
+
+  @Override
+  public void resultSetCollected(ResultSetCollector resultSetCollector) {
+    // TODO completer cette methode
+    //    new ResultSetCollectorPrinter(resultSetTableLogger).printResultSet(resultSetCollector);
+  }
+
+  @Override
+  public void methodReturned(Spy spy, String methodCall, Object returnValue,
+      Object targetObject, Object... methodParams)
+  {
+    // TODO completer cette methode
+    // TODO Auto-generated method stub
+    
+  }
 }

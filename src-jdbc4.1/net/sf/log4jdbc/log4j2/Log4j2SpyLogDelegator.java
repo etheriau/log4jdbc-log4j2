@@ -1,6 +1,8 @@
 package net.sf.log4jdbc.log4j2;
 
 import net.sf.log4jdbc.DriverSpy;
+import net.sf.log4jdbc.ResultSetCollector;
+import net.sf.log4jdbc.ResultSetCollectorPrinter;
 import net.sf.log4jdbc.ResultSetSpy;
 import net.sf.log4jdbc.Spy;
 import net.sf.log4jdbc.SpyLogDelegator;
@@ -176,6 +178,28 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	    LOGGER.info(marker, 
 	    		new MethodReturnedMessage(spy, methodCall, returnMsg, LOGGER.isDebugEnabled(marker)));
 	}
+	
+  /**
+   * Called when a JDBC method from a Connection, Statement, PreparedStatement,
+   * CallableStatement or ResultSet returns.
+   * 
+   * @param spy        the Spy wrapping the class that called the method that 
+   *                   returned.
+   * @param methodCall a description of the name and call parameters of the 
+   *                   method that returned.
+   * @param returnMsg  return value converted to a String for integral types, or
+   *                   String representation for Object.  Return types this will
+   *                   be null for void return types.
+   */
+  public void methodReturned(Spy spy, String methodCall, Object returnMsg, Object object, Object... methodParams)
+  {
+    String classType = spy.getClassType();
+    Marker marker = ResultSetSpy.classTypeDescription.equals(classType)?
+        RESULTSET_MARKER:AUDIT_MARKER;
+    
+    LOGGER.info(marker, 
+        new MethodReturnedMessage(spy, methodCall, "", LOGGER.isDebugEnabled(marker)));
+  }	
 
 	@SuppressWarnings("unused")
 	public void constructorReturned(Spy spy, String constructionInfo) {
@@ -345,5 +369,20 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	{
 		DEBUGLOGGER.debug(msg);
 	}
+
+  @Override
+  public boolean isResultSetCollectionEnabled() {
+      return LOGGER.isInfoEnabled();
+  }
+
+  @Override
+  public boolean isResultSetCollectionEnabledWithUnreadValueFillIn() {
+      return LOGGER.isDebugEnabled();
+  }
+
+  @Override
+  public void resultSetCollected(ResultSetCollector resultSetCollector) {
+      new ResultSetCollectorPrinter(LOGGER).printResultSet(resultSetCollector);
+  }
 	
 }

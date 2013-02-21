@@ -15,8 +15,6 @@
  */
 package net.sf.log4jdbc;
 
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
-
 /**
  * Delegates Spy events to a logger.
  * This interface is used for all logging activity used by log4jdbc and hides the specific implementation
@@ -75,6 +73,17 @@ public interface SpyLogDelegator
    *                   return types this will be null for void return types.
    */
   public void methodReturned(Spy spy, String methodCall, String returnMsg);
+  
+  /**
+   * Called when spied upon method call returns.
+   *
+   * @param spy        the Spy wrapping the class that called the method that returned.
+   * @param methodCall a description of the name and call parameters of the method that returned.
+   * @param returnValue  return value from the method call, null for void return types.
+   * @param targetObject the target object method call (E.g. a CallableStatement, ResultSet etc) 
+   * @param methodParams the params passed to the method
+   */
+  public void methodReturned(Spy spy, String methodCall, Object returnValue, Object targetObject, Object... methodParams);  
 
   /**
    * Called when a spied upon object is constructed.
@@ -140,5 +149,25 @@ public interface SpyLogDelegator
    * @param msg message to log.
    */
   public void debug(String msg);
+  
+  /**
+   * Determine whether the logger is expecting results sets to be collected
+   *
+   * @return true if the logger is expecting results sets to be collected
+   */
+  public boolean isResultSetCollectionEnabled();
+
+  /**
+   * Determine whether the logger is expecting results sets to be collected AND any unread result set values read explicitly  
+   *
+   * @return true if the logger is expecting results sets to be collected
+   */
+  public boolean isResultSetCollectionEnabledWithUnreadValueFillIn();
+  
+  /**
+   * Called whenever result set has been collected
+   */ 
+  public void resultSetCollected(ResultSetCollector resultSetCollector);
+  
 
 }
