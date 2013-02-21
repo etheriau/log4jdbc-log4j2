@@ -336,17 +336,17 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	
 	  public void connectionOpened(Spy spy, long execTime) 
 	  {
-	    this.connectionOpenedOrClosed(spy, execTime, Operation.OPENING);
+	    this.connectionModified(spy, execTime, Operation.OPENING);
 	  }
 
 	  public void connectionClosed(Spy spy, long execTime) 
 	  {
-	    this.connectionOpenedOrClosed(spy, execTime, Operation.CLOSING);
+	    this.connectionModified(spy, execTime, Operation.CLOSING);
 	  }
 
 	  public void connectionAborted(Spy spy, long execTime) 
 	  {
-	    this.connectionOpenedOrClosed(spy, execTime, Operation.ABORTING);
+	    this.connectionModified(spy, execTime, Operation.ABORTING);
 	  }   
 
 	  /**
@@ -359,7 +359,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	   *            if the operation was to open the connection, 
 	   *            to <code>ConnectionMessage.CLOSING</code> if the operation was to close the connection.
 	   */
-	  private void connectionOpenedOrClosed(Spy spy, long execTime, Operation operation)
+	  private void connectionModified(Spy spy, long execTime, Operation operation)
 	  {
 	    LOGGER.info(CONNECTION_MARKER, 
 	        new ConnectionMessage(spy, execTime, operation, LOGGER.isDebugEnabled(CONNECTION_MARKER)));

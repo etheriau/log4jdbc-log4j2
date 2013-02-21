@@ -597,8 +597,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
   @SuppressWarnings("unused")
   public void connectionAborted(Spy spy, long execTime)
   {
-    //we just delegate to the already existing method, 
-    //so that we do not change the behavior of the standard implementation
     this.connectionAborted(spy);
   }
 
