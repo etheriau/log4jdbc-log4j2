@@ -270,15 +270,15 @@ public class ResultSetSpy implements ResultSet, Spy
    * Conveniance method to report (for logging) that a method returned an Object.
    *
    * @param methodCall description of method call and arguments passed to it that returned.
-   * @param value return Object.
+   * @param value return T.
    * @return the return Object as passed in.
-   */
-  protected Object reportReturn(String methodCall, Object returnValue, Object... args)
+   */  
+  protected <T> T reportReturn(String methodCall, T returnValue, Object... args)
   {
     reportAllReturns(methodCall, returnValue, args);
     return returnValue;
-  }
-
+  }  
+ 
   protected Ref reportReturn(String methodCall, Ref value, Object... args)
   {
     reportAllReturns(methodCall, "" + value, args);
@@ -3074,14 +3074,13 @@ public class ResultSetSpy implements ResultSet, Spy
     }
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(int columnIndex, Class<T> type) throws SQLException
   {
     String methodCall = "getObject(" + columnIndex + "," + type+ ")";
     try
     {
-      return (T) reportReturn(methodCall, realResultSet.getObject(columnIndex,type));
+      return reportReturn(methodCall, realResultSet.getObject(columnIndex,type));
     }
     catch (SQLException s)
     {
@@ -3090,14 +3089,13 @@ public class ResultSetSpy implements ResultSet, Spy
     }
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
   {
     String methodCall = "getObject(" + columnLabel + "," + type+ ")";
     try
     {
-      return (T) reportReturn(methodCall, realResultSet.getObject(columnLabel,type));
+      return reportReturn(methodCall, realResultSet.getObject(columnLabel,type));
     }
     catch (SQLException s)
     {
