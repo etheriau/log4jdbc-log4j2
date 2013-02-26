@@ -177,7 +177,7 @@ public class DriverSpy implements Driver
      * was modified again to use <code>useLog4j2</code>.
 	 * 
 	 */
-  static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+  static SpyLogDelegator log ;
   //static final SpyLogDelegator log = new Log4j2SpyLogDelegator();
 
   /**
@@ -423,8 +423,8 @@ public class DriverSpy implements Driver
     boolean val;
     if (propValue == null)
     {
-      log.debug("x " + propName + " is not defined (using default value " +
-        defaultValue + ")");
+//      log.debug("x " + propName + " is not defined (using default value " +
+//        defaultValue + ")");
       return defaultValue;
     }
     else
@@ -440,18 +440,27 @@ public class DriverSpy implements Driver
           "yes".equals(propValue) || "on".equals(propValue);
       }
     }
-    log.debug("  " + propName + " = " + val);
+//    log.debug("  " + propName + " = " + val);
     return val;
   }
 
   static
   {
-	log.debug("... log4jdbc initializing ...");
-
+    
     InputStream propStream =
-      DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
-
+        DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
+   
     Properties props = new Properties(System.getProperties());
+    
+    
+    useLog4j2 = getBooleanOption(props, "log4jdbc.log4j2",
+        true);
+    
+    log = SpyLogFactory.getSpyLogDelegator();
+    
+    
+    log.debug("... log4jdbc initializing ...");
+    
     if (propStream != null)
     {
       try
@@ -481,6 +490,8 @@ public class DriverSpy implements Driver
     {
     	log.debug("  log4jdbc.properties not found on classpath");
     }
+    
+
 
     // look for additional driver specified in properties
     DebugStackPrefix = getStringOption(props, "log4jdbc.debug.stack.prefix");
@@ -535,8 +546,11 @@ public class DriverSpy implements Driver
       getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
       false);
     
-    useLog4j2 = getBooleanOption(props, "log4jdbc.log4j2",
-    	            true);
+
+    
+    // CHECKCHECK
+    System.out.println(DriverSpy.isUseLog4j2());
+
 
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit
@@ -673,6 +687,7 @@ public class DriverSpy implements Driver
    */
   public DriverSpy()
   {
+    System.out.println("Constructeur");
   }
 
   /**
@@ -986,7 +1001,7 @@ public class DriverSpy implements Driver
    * @see #useLog4j2
    */
   public static boolean isUseLog4j2() {
-	return useLog4j2;
+    return useLog4j2;
   }
   
   protected void reportException(String methodCall, SQLException exception)
