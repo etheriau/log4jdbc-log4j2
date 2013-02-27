@@ -64,21 +64,11 @@ public class SpyLogFactory
    * The logging system of choice.
    * Default value is Log4j2SpyLogDelegator
    */
-  private static SpyLogDelegator logger = getLog4j2SpyLogDelegator();
-
-  /**
-   * Get the default SpyLogDelegator for logging to the logger.
-   *
-   * @return the default SpyLogDelegator for logging to the logger.
-   */
-  public static SpyLogDelegator getSpyLogDelegator()
-  {
-    return logger;
-  }
+  private static SpyLogDelegator logger ;
   
   /**
    * Return the appropriate <code>SpyLogDelegator</code> 
-   * depending on the <code>DriverSpy</code> <code>useLog4j2</code> attribute. 
+   * depending on the <code>Properties</code> <code>useLog4j2</code> attribute. 
    * If <code>useLog4j2</code> is <code>true</code>, return a <code>Log4j2SpyLogDelegator</code>, 
    * otherwise, return a <code>Slf4jSpyLogDelegator</code>. 
    * 
@@ -88,13 +78,34 @@ public class SpyLogFactory
    * @see Slf4jSpyLogDelegator
    * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
    * @see DriverSpy#useLog4j2
-   */
-
+   */  
+  public static SpyLogDelegator getSpyLogDelegator()
+  {  
+    if(net.sf.log4jdbc.log4j2.Properties.isUseLog4j2()){
+      return getLog4j2SpyLogDelegator();
+    }
+    else {
+      return getSlf4jSpySpyLogDelegator();
+    }
+  }  
   
+  /**
+   * Get a new Log4j2SpyLogDelegator
+   * @return Log4j2SpyLogDelegator
+   */ 
   private static SpyLogDelegator getLog4j2SpyLogDelegator()
   {
 	  return new Log4j2SpyLogDelegator();
   }
+  
+  /**
+   * Get a new Slf4jSpyLogDelegator
+   * @return Slf4jSpyLogDelegator
+   */ 
+  private static SpyLogDelegator getSlf4jSpySpyLogDelegator()
+  {
+    return new Slf4jSpyLogDelegator();
+  }  
     
   /**
    * @param logDelegator the log delegator responsible for actually logging
