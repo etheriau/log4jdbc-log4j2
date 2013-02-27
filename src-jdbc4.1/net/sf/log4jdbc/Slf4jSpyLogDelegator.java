@@ -631,16 +631,13 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
   @Override
   public void resultSetCollected(ResultSetCollector resultSetCollector) {
-    // TODO completer cette methode
-    //    new ResultSetCollectorPrinter(resultSetTableLogger).printResultSet(resultSetCollector);
+    // TODO Auto-generated method stub
   }
 
   @Override
   public void methodReturned(Spy spy, String methodCall, Object returnValue,
       Object targetObject, Object... methodParams)
   {
-    // TODO completer cette methode
     // TODO Auto-generated method stub
-    
   }
 }

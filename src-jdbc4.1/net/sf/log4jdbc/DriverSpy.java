@@ -177,8 +177,7 @@ public class DriverSpy implements Driver
      * was modified again to use <code>useLog4j2</code>.
 	 * 
 	 */
-  static SpyLogDelegator log ;
-  //static final SpyLogDelegator log = new Log4j2SpyLogDelegator();
+  static final SpyLogDelegator log = net.sf.log4jdbc.log4j2.Properties.getSpyLogDelegator();
 
   /**
    * Optional package prefix to use for finding application generating point of
@@ -298,18 +297,6 @@ public class DriverSpy implements Driver
    */
   static boolean SuppressGetGeneratedKeysException;
   
-  /**
-   * A <code>boolean</code> added for this modified version, to define which logging system should be used: 
-   * if <code>true</code>, log4j2 is used, 
-   * if <code>false</code>, the standard logger is used, slf4. 
-   * Default is <code>true</code> (use log4j2). This attribute is used by the <code>SpyLogFactory</code> 
-   * to determine which <code>SpyLogDelegator</code> to return 
-   * (either <code>Log4j2SpyLogDelegator</code>, or <code>Slf4jSpyLogDelegator</code>)
-   * 
-   * @see SpyLogFactory
-   */
-  static boolean useLog4j2;
-
 /**
    * Get a Long option from a property and
    * log a debug message about this.
@@ -423,8 +410,8 @@ public class DriverSpy implements Driver
     boolean val;
     if (propValue == null)
     {
-//      log.debug("x " + propName + " is not defined (using default value " +
-//        defaultValue + ")");
+      log.debug("x " + propName + " is not defined (using default value " +
+        defaultValue + ")");
       return defaultValue;
     }
     else
@@ -440,59 +427,17 @@ public class DriverSpy implements Driver
           "yes".equals(propValue) || "on".equals(propValue);
       }
     }
-//    log.debug("  " + propName + " = " + val);
+    log.debug("  " + propName + " = " + val);
     return val;
   }
 
   static
   {
     
-    InputStream propStream =
-        DriverSpy.class.getResourceAsStream("/log4jdbc.properties");
-   
     Properties props = new Properties(System.getProperties());
-    
-    
-    useLog4j2 = getBooleanOption(props, "log4jdbc.log4j2",
-        true);
-    
-    log = SpyLogFactory.getSpyLogDelegator();
-    
-    
+      
     log.debug("... log4jdbc initializing ...");
     
-    if (propStream != null)
-    {
-      try
-      {
-        props.load(propStream);
-      }
-      catch (IOException e)
-      {
-    	  log.debug("ERROR!  io exception loading " +
-          "log4jdbc.properties from classpath: " + e.getMessage());
-      }
-      finally
-      {
-        try
-        {
-          propStream.close();
-        }
-        catch (IOException e)
-        {
-        	log.debug("ERROR!  io exception closing property file stream: " +
-            e.getMessage());
-        }
-      }
-      log.debug("  log4jdbc.properties loaded from classpath");
-    }
-    else
-    {
-    	log.debug("  log4jdbc.properties not found on classpath");
-    }
-    
-
-
     // look for additional driver specified in properties
     DebugStackPrefix = getStringOption(props, "log4jdbc.debug.stack.prefix");
     TraceFromApplication = DebugStackPrefix != null;
@@ -546,12 +491,6 @@ public class DriverSpy implements Driver
       getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
       false);
     
-
-    
-    // CHECKCHECK
-    System.out.println(DriverSpy.isUseLog4j2());
-
-
     // The Set of drivers that the log4jdbc driver will preload at instantiation
     // time.  The driver can spy on any driver type, it's just a little bit
     // easier to configure log4jdbc if it's one of these types!
@@ -687,7 +626,6 @@ public class DriverSpy implements Driver
    */
   public DriverSpy()
   {
-    System.out.println("Constructeur");
   }
 
   /**
@@ -994,14 +932,6 @@ public class DriverSpy implements Driver
    */
   public static long getSqlTimingWarnThresholdMsec() {
   	return SqlTimingWarnThresholdMsec;
-  }
-  
-  /**
-   * @return the useLog4j2
-   * @see #useLog4j2
-   */
-  public static boolean isUseLog4j2() {
-    return useLog4j2;
   }
   
   protected void reportException(String methodCall, SQLException exception)

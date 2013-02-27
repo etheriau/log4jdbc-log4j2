@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 /***
  * @author Tim Azzopardi
- * @author mathieu seppey
+ * @author Mathieu Seppey
  * 
  * update : replaced the logger to use log4j
  *  

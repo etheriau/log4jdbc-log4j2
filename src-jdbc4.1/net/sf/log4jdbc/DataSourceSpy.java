@@ -72,24 +72,13 @@ import javax.sql.DataSource;
  */
 public class DataSourceSpy implements DataSource, Spy {
     private DataSource realDataSource;
-    private SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+    static final SpyLogDelegator log = net.sf.log4jdbc.log4j2.Properties.getSpyLogDelegator();
 
     public DataSourceSpy(DataSource realDataSource)
     {
             this.realDataSource = realDataSource;
     }
 
-    public SpyLogDelegator getLogFormatter() {
-      return log;
-    }
-    /**
-     * Set a custom SpyLogDelegator (default is usually Slf4jSpyLogDelegator)
-     * @param spyLogDelegator
-     */
-    public void setLogFormatter(SpyLogDelegator spyLogDelegator) {
-      this.log = spyLogDelegator;
-    }
-    
     protected void reportException(String methodCall, SQLException exception)
     {
       log.exceptionOccured(this, methodCall, exception, null, -1L);
@@ -105,10 +94,11 @@ public class DataSourceSpy implements DataSource, Spy {
     public Connection getConnection() throws SQLException
     {      
       String methodCall = "getConnection()";
+      long tstart = System.currentTimeMillis();
       try
       {
         final Connection connection = realDataSource.getConnection();
-        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection)));  
+        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection),System.currentTimeMillis() - tstart));  
       }
       catch (SQLException s)
       {
@@ -122,10 +112,11 @@ public class DataSourceSpy implements DataSource, Spy {
     {
       
       String methodCall = "getConnection("+ username +", password***)";
+      long tstart = System.currentTimeMillis();      
       try
       {
         final Connection connection = realDataSource.getConnection(username, password);
-        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection)));  
+        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection),System.currentTimeMillis() - tstart));  
       }
       catch (SQLException s)
       {
@@ -240,7 +231,7 @@ public class DataSourceSpy implements DataSource, Spy {
     public Integer getConnectionNumber()
     {
       // No connection number in this case
-      return 0;
+      return null;
     }
     
 }
