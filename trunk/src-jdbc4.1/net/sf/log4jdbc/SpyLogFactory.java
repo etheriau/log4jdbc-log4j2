@@ -16,37 +16,23 @@
 package net.sf.log4jdbc;
 
 import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
+import net.sf.log4jdbc.log4j2.Properties;
 
 /**
  * A provider for a SpyLogDelegator.  This allows a single switch point to abstract
  * away which logging system to use for spying on JDBC calls.
- * 
- * * The SLF4J logging facade is used, which is a very good general purpose facade for plugging into
- * numerous java logging systems, simply and easily.
  * <p>
  * Modifications for log4j2: 
  * <ul>
- * <li>addition of the <code>defineSpyLogDelegator()</code> method 
- * to choose between the standard <code>Slf4jSpyLogDelegator</code>, 
- * or the custom <code>Log4j2SpyLogDelegator</code>. 
- * This method use <code>DriverSpy#isUseLog4j2()</code> to determine which 
- * logger to return. 
- * <li>Use of this method to set the <code>logger</code> attribute.
+ * <li>addition of the <code>#loadSpyLogDelegator()</code> method 
+ * to choose between the new <code>Log4j2SpyLogDelegator</code>, 
+ * or an alternative <code>SpyLogDelegator</code>. 
+ * This method uses <code>net.sf.log4jdbc.log4j2.Properties#getSpyLogDelegatorName()</code> 
+ * to determine which logger to use. 
+ * <li>Use of this method to set the <code>logger</code> attribute 
+ * if <code>null</code> when calling <code>#getSpyLogDelegator()</code>.
+ * <li>From load4jdbc-remix, addition of a method to set a custom <code>SpyLogDelegator</code>
  * </ul>
- * <p>
- * UPDATE: actually, all the previous modifications have been commented. 
- * This is because of a decision change, 
- * of not allowing to use the standard <code>Slf4jSpyLogDelegator</code>, 
- * otherwise the users will have to both install Log4j2 AND slf4j. 
- * They could just use the standard log4jdbc instead. 
- *
- * <p>
- * UPDATE 
- * <ul>
- * <li>Removal of commented and unused code</li>
- * <li>Selection of the <code>SpyLogDelegator</code> through <code>setSpyLogDelegator</code>. Default value is a <code>Log4j2SpyLogDelegator</code>
- * </ul>
- * <p> 
  *
  * @author Arthur Blake
  * @author Frederic Bastian
@@ -55,68 +41,75 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  */
 public class SpyLogFactory
 {
-  /**
-   * Do not allow instantiation.  Access is through static method.
-   */
-  private SpyLogFactory() {}
+	/**
+	 * Do not allow instantiation.  Access is through static method.
+	 */
+	private SpyLogFactory() {}
 
-  /**
-   * The logging system of choice.
-   * Default value is Log4j2SpyLogDelegator
-   */
-  private static SpyLogDelegator logger ;
-  
-  /**
-   * Return the appropriate <code>SpyLogDelegator</code> 
-   * depending on the <code>Properties</code> <code>useLog4j2</code> attribute. 
-   * If <code>useLog4j2</code> is <code>true</code>, return a <code>Log4j2SpyLogDelegator</code>, 
-   * otherwise, return a <code>Slf4jSpyLogDelegator</code>. 
-   * 
-   * @return 	A <code>SpyLogDelegator</code>: a <code>Log4j2SpyLogDelegator</code> 
-   * 			if the <code>useLog4j2</code> attribute of <code>DriverSpy</code> is <code>true</code>, 
-   * 			a <code>Slf4jSpyLogDelegator</code> otherwise.
-   * @see Slf4jSpyLogDelegator
-   * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
-   * @see DriverSpy#useLog4j2
-   */  
-  public static SpyLogDelegator getSpyLogDelegator()
-  {  
-    if(net.sf.log4jdbc.log4j2.Properties.isUseLog4j2()){
-      return getLog4j2SpyLogDelegator();
-    }
-    else {
-      return getSlf4jSpySpyLogDelegator();
-    }
-  }  
-  
-  /**
-   * Get a new Log4j2SpyLogDelegator
-   * @return Log4j2SpyLogDelegator
-   */ 
-  private static SpyLogDelegator getLog4j2SpyLogDelegator()
-  {
-	  return new Log4j2SpyLogDelegator();
-  }
-  
-  /**
-   * Get a new Slf4jSpyLogDelegator
-   * @return Slf4jSpyLogDelegator
-   */ 
-  private static SpyLogDelegator getSlf4jSpySpyLogDelegator()
-  {
-    return new Slf4jSpyLogDelegator();
-  }  
-    
-  /**
-   * @param logDelegator the log delegator responsible for actually logging
-   * JDBC events.
-   */
-  public static void setSpyLogDelegator(SpyLogDelegator logDelegator) {
-    if (logDelegator == null) {
-      throw new IllegalArgumentException("log4jdbc: logDelegator cannot be null.");
-    }
-    logger = logDelegator;
-  }  
-  
+	/**
+	 * The logging system of choice.
+	 * Default value is Log4j2SpyLogDelegator
+	 */
+	private static SpyLogDelegator logger;
+
+	/**
+	 * Return the <code>SpyLogDelegator</code>. 
+	 * If not already initialized (for instance, using 
+	 * {@link #setSpyLogDelegator(SpyLogDelegator)}), this getter will load it first, 
+	 * using the {@link net.sf.log4jdbc.log4j2.Properties#getSpyLogDelegatorName()}. 
+	 * If the name is <code>null</code>, load {@link net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator}, 
+	 * otherwise, try to load the corresponding class. 
+	 * 
+	 * @return 	The <code>SpyLogDelegator</code> to use.
+	 * @see #setSpyLogDelegator(SpyLogDelegator)
+	 */  
+	public static SpyLogDelegator getSpyLogDelegator()
+	{  
+		if (logger == null) {
+			loadSpyLogDelegator(Properties.getSpyLogDelegatorName());
+		}
+		return logger;
+	}  
+
+	/**
+	 * Set the appropriate <code>SpyLogDelegator</code> 
+	 * depending on <code>spyLogDelegatorName</code>. 
+	 * If <code>null</code>, load {@link net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator}, 
+	 * otherwise, try to load the corresponding class.  
+	 * 
+	 * @param spyLogDelegatorName 	A <code>String</code> representing the name 
+	 * 								of the class implementing <code>SpyLogDelegator</code> 
+	 * 								to load. If <code>null</code>, 
+	 * 								load <code>Log4j2SpyLogDelegator</code>.
+	 * @see Slf4jSpyLogDelegator
+	 * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
+	 */ 
+	public static void loadSpyLogDelegator(String spyLogDelegatorName)
+	{
+		if (spyLogDelegatorName == null) {
+			setSpyLogDelegator(new Log4j2SpyLogDelegator());
+		} else {
+			try {
+				Object loadedClass = 
+						Class.forName(spyLogDelegatorName).newInstance();
+				setSpyLogDelegator((SpyLogDelegator) loadedClass);
+			} catch (Exception e) {
+				throw new IllegalArgumentException(
+					"spyLogDelegatorName does not allow to load a valid SpyLogDelegator: " + 
+					e.getMessage());
+			}
+		}
+	} 
+
+	/**
+	 * @param logDelegator the log delegator responsible for actually logging
+	 * JDBC events.
+	 */
+	public static void setSpyLogDelegator(SpyLogDelegator logDelegator) {
+		if (logDelegator == null) {
+			throw new IllegalArgumentException("log4jdbc: logDelegator cannot be null.");
+		}
+		logger = logDelegator;
+	}  
 }
 

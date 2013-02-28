@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Statement;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -72,7 +71,7 @@ import javax.sql.DataSource;
  */
 public class DataSourceSpy implements DataSource, Spy {
     private DataSource realDataSource;
-    static final SpyLogDelegator log = net.sf.log4jdbc.log4j2.Properties.getSpyLogDelegator();
+    static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
 
     public DataSourceSpy(DataSource realDataSource)
     {

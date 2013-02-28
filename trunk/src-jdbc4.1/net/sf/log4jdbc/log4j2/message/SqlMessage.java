@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import net.sf.log4jdbc.DriverSpy;
+import net.sf.log4jdbc.log4j2.Properties;
 
 /**
  * Parent class of all <code>Message</code>s associated with log4jdbc log events, 
@@ -107,13 +107,13 @@ public abstract class SqlMessage
     		return null;
     	}
 
-    	if (DriverSpy.isSqlTrim()) {
+    	if (Properties.isSqlTrim()) {
     		sql = sql.trim();
     	}
 
     	StringBuilder output = new StringBuilder();
 
-    	if (DriverSpy.getDumpSqlMaxLineLength() <= 0) {
+    	if (Properties.getDumpSqlMaxLineLength() <= 0) {
     		output.append(sql);
     	} else {
     		// insert line breaks into sql to make it more readable
@@ -128,20 +128,20 @@ public abstract class SqlMessage
     			linelength += token.length();
     			output.append(" ");
     			linelength++;
-    			if (linelength > DriverSpy.getDumpSqlMaxLineLength()) {
+    			if (linelength > Properties.getDumpSqlMaxLineLength()) {
     				output.append(nl);
     				linelength = 0;
     			}
     		}
     	}
 
-    	if (DriverSpy.isDumpSqlAddSemicolon()) {
+    	if (Properties.isDumpSqlAddSemicolon()) {
     		output.append(";");
     	}
 
     	String stringOutput = output.toString();
 
-    	if (DriverSpy.isTrimExtraBlankLinesInSql()) {
+    	if (Properties.isTrimExtraBlankLinesInSql()) {
     		LineNumberReader lineReader = new LineNumberReader(new StringReader(stringOutput));
 
     		output = new StringBuilder();
@@ -213,7 +213,7 @@ public abstract class SqlMessage
     		 * we want to see the full stack trace in the debug info-  watch out
     		 * though as this will make the logs HUGE!
     		 */
-    		if (DriverSpy.isDumpFullDebugStackTrace()) {
+    		if (Properties.isDumpFullDebugStackTrace()) {
     			boolean first=true;
     			for (int i = 0; i < stackTrace.length; i++) {
     				className = stackTrace[i].getClassName();
@@ -238,8 +238,8 @@ public abstract class SqlMessage
     				if (className.startsWith("net.sf.log4jdbc")) {
     					firstLog4jdbcCall = i;
     					
-    				} else if (DriverSpy.isTraceFromApplication() &&
-    						Pattern.matches(DriverSpy.getDebugStackPrefix(), className)) {
+    				} else if (Properties.isTraceFromApplication() &&
+    						Pattern.matches(Properties.getDebugStackPrefix(), className)) {
     					lastApplicationCall = i;
     					break;
     				}
