@@ -70,167 +70,171 @@ import javax.sql.DataSource;
  *
  */
 public class DataSourceSpy implements DataSource, Spy {
-    private DataSource realDataSource;
-    static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+	private DataSource realDataSource;
+	private static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
 
-    public DataSourceSpy(DataSource realDataSource)
-    {
-            this.realDataSource = realDataSource;
-    }
+	public DataSourceSpy(DataSource realDataSource)
+	{
+		this.realDataSource = realDataSource;
+	}
 
-    protected void reportException(String methodCall, SQLException exception)
-    {
-      log.exceptionOccured(this, methodCall, exception, null, -1L);
-    }    
-    
-    private Object reportReturn(String methodCall, Object value)
-    {
-      log.methodReturned(this, methodCall, "");
-      return value;
-    }    
-    
-    @Override
-    public Connection getConnection() throws SQLException
-    {      
-      String methodCall = "getConnection()";
-      long tstart = System.currentTimeMillis();
-      try
-      {
-        final Connection connection = realDataSource.getConnection();
-        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection),System.currentTimeMillis() - tstart));  
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }     
-    }
-    
-    @Override
-    public Connection getConnection(String username, String password) throws SQLException
-    {
-      
-      String methodCall = "getConnection("+ username +", password***)";
-      long tstart = System.currentTimeMillis();      
-      try
-      {
-        final Connection connection = realDataSource.getConnection(username, password);
-        return (Connection) reportReturn(methodCall,new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection),System.currentTimeMillis() - tstart));  
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }     
-      
-    }
-    
-    public int getLoginTimeout() throws SQLException {
-      String methodCall = "getLoginTimeout()";
-      try
-      {
-        return (Integer) reportReturn(methodCall,realDataSource.getLoginTimeout());
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }
-    }
-    
-    public PrintWriter getLogWriter() throws SQLException {
-      String methodCall = "getLogWriter()";
-      try
-      {
-        return (PrintWriter) reportReturn(methodCall,realDataSource.getLogWriter());
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }
-    }
-    
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-      String methodCall = "isWrapperFor("+ iface +")";
-      try
-      {
-        return (Boolean) reportReturn(methodCall,realDataSource.isWrapperFor(iface));
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }      
-    }
-    
-    public void setLoginTimeout(int seconds) throws SQLException {
-      String methodCall = "setLoginTimeout("+ seconds +")";
-      try
-      {
-        realDataSource.setLoginTimeout(seconds);  
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }
-    }
-    
-    public void setLogWriter(PrintWriter out) throws SQLException {
-      String methodCall = "setLogWriter("+ out +")";
-      try
-      {
-        realDataSource.setLogWriter(out);
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }     
-    }
-    
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-      String methodCall = "unwrap("+ iface +")";
-      try
-      {
-        return (T) reportReturn(methodCall, realDataSource.unwrap(iface));
+	protected void reportException(String methodCall, SQLException exception)
+	{
+		log.exceptionOccured(this, methodCall, exception, null, -1L);
+	}    
 
-      }
-      catch (SQLException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }    
-    }
-    
-    @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException
-    {
-      String methodCall = "getParentLogger()";
-      try
-      {
-        return (Logger) reportReturn(methodCall, realDataSource.getParentLogger());
-      }
-      catch (SQLFeatureNotSupportedException s)
-      {
-        reportException(methodCall,s);
-        throw s;      
-      }
-    }
+	private Object reportReturn(String methodCall, Object value)
+	{
+		log.methodReturned(this, methodCall, "");
+		return value;
+	}    
 
-    @Override
-    public String getClassType()
-    {
-      return "DataSource";
-    }
+	@Override
+	public Connection getConnection() throws SQLException
+	{      
+		String methodCall = "getConnection()";
+		long tstart = System.currentTimeMillis();
+		try
+		{
+			final Connection connection = realDataSource.getConnection();
+			return (Connection) reportReturn(methodCall, 
+					new ConnectionSpy(connection, DriverSpy.getRdbmsSpecifics(connection), 
+							          System.currentTimeMillis() - tstart));  
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}     
+	}
 
-    @Override
-    public Integer getConnectionNumber()
-    {
-      // No connection number in this case
-      return null;
-    }
-    
+	@Override
+	public Connection getConnection(String username, String password) throws SQLException
+	{
+
+		String methodCall = "getConnection("+ username +", password***)";
+		long tstart = System.currentTimeMillis();      
+		try
+		{
+			final Connection connection = realDataSource.getConnection(username, password);
+			return (Connection) reportReturn(methodCall, 
+					new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection), 
+							          System.currentTimeMillis() - tstart));  
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}     
+
+	}
+
+	public int getLoginTimeout() throws SQLException {
+		String methodCall = "getLoginTimeout()";
+		try
+		{
+			return (Integer) reportReturn(methodCall,realDataSource.getLoginTimeout());
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}
+	}
+
+	public PrintWriter getLogWriter() throws SQLException {
+		String methodCall = "getLogWriter()";
+		try
+		{
+			return (PrintWriter) reportReturn(methodCall,realDataSource.getLogWriter());
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}
+	}
+
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		String methodCall = "isWrapperFor("+ iface +")";
+		try
+		{
+			return (Boolean) reportReturn(methodCall,realDataSource.isWrapperFor(iface));
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}      
+	}
+
+	public void setLoginTimeout(int seconds) throws SQLException {
+		String methodCall = "setLoginTimeout("+ seconds +")";
+		try
+		{
+			realDataSource.setLoginTimeout(seconds);  
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}
+	}
+
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		String methodCall = "setLogWriter("+ out +")";
+		try
+		{
+			realDataSource.setLogWriter(out);
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}     
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		String methodCall = "unwrap("+ iface +")";
+		try
+		{
+			return (T) reportReturn(methodCall, realDataSource.unwrap(iface));
+
+		}
+		catch (SQLException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}    
+	}
+
+	@Override
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException
+	{
+		String methodCall = "getParentLogger()";
+		try
+		{
+			return (Logger) reportReturn(methodCall, realDataSource.getParentLogger());
+		}
+		catch (SQLFeatureNotSupportedException s)
+		{
+			reportException(methodCall,s);
+			throw s;      
+		}
+	}
+
+	@Override
+	public String getClassType()
+	{
+		return "DataSource";
+	}
+
+	@Override
+	public Integer getConnectionNumber()
+	{
+		// No connection number in this case
+		return null;
+	}
+
 }
