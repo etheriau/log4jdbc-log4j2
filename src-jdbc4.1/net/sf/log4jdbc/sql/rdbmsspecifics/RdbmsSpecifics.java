@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.rdbmsspecifics;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import net.sf.log4jdbc.log4j2.Properties;
+import net.sf.log4jdbc.Properties;
+
 
 /**
  * Encapsulate sql formatting details about a particular relational database management system so that
@@ -26,12 +27,12 @@ import net.sf.log4jdbc.log4j2.Properties;
  *
  * @author Arthur Blake
  */
-class RdbmsSpecifics
+public class RdbmsSpecifics
 {
 	/**
 	 * Default constructor.
 	 */
-	RdbmsSpecifics()
+	public RdbmsSpecifics()
 	{
 	}
 
@@ -46,7 +47,7 @@ class RdbmsSpecifics
 	 * @param object jdbc object to be formatted.
 	 * @return formatted dump of the object.
 	 */
-	String formatParameterObject(Object object)
+	public String formatParameterObject(Object object)
 	{
 		if (object == null)
 		{

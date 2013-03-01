@@ -1,7 +1,7 @@
-package net.sf.log4jdbc.log4j2.message;
+package net.sf.log4jdbc.log.log4j2.message;
 
-import net.sf.log4jdbc.ConnectionSpy;
-import net.sf.log4jdbc.Spy;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
 
 import org.apache.logging.log4j.message.Message;
 

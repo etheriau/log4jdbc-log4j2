@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import net.sf.log4jdbc.DriverSpy;
+import net.sf.log4jdbc.sql.jdbcapi.DriverSpy;
 
 /**
  * Parent class of all <code>Message</code>s associated with log4jdbc log events, 

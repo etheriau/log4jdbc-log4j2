@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.resultsetcollector;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
 
 
 public class DefaultResultSetCollector implements ResultSetCollector {

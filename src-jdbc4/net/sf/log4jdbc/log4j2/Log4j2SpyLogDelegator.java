@@ -1,13 +1,13 @@
 package net.sf.log4jdbc.log4j2;
 
-import net.sf.log4jdbc.DriverSpy;
-import net.sf.log4jdbc.ResultSetSpy;
-import net.sf.log4jdbc.Spy;
-import net.sf.log4jdbc.SpyLogDelegator;
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage;
-import net.sf.log4jdbc.log4j2.message.ExceptionOccuredMessage;
-import net.sf.log4jdbc.log4j2.message.MethodReturnedMessage;
-import net.sf.log4jdbc.log4j2.message.SqlTimingOccurredMessage;
+import net.sf.log4jdbc.sql.jdbcapi.DriverSpy;
+import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage;
+import net.sf.log4jdbc.log.log4j2.message.ExceptionOccuredMessage;
+import net.sf.log4jdbc.log.log4j2.message.MethodReturnedMessage;
+import net.sf.log4jdbc.log.log4j2.message.SqlTimingOccurredMessage;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,10 +74,10 @@ import org.apache.logging.log4j.MarkerManager;
  * @author Frederic Bastian
  * @see #LOGGER
  * @see #DEBUGLOGGER
- * @see net.sf.log4jdbc.Slf4jSpyLogDelegator
- * @see net.sf.log4jdbc.SpyLogDelegator
- * @see net.sf.log4jdbc.DriverSpy
- * @see net.sf.log4jdbc.SpyLogFactory
+ * @see net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+ * @see net.sf.log4jdbc.log.SpyLogDelegator
+ * @see net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+ * @see net.sf.log4jdbc.log.SpyLogFactory
  */
 public class Log4j2SpyLogDelegator implements SpyLogDelegator
 {
@@ -87,7 +87,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 	private static final Logger LOGGER = LogManager.getLogger("log4jdbc.log4j2");
 	/**
 	 * Logger just for debugging things within log4jdbc itself (admin, setup, etc.)
-	 * @see net.sf.log4jdbc.Slf4jSpyLogDelegator#debugLogger
+	 * @see net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator#debugLogger
 	 */
 	private static final Logger DEBUGLOGGER = LogManager.getLogger("log4jdbc.debug");
 	

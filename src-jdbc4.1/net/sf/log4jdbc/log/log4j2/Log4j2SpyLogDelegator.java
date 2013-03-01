@@ -1,15 +1,16 @@
-package net.sf.log4jdbc.log4j2;
+package net.sf.log4jdbc.log.log4j2;
 
-import net.sf.log4jdbc.ResultSetCollector;
-import net.sf.log4jdbc.ResultSetCollectorPrinter;
-import net.sf.log4jdbc.ResultSetSpy;
-import net.sf.log4jdbc.Spy;
-import net.sf.log4jdbc.SpyLogDelegator;
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage;
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
-import net.sf.log4jdbc.log4j2.message.ExceptionOccuredMessage;
-import net.sf.log4jdbc.log4j2.message.MethodReturnedMessage;
-import net.sf.log4jdbc.log4j2.message.SqlTimingOccurredMessage;
+import net.sf.log4jdbc.Properties;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage;
+import net.sf.log4jdbc.log.log4j2.message.ExceptionOccuredMessage;
+import net.sf.log4jdbc.log.log4j2.message.MethodReturnedMessage;
+import net.sf.log4jdbc.log.log4j2.message.SqlTimingOccurredMessage;
+import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage.Operation;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
+import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
+import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollectorPrinter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

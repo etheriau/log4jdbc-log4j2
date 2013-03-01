@@ -1,4 +1,4 @@
-package net.sf.log4jdbc.log4j2.message;
+package net.sf.log4jdbc.log.log4j2.message;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -6,7 +6,7 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import net.sf.log4jdbc.log4j2.Properties;
+import net.sf.log4jdbc.Properties;
 
 /**
  * Parent class of all <code>Message</code>s associated with log4jdbc log events, 

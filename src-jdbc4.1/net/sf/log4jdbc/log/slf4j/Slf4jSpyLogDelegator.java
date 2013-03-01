@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.log.slf4j;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
 
-import net.sf.log4jdbc.log4j2.Properties;
+
+import net.sf.log4jdbc.Properties;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
+import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
+import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

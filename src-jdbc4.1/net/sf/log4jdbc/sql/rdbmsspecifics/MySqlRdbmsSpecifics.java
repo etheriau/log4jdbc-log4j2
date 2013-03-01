@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.rdbmsspecifics;
 
 import java.text.SimpleDateFormat;
 
@@ -22,14 +22,15 @@ import java.text.SimpleDateFormat;
  *
  * @author Arthur Blake
  */
-class MySqlRdbmsSpecifics extends RdbmsSpecifics
+public class MySqlRdbmsSpecifics extends RdbmsSpecifics
 {
-  MySqlRdbmsSpecifics()
+  public MySqlRdbmsSpecifics()
   {
     super();
   }
 
-  String formatParameterObject(Object object)
+  @Override
+  public String formatParameterObject(Object object)
   {
     if (object instanceof java.sql.Time)
     {

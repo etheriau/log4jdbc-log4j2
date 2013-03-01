@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
-import net.sf.log4jdbc.ConnectionSpy;
-import net.sf.log4jdbc.SpyLogDelegator;
-import net.sf.log4jdbc.SpyLogFactory;
+import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.SpyLogFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,7 @@ public class Test
 
 	private void execute() throws InstantiationException, IllegalAccessException, ClassNotFoundException
 	{
-		Class.forName("net.sf.log4jdbc.DriverSpy").newInstance();
+		Class.forName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy").newInstance();
 		SpyLogDelegator test = SpyLogFactory.getSpyLogDelegator();
 		
 		log.debug("... fdsfs...");
@@ -50,7 +50,7 @@ public class Test
 		System.out.println("getclass");
 		//DriverSpy allows to log all sql access
 	    try {
-			Class.forName("net.sf.log4jdbc.DriverSpy").newInstance();System.out.println("done, connect");
+			Class.forName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy").newInstance();System.out.println("done, connect");
 	    Connection conn = DriverManager.getConnection(connectionString);System.out.println("done");
 	    PreparedStatement preparedStatement = conn.prepareStatement("show tables");
 	    ResultSet resultSet = preparedStatement.executeQuery();

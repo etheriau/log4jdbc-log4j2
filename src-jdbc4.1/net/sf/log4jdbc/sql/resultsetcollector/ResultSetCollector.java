@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.resultsetcollector;
 
 import java.util.List;
+
+import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
 
 /**
  * Collect a result set, ultimately available from getRow().
