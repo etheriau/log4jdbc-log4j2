@@ -31,7 +31,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
+import net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator;
 
 /**
  * A JDBC driver which is a facade that delegates to one or more real underlying
@@ -104,11 +104,11 @@ import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
  * <li>Addition of a new attribute, <code>useLog4j2</code>, and the corresponding getter, 
  * <code>isUseLog4j2()</code>. Corresponds to the property "log4jdbc.log4j2". 
  * Define whether log4j2 should be used 
- * (through the use of <code>net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator</code>), 
+ * (through the use of <code>net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator</code>), 
  * or the standard slf4j 
- * (through the use of <code>net.sf.log4jdbc.Slf4jSpyLogDelegator</code>).
+ * (through the use of <code>net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator</code>).
  * Default is <code>true</code> (use of log4j2). 
- * <code>net.sf.log4jdbc.SpyLogFactory</code> has been modified accordingly. 
+ * <code>net.sf.log4jdbc.log.SpyLogFactory</code> has been modified accordingly. 
  * <li>The <code>SpyLogDelegator</code> attribute <code>log</code> of this class 
  * is used in different methods (mainly, the initializer). 
  * The <code>debug()</code> method is used. Because the <code>SpyLogFactory</code> 

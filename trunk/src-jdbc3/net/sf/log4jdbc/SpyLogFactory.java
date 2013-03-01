@@ -15,7 +15,7 @@
  */
 package net.sf.log4jdbc;
 
-import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
+import net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator;
 
 /**
  * A provider for a SpyLogDelegator.  This allows a single switch point to abstract
@@ -76,7 +76,7 @@ public class SpyLogFactory
    * 			if the <code>useLog4j2</code> attribute of <code>DriverSpy</code> is <code>true</code>, 
    * 			a <code>Slf4jSpyLogDelegator</code> otherwise.
    * @see Slf4jSpyLogDelegator
-   * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator
+   * @see net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator
    * @see DriverSpy#useLog4j2
    */
   /*private static SpyLogDelegator defineSpyLogDelegator() 

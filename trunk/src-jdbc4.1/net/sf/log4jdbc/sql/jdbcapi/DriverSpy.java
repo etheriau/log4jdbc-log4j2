@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.jdbcapi;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -30,7 +30,15 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import net.sf.log4jdbc.log4j2.Properties;
+import net.sf.log4jdbc.Properties;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.SpyLogFactory;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.rdbmsspecifics.MySqlRdbmsSpecifics;
+import net.sf.log4jdbc.sql.rdbmsspecifics.OracleRdbmsSpecifics;
+import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
+import net.sf.log4jdbc.sql.rdbmsspecifics.SqlServerRdbmsSpecifics;
+
 
 /**
  * A JDBC driver which is a facade that delegates to one or more real underlying

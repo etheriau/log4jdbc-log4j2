@@ -1,11 +1,12 @@
-package net.sf.log4jdbc.log4j2;
+package net.sf.log4jdbc;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import net.sf.log4jdbc.SpyLogDelegator;
-import net.sf.log4jdbc.SpyLogFactory;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.SpyLogFactory;
+
 
 /**
  * This class loads the properties for <code>log4jdbc-log4j2</code>. 

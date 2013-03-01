@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.rdbmsspecifics;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -24,14 +24,15 @@ import java.util.Date;
  *
  * @author Arthur Blake
  */
-class OracleRdbmsSpecifics extends RdbmsSpecifics
+public class OracleRdbmsSpecifics extends RdbmsSpecifics
 {
-  OracleRdbmsSpecifics()
+  public OracleRdbmsSpecifics()
   {
     super();
   }
 
-  String formatParameterObject(Object object)
+  @Override
+  public String formatParameterObject(Object object)
   {
     if (object instanceof Timestamp)
     {

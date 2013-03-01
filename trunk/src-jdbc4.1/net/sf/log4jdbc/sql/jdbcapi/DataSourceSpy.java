@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.jdbcapi;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -23,6 +23,10 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
+
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.SpyLogFactory;
+import net.sf.log4jdbc.sql.Spy;
 
 
 /**

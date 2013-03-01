@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.log;
+
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
 /**
  * Delegates Spy events to a logger.

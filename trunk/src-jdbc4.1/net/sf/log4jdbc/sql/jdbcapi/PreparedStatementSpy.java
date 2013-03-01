@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.jdbcapi;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -38,6 +38,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
 
 /**
  * Wraps a PreparedStatement and reports method calls, returns and exceptions.

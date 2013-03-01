@@ -1,7 +1,7 @@
 package net.sf.log4jdbc.log4j2.message;
 
-import net.sf.log4jdbc.ConnectionSpy;
-import net.sf.log4jdbc.Spy;
+import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
+import net.sf.log4jdbc.sql.Spy;
 
 import org.apache.logging.log4j.message.Message;
 
@@ -9,8 +9,8 @@ import org.apache.logging.log4j.message.Message;
  * <code>SqlMessage</code> related to connection events.
  * 
  * @author Frederic Bastian
- * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#connectionOpened(Spy, long)
- * @see net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator#connectionClosed(Spy, long)
+ * @see net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator#connectionOpened(Spy, long)
+ * @see net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator#connectionClosed(Spy, long)
  * @version 1.0
  * @since 1.0
  */

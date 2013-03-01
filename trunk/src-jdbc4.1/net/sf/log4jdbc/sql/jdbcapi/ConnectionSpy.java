@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.jdbcapi;
 
 import java.sql.Array;
 import java.sql.CallableStatement;
@@ -38,7 +38,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import net.sf.log4jdbc.log4j2.message.ConnectionMessage.Operation;
+import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.SpyLogFactory;
+import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage.Operation;
+import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
 
 /**
  * Wraps a JDBC Connection and reports method calls, returns and exceptions.

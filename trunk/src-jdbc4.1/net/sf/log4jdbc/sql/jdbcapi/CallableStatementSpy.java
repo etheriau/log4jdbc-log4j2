@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.jdbcapi;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -36,6 +36,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
+
+import net.sf.log4jdbc.sql.Spy;
 
 /**
  * Wraps a CallableStatement and reports method calls, returns and exceptions.

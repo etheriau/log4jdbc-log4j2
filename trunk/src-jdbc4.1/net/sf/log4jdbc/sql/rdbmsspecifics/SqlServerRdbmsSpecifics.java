@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.sql.rdbmsspecifics;
 
 /**
  * RDBMS specifics for the Sql Server DB.
  *
  * @author Arthur Blake
  */
-class SqlServerRdbmsSpecifics extends RdbmsSpecifics
+public class SqlServerRdbmsSpecifics extends RdbmsSpecifics
 {
-  SqlServerRdbmsSpecifics()
+  public SqlServerRdbmsSpecifics()
   {
     super();
   }

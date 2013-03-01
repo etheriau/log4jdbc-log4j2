@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.log;
 
-import net.sf.log4jdbc.log4j2.Log4j2SpyLogDelegator;
-import net.sf.log4jdbc.log4j2.Properties;
+import net.sf.log4jdbc.Properties;
+import net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator;
 
 /**
  * A provider for a SpyLogDelegator.  This allows a single switch point to abstract
