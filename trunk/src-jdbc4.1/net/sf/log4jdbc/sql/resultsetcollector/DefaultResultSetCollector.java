@@ -111,7 +111,8 @@ public class DefaultResultSetCollector implements ResultSetCollector {
    * ResultSetSpy, java.lang.String, java.lang.Object, java.lang.Object,
    * java.lang.Object)
    */
-  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, Object targetObject, Object... methodParams) {
+  @Override
+  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, @SuppressWarnings("unused") Object targetObject, Object... methodParams) {
          
     
     if (methodCall.startsWith("get") && methodParams != null && methodParams.length == 1) {
@@ -183,7 +184,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   }
 
   @Override
-  public void preMethod(ResultSetSpy resultSetSpy, String methodCall, Object... methodParams) {
+  public void preMethod(ResultSetSpy resultSetSpy, String methodCall, @SuppressWarnings("unused") Object... methodParams) {
     if (methodCall.equals("next()") && fillInUnreadValues) {
       if (row != null) {
         int colIndex = 0;
