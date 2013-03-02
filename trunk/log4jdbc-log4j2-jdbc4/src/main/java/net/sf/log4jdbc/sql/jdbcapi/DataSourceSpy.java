@@ -19,8 +19,6 @@ package net.sf.log4jdbc.sql.jdbcapi;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -217,21 +215,6 @@ public class DataSourceSpy implements DataSource, Spy {
 			reportException(methodCall,s);
 			throw s;      
 		}    
-	}
-
-	@Override
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException
-	{
-		String methodCall = "getParentLogger()";
-		try
-		{
-			return (Logger) reportReturn(methodCall, realDataSource.getParentLogger());
-		}
-		catch (SQLFeatureNotSupportedException s)
-		{
-			reportException(methodCall,s);
-			throw s;      
-		}
 	}
 
 	@Override

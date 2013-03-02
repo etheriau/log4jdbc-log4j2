@@ -1819,36 +1819,4 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException
-	{
-		String methodCall = "getObject(" + parameterIndex + "," + type+ ")";
-		try
-		{
-			return (T) reportReturn(methodCall, realCallableStatement.getObject(parameterIndex,type));
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall, s);
-			throw s;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObject(String parameterName, Class<T> type) throws SQLException
-	{
-		String methodCall = "getObject(" + parameterName + "," + type+ ")";
-		try
-		{
-			return (T) reportReturn(methodCall, realCallableStatement.getObject(parameterName,type));
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall, s);
-			throw s;
-		}
-	}
-
 }

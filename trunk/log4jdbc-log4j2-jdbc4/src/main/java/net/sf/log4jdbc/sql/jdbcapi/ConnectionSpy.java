@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Executor;
 
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.log.SpyLogFactory;
@@ -272,11 +271,6 @@ public class ConnectionSpy implements Connection, Spy
   private void reportClosed(long execTime)
   {
     log.connectionClosed(this, execTime);
-  }  
-  
-  private void reportAborted(long execTime)
-  {
-    log.connectionAborted(this, execTime);
   }     
 
   // forwarding methods
@@ -1051,80 +1045,4 @@ public class ConnectionSpy implements Connection, Spy
       throw s;
     }
   }
-
-  @Override
-	public void setSchema(String schema) throws SQLException
-	{
-		String methodCall = "setSchema(" + schema + ")";
-		try
-		{
-			realConnection.setSchema(schema);	
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall,s);
-			throw s;			
-		}
-	}
-	
-  @Override	
-	public String getSchema() throws SQLException
-	{
-		String methodCall = "getSchema()";
-		try
-		{
-			return reportReturn(methodCall,realConnection.getSchema());	
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall,s);
-			throw s;			
-		}
-	}
-	
-  @Override	
-	public void abort(Executor executor) throws SQLException
-	{
-		String methodCall = "abort(" + executor + ")";
-		long tstart = System.currentTimeMillis();
-		try
-		{
-			realConnection.abort(executor);	
-			reportAborted(System.currentTimeMillis() - tstart);
-		}
-		catch (SQLException s)
-		{
-		    reportException(methodCall, s, System.currentTimeMillis() - tstart);
-			throw s;			
-		}
-	}
-
-  @Override	
-	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
-	{
-		String methodCall = "setNetworkTimeout(" + executor + ", " + milliseconds + ";";
-		try
-		{
-			realConnection.setNetworkTimeout(executor,milliseconds);	
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall,s);
-			throw s;			
-		}
-	}
-
-	@Override
-	public int getNetworkTimeout() throws SQLException {
-		String methodCall = "getNetworkTimeout()";
-		try
-		{
-			return reportReturn(methodCall, realConnection.getNetworkTimeout());	
-		}
-		catch (SQLException s)
-		{
-			reportException(methodCall,s);
-			throw s;			
-		}
-	}
 }
