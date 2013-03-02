@@ -133,6 +133,7 @@ public class DataSourceSpy implements DataSource, Spy {
 
 	}
 
+	@Override
 	public int getLoginTimeout() throws SQLException {
 		String methodCall = "getLoginTimeout()";
 		try
@@ -146,6 +147,7 @@ public class DataSourceSpy implements DataSource, Spy {
 		}
 	}
 
+	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		String methodCall = "getLogWriter()";
 		try
@@ -159,6 +161,7 @@ public class DataSourceSpy implements DataSource, Spy {
 		}
 	}
 
+	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		String methodCall = "isWrapperFor("+ iface +")";
 		try
@@ -172,6 +175,7 @@ public class DataSourceSpy implements DataSource, Spy {
 		}      
 	}
 
+	@Override
 	public void setLoginTimeout(int seconds) throws SQLException {
 		String methodCall = "setLoginTimeout("+ seconds +")";
 		try
@@ -185,6 +189,7 @@ public class DataSourceSpy implements DataSource, Spy {
 		}
 	}
 
+	@Override
 	public void setLogWriter(PrintWriter out) throws SQLException {
 		String methodCall = "setLogWriter("+ out +")";
 		try
@@ -199,6 +204,7 @@ public class DataSourceSpy implements DataSource, Spy {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		String methodCall = "unwrap("+ iface +")";
 		try
