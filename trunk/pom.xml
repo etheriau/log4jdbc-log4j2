@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>org.bgee</groupId>
+  <artifactId>log4jdbc-log4j2</artifactId>
+  <packaging>pom</packaging>
+  <version>1.1</version>
+  <name>log4jdbc-log4j2</name>
+  <url>http://code.google.com/p/log4jdbc-log4j2/</url>
+  <description>log4jdbc-log4j2 is a modification of log4jdbc to natively use Log4j2, to provide a support for JDBC 4.1, and that includes all the improvements of log4jdbc-remix. It also provides some slight improvements on its own.</description>
+  <developers>
+      <developer>
+          <name>Frederic Bastian</name>
+          <email>frederic.bastian@gmail.com</email>
+      </developer>
+  </developers>
+  <contributors>
+      <contributor>
+          <name></name>
+          <email></email>
+      </contributor>
+  </contributors>
+  <mailingLists>
+      <mailingList>
+          <name></name>
+      </mailingList>
+  </mailingLists>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <modules>
+    <module>log4jdbc-log4j2-jdbc4.1</module>
+    <module>log4jdbc-log4j2-jdbc4</module>
+  </modules>
+  
+  <!-- Dependencies needed for *all* sub-projects -->
+  <dependencies>
+      
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.0-beta4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.0-beta4</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-api</artifactId>
+	<version>1.7.2</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<version>5.1.23</version>
+        <scope>test</scope>
+    </dependency>
+      
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+  
+  <!-- Dependencies needed for some sub-projects -->
+  <dependencyManagement>
+    <dependencies>
+    
+    </dependencies>
+  </dependencyManagement>
+  
+</project>
