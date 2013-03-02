@@ -21,14 +21,12 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import net.sf.log4jdbc.Properties;
 import net.sf.log4jdbc.log.SpyLogDelegator;
@@ -446,19 +444,4 @@ public class DriverSpy implements Driver
 	{
 		log.exceptionOccured((Spy) this, methodCall, exception, null, -1L);
 	}  
-
-	@Override
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException
-	{
-		String methodCall = "getParentLogger()";
-		try
-		{
-			return lastUnderlyingDriverRequested.getParentLogger();  
-		}
-		catch (SQLFeatureNotSupportedException s)
-		{
-			reportException(methodCall,s);
-			throw s;      
-		}
-	}
 }

@@ -3084,34 +3084,4 @@ public class ResultSetSpy implements ResultSet, Spy
       throw s;
     }
   }
-
-  @Override
-  public <T> T getObject(int columnIndex, Class<T> type) throws SQLException
-  {
-    String methodCall = "getObject(" + columnIndex + "," + type+ ")";
-    try
-    {
-      return reportReturn(methodCall, realResultSet.getObject(columnIndex,type));
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
-  }
-
-  @Override
-  public <T> T getObject(String columnLabel, Class<T> type) throws SQLException
-  {
-    String methodCall = "getObject(" + columnLabel + "," + type+ ")";
-    try
-    {
-      return reportReturn(methodCall, realResultSet.getObject(columnLabel,type));
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
-  }
 }
