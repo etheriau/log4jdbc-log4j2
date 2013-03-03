@@ -92,6 +92,10 @@ public class SpyLogFactory
 			try {
 				Object loadedClass = 
 						Class.forName(spyLogDelegatorName).newInstance();
+				if (loadedClass == null) {
+					throw new IllegalArgumentException(
+							"spyLogDelegatorName loads a null SpyLogDelegator");
+				}
 				setSpyLogDelegator((SpyLogDelegator) loadedClass);
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
