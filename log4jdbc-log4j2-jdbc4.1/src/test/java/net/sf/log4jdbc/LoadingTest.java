@@ -59,7 +59,7 @@ public class LoadingTest extends TestAncestor
 	}
 
 	/**
-	 * Try to load the properties from a easycache4jdbc properties file. 
+	 * Try to load the properties from a properties file. 
 	 */
 	@Test
 	public void shouldLoadPropertiesFromFile()
@@ -72,11 +72,40 @@ public class LoadingTest extends TestAncestor
 		Properties.init();
 		
 		//check if the properties correspond to values in the test file
+		//(this is not the default value)
 		assertEquals("Incorrect property SpyLogDelegatorName", 
 				"net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator", 
 				Properties.getSpyLogDelegatorName());
 		
 		//clear the System properties
 		System.clearProperty("log4jdbc.log4j2.properties.file");
+	}
+
+	/**
+	 * Try to load the properties from the System properties. 
+	 */
+	@Test
+	public void shouldLoadPropertiesFromSysProps()
+	{
+		//set the property to test
+		//(this is not the default value)
+		System.setProperty("log4jdbc.spylogdelegator.name", 
+				"net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator");
+		//set the easycache4jdbc properties file to an non-existing file, 
+		//so that System properties are used 
+		System.setProperty("log4jdbc.log4j2.properties.file", "/none");
+		
+		//Properties are set in a static initializer, only called once by a same ClassLoader.
+		//Need to reinit the properties for the test, as we don't know which test is run first. 
+		Properties.init();
+		
+		//check if the properties correspond to values set
+		assertEquals("Incorrect property SpyLogDelegatorName", 
+				"net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator", 
+				Properties.getSpyLogDelegatorName());
+		
+		//clear the System properties
+		System.clearProperty("log4jdbc.log4j2.properties.file");
+		System.clearProperty("log4jdbc.spylogdelegator.name");
 	}
 }
