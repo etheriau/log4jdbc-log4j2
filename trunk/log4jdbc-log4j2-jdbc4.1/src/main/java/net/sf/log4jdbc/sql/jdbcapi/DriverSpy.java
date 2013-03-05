@@ -140,11 +140,18 @@ public class DriverSpy implements Driver
 	 */
 	static private String log4jdbcUrlPrefix = "jdbc:log4";
 
-
 	/**
 	 * Default constructor.
 	 */
 	public DriverSpy()
+	{
+		
+	}
+
+	/**
+	 * Static initializer.
+	 */
+	static
 	{
 		log.debug("DriverSpy intialization...");
 		
@@ -179,7 +186,7 @@ public class DriverSpy implements Driver
 		subDrivers.addAll(Properties.getAdditionalDrivers());
 
 		try {
-			DriverManager.registerDriver(this);
+			DriverManager.registerDriver(new DriverSpy());
 		} catch (SQLException s) {
 			// this exception should never be thrown, JDBC just defines it
 			// for completeness
