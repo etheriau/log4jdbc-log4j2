@@ -384,12 +384,12 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
 	@Override
 	public boolean isResultSetCollectionEnabled() {
-		return LOGGER.isInfoEnabled();
+		return LOGGER.isInfoEnabled(RESULTSET_MARKER);
 	}
 
 	@Override
 	public boolean isResultSetCollectionEnabledWithUnreadValueFillIn() {
-		return LOGGER.isDebugEnabled();
+		return LOGGER.isDebugEnabled(RESULTSET_MARKER);
 	}
 
 	@Override
