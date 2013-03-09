@@ -46,7 +46,6 @@ public class LoadingTest extends TestAncestor
 		//this will trigger the static initializer
 		Properties.getSpyLogDelegatorName();
 		log.info("========Start testing=========");
-		log.info("");
 	}
 	/**
 	 * Reinit the properties after the tests. Not really useful 
@@ -55,7 +54,6 @@ public class LoadingTest extends TestAncestor
 	@AfterClass
 	public static void reinitProperties()
 	{
-		log.info("");
 		log.info("========End testing=========");
 		Properties.init();
 	}
