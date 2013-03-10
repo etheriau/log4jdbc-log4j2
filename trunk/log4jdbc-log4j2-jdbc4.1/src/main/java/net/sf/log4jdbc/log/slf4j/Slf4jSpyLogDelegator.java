@@ -27,6 +27,7 @@ import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
 import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
+import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollectorPrinter;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -195,7 +196,29 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 			}
 		}
 	}
-
+	
+  @Override
+  public void methodReturned(Spy spy, String methodCall, Object returnValue,
+      Object targetObject, Object... methodParams)
+  {
+    String classType = spy.getClassType();
+    Logger logger=ResultSetSpy.classTypeDescription.equals(classType)?
+        resultSetLogger:jdbcLogger;
+    if (logger.isInfoEnabled())
+    {
+      String header = spy.getConnectionNumber() + ". " + classType + "." +
+          methodCall + " returned " + " ";
+      if (logger.isDebugEnabled())
+      {
+        logger.debug(header + " " + getDebugInfo());
+      }
+      else
+      {
+        logger.info(header);
+      }
+    }
+  } 	
+	
 	/**
 	 * Called when a spied upon object is constructed.
 	 *
@@ -572,7 +595,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	private void connectionOpened(Spy spy)
 	{
 		if (connectionLogger.isDebugEnabled())
-		{
+		{		  
 			connectionLogger.info(spy.getConnectionNumber() + ". Connection opened " +
 					getDebugInfo());
 			connectionLogger.debug(ConnectionSpy.getOpenConnectionsDump());
@@ -647,17 +670,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		return resultSetTableLogger.isDebugEnabled();
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void resultSetCollected(ResultSetCollector resultSetCollector) {
-		// TODO Auto-generated method stub
-	}
-
-	@SuppressWarnings("unused")
-	@Override
-	public void methodReturned(Spy spy, String methodCall, Object returnValue,
-			Object targetObject, Object... methodParams)
-	{
-		// TODO Auto-generated method stub
+	  new ResultSetCollectorPrinter(null,resultSetTableLogger).printResultSet(resultSetCollector);
 	}
 }

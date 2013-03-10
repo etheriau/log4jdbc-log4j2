@@ -17,113 +17,118 @@ package net.sf.log4jdbc.sql.resultsetcollector;
 
 import java.util.List;
 
-
-import org.apache.logging.log4j.Logger;
-//import java.util.logging.Logger;
-//import org.slf4j.Logger;
+import org.apache.logging.log4j.Marker;
 
 /***
  * @author Tim Azzopardi
  * @author Mathieu Seppey
  * 
- * update : replaced the logger to use log4j
  *  
  */
 
 public class ResultSetCollectorPrinter {
 
-	private Logger log;
+  private Object log;
+  private Object marker;
 
-	// TODO Ne pas recevoir le logger ici !
-	public ResultSetCollectorPrinter(Logger log) {
-		this.log = log;
-	}
+  public ResultSetCollectorPrinter(Object marker,Object log) {
+    // TODO  ? eviter de recevoir ces objets et renvoyer plutot le résulat à printer...
+    this.log = log;
+    this.marker = marker;
+  }
 
-	public void printResultSet(ResultSetCollector resultSetCollector) {
-	  
-		int columnCount = resultSetCollector.getColumnCount();
-		int maxLength[] = new int[columnCount];
+  public void printResultSet(ResultSetCollector resultSetCollector) {
 
-		for (int column = 1; column <= columnCount; column++) {
-			maxLength[column - 1] = resultSetCollector.getColumnName(column)
-					.length();
-		}
-		if (resultSetCollector.getRows() != null) {
-			for (List<Object> printRow : resultSetCollector.getRows()) {
-				int colIndex = 0;
-				for (Object v : printRow) {
-					if (v != null) {
-						int length = v.toString().length();
-						if (length > maxLength[colIndex]) {
-							maxLength[colIndex] = length;
-						}
-					}
-					colIndex++;
-				}
-			}
-		}
-		for (int column = 1; column <= columnCount; column++) {
-			maxLength[column - 1] = maxLength[column - 1] + 1;
-		}
+    int columnCount = resultSetCollector.getColumnCount();
+    int maxLength[] = new int[columnCount];
 
-		print("|");
-		for (int column = 1; column <= columnCount; column++) {
-			print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-					+ "|");
-		}
-		println();
-		print("|");
-		for (int column = 1; column <= columnCount; column++) {
-			print(padRight(resultSetCollector.getColumnName(column),
-					maxLength[column - 1])
-					+ "|");
-		}
-		println();
-		print("|");
-		for (int column = 1; column <= columnCount; column++) {
-			print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-					+ "|");
-		}
-		println();
-		if (resultSetCollector.getRows() != null) {
-			for (List<Object> printRow : resultSetCollector.getRows()) {
-				int colIndex = 0;
-				print("|");
-				for (Object v : printRow) {
-					print(padRight(v == null ? "null" : v.toString(),
-							maxLength[colIndex])
-							+ "|");
-					colIndex++;
-				}
-				println();
-			}
-		}
-		print("|");
-		for (int column = 1; column <= columnCount; column++) {
-			print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-					+ "|");
-		}
-		println();
-		resultSetCollector.reset();
-	}
+    for (int column = 1; column <= columnCount; column++) {
+      maxLength[column - 1] = resultSetCollector.getColumnName(column)
+          .length();
+    }
+    if (resultSetCollector.getRows() != null) {
+      for (List<Object> printRow : resultSetCollector.getRows()) {
+        int colIndex = 0;
+        for (Object v : printRow) {
+          if (v != null) {
+            int length = v.toString().length();
+            if (length > maxLength[colIndex]) {
+              maxLength[colIndex] = length;
+            }
+          }
+          colIndex++;
+        }
+      }
+    }
+    for (int column = 1; column <= columnCount; column++) {
+      maxLength[column - 1] = maxLength[column - 1] + 1;
+    }
 
-	public static String padRight(String s, int n) {
-		return String.format("%1$-" + n + "s", s);
-	}
+    print("|");
+    for (int column = 1; column <= columnCount; column++) {
+      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+          + "|");
+    }
+    println();
+    print("|");
+    for (int column = 1; column <= columnCount; column++) {
+      print(padRight(resultSetCollector.getColumnName(column),
+          maxLength[column - 1])
+          + "|");
+    }
+    println();
+    print("|");
+    for (int column = 1; column <= columnCount; column++) {
+      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+          + "|");
+    }
+    println();
+    if (resultSetCollector.getRows() != null) {
+      for (List<Object> printRow : resultSetCollector.getRows()) {
+        int colIndex = 0;
+        print("|");
+        for (Object v : printRow) {
+          print(padRight(v == null ? "null" : v.toString(),
+              maxLength[colIndex])
+              + "|");
+          colIndex++;
+        }
+        println();
+      }
+    }
+    print("|");
+    for (int column = 1; column <= columnCount; column++) {
+      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+          + "|");
+    }
+    println();
+    resultSetCollector.reset();
+  }
 
-	public static String padLeft(String s, int n) {
-		return String.format("%1$#" + n + "s", s);
-	}
+  public static String padRight(String s, int n) {
+    return String.format("%1$-" + n + "s", s);
+  }
 
-	void println() {
-		log.info(sb.toString());
-		sb.setLength(0);
-	}
+  public static String padLeft(String s, int n) {
+    return String.format("%1$#" + n + "s", s);
+  }
 
-	private StringBuffer sb = new StringBuffer();
+  void println() {
 
-	void print(String s) {
-		sb.append(s);
-	}
+    if(log.getClass().getName() == "org.apache.logging.log4j.core.Logger")
+      ((org.apache.logging.log4j.core.Logger) log).info((org.apache.logging.log4j.Marker)marker,sb.toString());
+    else
+    {
+      ((org.slf4j.Logger) log).info(sb.toString());
+    }
+
+    sb.setLength(0);
+  }
+
+  private StringBuffer sb = new StringBuffer();
+
+  void print(String s) {
+    sb.append(s);
+  }
 
 }
