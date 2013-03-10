@@ -376,7 +376,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 				new ConnectionMessage(spy, execTime, operation, LOGGER.isDebugEnabled(CONNECTION_MARKER)));
 	}
 
-    @Override
+  @Override
 	public void debug(String msg) 
 	{
 		DEBUGLOGGER.debug(msg);
@@ -394,7 +394,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
 	@Override
 	public void resultSetCollected(ResultSetCollector resultSetCollector) {
-		new ResultSetCollectorPrinter(LOGGER).printResultSet(resultSetCollector);
+		new ResultSetCollectorPrinter(RESULTSET_MARKER,LOGGER).printResultSet(resultSetCollector);
 	}
 
 }
