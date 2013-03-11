@@ -80,7 +80,7 @@ public class MockDriverUtils
 			//will return a mock Connection, that unit tests will use.
 			//all calls to the connect method will return the same mock Connection instance.
 			this.setMockConnection(mock(Connection.class));
-			when(mockDriver.connect(MOCKURL, any(Properties.class)))
+			when(mockDriver.connect(eq(MOCKURL), any(Properties.class)))
 			.thenReturn(this.getMockConnection());
 
 			//register the mock Driver
