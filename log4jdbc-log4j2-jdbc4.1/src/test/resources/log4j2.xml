@@ -6,7 +6,7 @@
 				pattern="%d{HH:mm:ss.SSS} [%t] %level %class{36} %L %M - %m%ex%n" />
 		</Console>
 		<File name="test_file" fileName="test.out">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level - %m%n%ex%n" />
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %level %m%n%ex%n" />
 		</File>
 	</appenders>
 	<loggers>
