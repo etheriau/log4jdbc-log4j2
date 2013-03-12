@@ -18,6 +18,7 @@ package net.sf.log4jdbc.log.slf4j;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import java.util.List;
 import java.util.StringTokenizer;
 
 
@@ -672,6 +673,9 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
 	@Override
 	public void resultSetCollected(ResultSetCollector resultSetCollector) {
-	  new ResultSetCollectorPrinter(null,resultSetTableLogger).printResultSet(resultSetCollector);
+    List<String> resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);    
+    for(String line : resultsToPrint){
+      resultSetTableLogger.info(line);
+    }
 	}
 }
