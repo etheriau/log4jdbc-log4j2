@@ -12,32 +12,34 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
+
+
 package net.sf.log4jdbc.sql.resultsetcollector;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.logging.log4j.Marker;
 
 /***
  * @author Tim Azzopardi
- * @author Mathieu Seppey
+ * @author Mathieu Seppey 
  * 
- *  
+ * Update : changed printResultSet into getResultSetToPrint
+ * 
  */
 
 public class ResultSetCollectorPrinter {
 
-  private Object log;
-  private Object marker;
+  private List<String> result ;
 
-  public ResultSetCollectorPrinter(Object marker,Object log) {
-    // TODO  ? eviter de recevoir ces objets et renvoyer plutot le résulat à printer...
-    this.log = log;
-    this.marker = marker;
+  public ResultSetCollectorPrinter() {
+
   }
 
-  public void printResultSet(ResultSetCollector resultSetCollector) {
+  public List<String> getResultSetToPrint(ResultSetCollector resultSetCollector) {
+    
+    this.result = new ArrayList<String>();
 
     int columnCount = resultSetCollector.getColumnCount();
     int maxLength[] = new int[columnCount];
@@ -102,7 +104,11 @@ public class ResultSetCollectorPrinter {
           + "|");
     }
     println();
+    
     resultSetCollector.reset();
+    
+    return this.result ;
+    
   }
 
   public static String padRight(String s, int n) {
@@ -115,14 +121,9 @@ public class ResultSetCollectorPrinter {
 
   void println() {
 
-    if(log.getClass().getName() == "org.apache.logging.log4j.core.Logger")
-      ((org.apache.logging.log4j.core.Logger) log).info((org.apache.logging.log4j.Marker)marker,sb.toString());
-    else
-    {
-      ((org.slf4j.Logger) log).info(sb.toString());
-    }
-
+    this.result.add(sb.toString());
     sb.setLength(0);
+    
   }
 
   private StringBuffer sb = new StringBuffer();
