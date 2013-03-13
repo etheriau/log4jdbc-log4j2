@@ -196,7 +196,6 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
    *                   String representation for Object.  Return types this will
    *                   be null for void return types.
    */
-  @SuppressWarnings("unused")
   @Override
   public void methodReturned(Spy spy, String methodCall, Object returnMsg, Object object, Object... methodParams)
   {
@@ -208,13 +207,11 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
         new MethodReturnedMessage(spy, methodCall, "", LOGGER.isDebugEnabled(marker)));
   }	
 
-  @SuppressWarnings("unused")
   @Override
   public void constructorReturned(Spy spy, String constructionInfo) {
     //not yet used in the current implementation of log4jdbc
   }
 
-  @SuppressWarnings("unused")
   @Override
   public void sqlOccurred(Spy spy, String methodCall, String sql) {
     //not implemented, 

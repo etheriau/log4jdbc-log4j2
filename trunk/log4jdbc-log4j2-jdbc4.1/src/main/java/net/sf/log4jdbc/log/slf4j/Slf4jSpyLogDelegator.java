@@ -226,7 +226,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 * @param spy              the Spy wrapping the class that called the method that returned.
 	 * @param constructionInfo information about the object construction
 	 */
-	@SuppressWarnings("unused")
 	@Override
 	public void constructorReturned(Spy spy, String constructionInfo)
 	{
@@ -270,7 +269,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 * @param methodCall a description of the name and call parameters of the method that generated the SQL.
 	 * @param sql        sql that occured.
 	 */
-	@SuppressWarnings("unused")
 	@Override
 	public void sqlOccurred(Spy spy, String methodCall, String sql)
 	{
@@ -452,7 +450,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 	 *
 	 * @return a SQL timing dump String for logging.
 	 */
-	@SuppressWarnings("unused")
 	private String buildSqlTimingDump(Spy spy, long execTime, String methodCall,
 			String sql, boolean debugInfo)
 	{
@@ -579,7 +576,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		debugLogger.debug(msg);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void connectionOpened(Spy spy, long execTime)
 	{
@@ -607,7 +603,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void connectionClosed(Spy spy, long execTime)
 	{
@@ -635,7 +630,6 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void connectionAborted(Spy spy, long execTime)
 	{
