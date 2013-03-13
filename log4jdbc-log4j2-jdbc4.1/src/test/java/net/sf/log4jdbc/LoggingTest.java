@@ -29,8 +29,6 @@ import org.junit.Test;
  * Class which tests all the logging actions of log4jdbc-log4j2 SpyDelegator implementation
  * The logger output is written in the file /test.out where it is checked
  * 
- * TODO ? : pour l'instant les tests sont fonctionells avec Log4j2SpyDelegator uniquement, et non Slf4j
- * 
  * @author Mathieu Seppey
  * @version 1.0
  */
@@ -66,8 +64,6 @@ public class LoggingTest extends TestAncestor
     //(default is log4jdbc.properties, but we want to use a test file)
     System.setProperty("log4jdbc.log4j2.properties.file", "/test.properties");
     //Properties are set in a static initializer, only called once by a same ClassLoader.
-    Properties.init();
-
     //this will trigger the static initializer
     Properties.getSpyLogDelegatorName();
 
@@ -83,7 +79,7 @@ public class LoggingTest extends TestAncestor
   public static void reinitProperties()
   {
     log.info("========End testing=========");
-    Properties.init();
+    System.clearProperty("log4jdbc.log4j2.properties.file");
   }
 
   /**
