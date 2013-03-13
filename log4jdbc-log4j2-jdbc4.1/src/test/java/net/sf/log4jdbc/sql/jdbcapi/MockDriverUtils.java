@@ -22,11 +22,6 @@ import static org.mockito.Mockito.*;
  * During unit testing, developers should then simply obtain 
  * this mock <code>Connection</code>, and define some mock methods. 
  * <p>
- * A convenient mock <code>PreparedStatement</code> can be obtained by calling 
- * {@link #getMockPreparedStatement()}. This <code>PreparedStatement</code> is the one 
- * returned when calling <code>preparedStatement(String)</code> 
- * on the mock <code>Connection</code>.
- * <p>
  * When done using this <code>MockDriverUtils</code> object, 
  * a call to {@link #deregister()} must be made.
  * 
@@ -40,19 +35,19 @@ public class MockDriverUtils
 	 * A <code>String</code> representing the URL that the mock <code>Driver</code> 
 	 * will accept.
 	 */
-	public final String MOCKURL = "jdbc:mock:test";
+	public final static String MOCKURL = "jdbc:mock:test";
 	/**
 	 * The mock <code>Driver</code> that this class is responsible to register 
 	 * to the <code>DriverManager</code>.
 	 */
-	private Driver mockDriver;
+	private final Driver mockDriver;
 	/**
 	 * The mock <code>Connection</code> returned by the mock Driver registered 
 	 * by this class. Any call to <code>Driver.connect(String, Properties)</code> 
 	 * will always return this same mock <code>Connection</code> instance 
 	 * (whatever the value of the parameters).
 	 */
-	private Connection mockConnection;
+	private final Connection mockConnection;
 	
 	/**
 	 * Constructor that create a mock <code>Driver</code> and register it 
@@ -72,25 +67,29 @@ public class MockDriverUtils
 	 */
 	public MockDriverUtils() 
     {
+		Connection mockConnectionTemp = null;
+		Driver mockDriverTemp         = null;
 		try {
 			//create the mock Driver
 			Driver mockDriver = mock(Driver.class);
-			when(mockDriver.acceptsURL(MOCKURL)).thenReturn(true);
+			when(mockDriver.acceptsURL(eq(MOCKURL))).thenReturn(true);
 
 			//will return a mock Connection, that unit tests will use.
 			//all calls to the connect method will return the same mock Connection instance.
-			this.setMockConnection(mock(Connection.class));
+			mockConnectionTemp = mock(Connection.class);
 			when(mockDriver.connect(eq(MOCKURL), any(Properties.class)))
-			.thenReturn(this.getMockConnection());
+			    .thenReturn(mockConnectionTemp);
 
 			//register the mock Driver
 			DriverManager.registerDriver(mockDriver);
-			this.setMockDriver(mockDriver);
+			mockDriverTemp = mockDriver;
 		} catch (SQLException e) {
 			//do nothing. The only method that could throw an actual exception 
 			//is DriverManager.registerDriver, and in that case, the Driver 
 			//will not be available for the application anyway
 		}
+		this.mockDriver     = mockDriverTemp;
+		this.mockConnection = mockConnectionTemp;
     }
 	
 	/**
@@ -118,23 +117,11 @@ public class MockDriverUtils
 	public Connection getMockConnection() {
 		return this.mockConnection;
 	}
-	/**
-	 * @param mockConnection A <code>Connection</code> to set {@link #mockConnection} 
-	 */
-	private void setMockConnection(Connection mockConnection) {
-		this.mockConnection = mockConnection;
-	}
 
 	/**
 	 * @return the {@link #mockDriver}
 	 */
 	public Driver getMockDriver() {
 		return mockDriver;
-	}
-	/**
-	 * @param mockDriver A <code>Driver</code> to set {@link #mockDriver} 
-	 */
-	private void setMockDriver(Driver mockDriver) {
-		this.mockDriver = mockDriver;
 	}
 }
