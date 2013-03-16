@@ -36,7 +36,14 @@ public class ResultSetCollectorPrinter {
   public ResultSetCollectorPrinter() {
 
   }
-
+  
+  /***
+   * Generate and return all lines to be printed by a logger,
+   * based on the content of the provided resultSetCollector
+   * 
+   * @param resultSetCollector
+   * @return List<String>
+   */
   public List<String> getResultSetToPrint(ResultSetCollector resultSetCollector) {
     
     this.result = new ArrayList<String>();
@@ -66,44 +73,44 @@ public class ResultSetCollectorPrinter {
       maxLength[column - 1] = maxLength[column - 1] + 1;
     }
 
-    print("|");
+    appendText("|");
     for (int column = 1; column <= columnCount; column++) {
-      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
           + "|");
     }
-    println();
-    print("|");
+    addLine();
+    appendText("|");
     for (int column = 1; column <= columnCount; column++) {
-      print(padRight(resultSetCollector.getColumnName(column),
+      appendText(padRight(resultSetCollector.getColumnName(column),
           maxLength[column - 1])
           + "|");
     }
-    println();
-    print("|");
+    addLine();
+    appendText("|");
     for (int column = 1; column <= columnCount; column++) {
-      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
           + "|");
     }
-    println();
+    addLine();
     if (resultSetCollector.getRows() != null) {
       for (List<Object> printRow : resultSetCollector.getRows()) {
         int colIndex = 0;
-        print("|");
+        appendText("|");
         for (Object v : printRow) {
-          print(padRight(v == null ? "null" : v.toString(),
+          appendText(padRight(v == null ? "null" : v.toString(),
               maxLength[colIndex])
               + "|");
           colIndex++;
         }
-        println();
+        addLine();
       }
     }
-    print("|");
+    appendText("|");
     for (int column = 1; column <= columnCount; column++) {
-      print(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
           + "|");
     }
-    println();
+    addLine();
     
     resultSetCollector.reset();
     
@@ -119,7 +126,10 @@ public class ResultSetCollectorPrinter {
     return String.format("%1$#" + n + "s", s);
   }
 
-  void println() {
+  /***
+   * Add the current StringBuffer to the returned list
+   */
+  private void addLine() {
 
     this.result.add(sb.toString());
     sb.setLength(0);
@@ -128,7 +138,12 @@ public class ResultSetCollectorPrinter {
 
   private StringBuffer sb = new StringBuffer();
 
-  void print(String s) {
+  /***
+   * Add the provided String to the StringBuffer
+   * 
+   * @param s
+   */
+  private void appendText(String s) {
     sb.append(s);
   }
 

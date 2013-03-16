@@ -15,6 +15,7 @@ import java.util.List;
 
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.log.SpyLogFactory;
+import net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator;
 import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
@@ -123,7 +124,7 @@ public class LoggingTest extends TestAncestor
     // Creation of fake parameters
     Exception e = new Exception("test");
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.exceptionOccured(cs, "test()",e,"SELECT * FROM Test", 1L);
@@ -131,7 +132,7 @@ public class LoggingTest extends TestAncestor
     // Check the result
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator"){
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName()){
       assertEquals("Incorrect output written by exceptionOccured", 
           "0. SELECT * FROM Test  {FAILED after 1 ms}java.lang.Exception: test",LoggingTest.readLine(2).concat(LoggingTest.readLine(3)));
     }
@@ -152,7 +153,7 @@ public class LoggingTest extends TestAncestor
   {   
     // Creation of fake parameters
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.methodReturned(cs, "test()", "TestMessage");
@@ -162,7 +163,7 @@ public class LoggingTest extends TestAncestor
     // Note, slf4j and log4j2 don't use the level in this case... => change it ?
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator"){
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName()){
       assertTrue("The logging level used by methodReturned is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
       assertEquals("Incorrect output written by methodReturned", 
           "0. net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy.test() returned TestMessage",LoggingTest.readLine(2));
@@ -188,7 +189,7 @@ public class LoggingTest extends TestAncestor
 
     // Creation of fake parameters
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.sqlTimingOccurred(cs,1000L,"test", "SELECT * FROM test");
@@ -198,7 +199,7 @@ public class LoggingTest extends TestAncestor
 
     // log4j2
 
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator"){
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName()){
       assertTrue("The logging level used by sqlTimingOccurred is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
       assertEquals("Incorrect output written by methodReturned", 
           "0. SELECT * FROM test  {executed in 1000 ms}",LoggingTest.readLine(2));
@@ -224,7 +225,7 @@ public class LoggingTest extends TestAncestor
 
     // Creation of fake parameters
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.connectionOpened(cs,1000L);
@@ -233,7 +234,7 @@ public class LoggingTest extends TestAncestor
     assertTrue("The logging level used by connectionOpened is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator")
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
       assertEquals("Incorrect output written by connectionOpenend", 
           "0. Connection opened. {executed in 1000ms} ",LoggingTest.readLine(2));
     else 
@@ -255,7 +256,7 @@ public class LoggingTest extends TestAncestor
 
     // Creation of fake parameters
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.connectionClosed(cs,1000L);
@@ -264,7 +265,7 @@ public class LoggingTest extends TestAncestor
     assertTrue("The logging level used by connectionClosed is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator")
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
       assertEquals("Incorrect output written by connectionClosed", 
           "0. Connection closed. {executed in 1000ms} ",LoggingTest.readLine(2));
     else 
@@ -286,7 +287,7 @@ public class LoggingTest extends TestAncestor
 
     // Creation of fake parameters
     ConnectionSpy cs = mock(ConnectionSpy.class);
-    when(cs.getClassType()).thenReturn("net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy");
+    when(cs.getClassType()).thenReturn(ConnectionSpy.class.getName());
 
     // Run the method
     TestSpyLogDelegator.connectionAborted(cs,1000L);
@@ -295,7 +296,7 @@ public class LoggingTest extends TestAncestor
     assertTrue("The logging level used by connectionAborted is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator")
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
       assertEquals("Incorrect output written by connectionAborted", 
           "0. Connection aborted. {executed in 1000ms} ",LoggingTest.readLine(2));
     else 
@@ -354,7 +355,7 @@ public class LoggingTest extends TestAncestor
     // Check the result
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator"){
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName()){
       assertTrue("The logging level used by resultSetCollected is not INFO as expected",LoggingTest.readLine(1).contains(" INFO "));
       assertTrue("Incorrect 1st output line written by resultSetCollected",LoggingTest.readLine(1).contains("|---------|---------|"));
       assertTrue("Incorrect 2nd output line written by resultSetCollected",LoggingTest.readLine(3).contains("|Colonne1 |Colonne2 |"));    
@@ -389,7 +390,7 @@ public class LoggingTest extends TestAncestor
     assertTrue("The logging level used by debug is not DEBUG as expected",LoggingTest.readLine(1).contains(" DEBUG "));
 
     // log4j2
-    if(TestSpyLogDelegator.getClass().getName() == "net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator")
+    if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
       assertTrue("Incorrect output line written by debug",LoggingTest.readLine(1).contains("DEBUGMESSAGE"));
 
     else 
