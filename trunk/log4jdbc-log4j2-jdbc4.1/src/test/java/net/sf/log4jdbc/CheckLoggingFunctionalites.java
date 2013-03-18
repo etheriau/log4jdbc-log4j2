@@ -129,45 +129,38 @@ public class CheckLoggingFunctionalites extends TestAncestor
         // Instantiation and use of the most important classes with a log check.
 
         String outputValue = "";
-
         emptyLogFile();
 
         ConnectionSpy cs = new ConnectionSpy(mockConn);
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by the instanciation of a ConnectionSpy is not as expected",outputValue.contains("Connection opened") 
+        assertTrue("The log produced by the instanciation of a ConnectionSpy is not as expected",
+        		outputValue.contains("Connection opened") 
                 && outputValue.contains("Connection.new Connection returned"));
-
-
         emptyLogFile();
 
+        
         PreparedStatementSpy ps = new PreparedStatementSpy("SELECT * FROM Test",cs,mockPrep);
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",outputValue.contains("PreparedStatement.new PreparedStatement returned"));
-
+        assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",
+        		outputValue.contains("PreparedStatement.new PreparedStatement returned"));
         emptyLogFile();
 
         ResultSetSpy resu = (ResultSetSpy) ps.executeQuery();
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",outputValue.contains("ResultSet.new ResultSet returned") 
+        assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",
+        		outputValue.contains("ResultSet.new ResultSet returned") 
                 && outputValue.contains("PreparedStatement.executeQuery() returned"));
 
         resu.setResultSetCollector(mockRsc);
         resu.next();
-
-        assertTrue("Wrong result returned by the getString() method of ResultSetSpy",resu.getString(1) == "Ok");
+        assertTrue("Wrong result returned by the getString() method of ResultSetSpy",
+        		resu.getString(1) == "Ok");
 
         ps.close();
         cs.close();
 
         // clean all mock objects
         mock.deregister();
-
     }
 
     /**
@@ -200,49 +193,40 @@ public class CheckLoggingFunctionalites extends TestAncestor
         // Instantiation and use of the most important classes with a log check.
         
         String outputValue = "";
-
         emptyLogFile();
 
         DataSourceSpy dss = new DataSourceSpy(mockData);
-
         Connection conn = dss.getConnection();
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced when the DataSourceSpy returns a connection is not as expected",outputValue.contains("Connection opened") 
-                && outputValue.contains("Connection.new Connection returned") && outputValue.contains("DataSource.getConnection() returned"));
-
+        assertTrue("The log produced when the DataSourceSpy returns a connection is not as expected",
+        		outputValue.contains("Connection opened") 
+                && outputValue.contains("Connection.new Connection returned") && 
+                outputValue.contains("DataSource.getConnection() returned"));
         emptyLogFile();
 
         ConnectionSpy cs = new ConnectionSpy(conn);
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by the instanciation of a ConnectionSpy is not as expected",outputValue.contains("Connection opened") 
+        assertTrue("The log produced by the instanciation of a ConnectionSpy is not as expected",
+        		outputValue.contains("Connection opened") 
                 && outputValue.contains("Connection.new Connection returned"));
-
-
         emptyLogFile();
 
         PreparedStatementSpy ps = new PreparedStatementSpy("SELECT * FROM Test",cs,mockPrep);
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",outputValue.contains("PreparedStatement.new PreparedStatement returned"));
-
+        assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",
+        		outputValue.contains("PreparedStatement.new PreparedStatement returned"));
         emptyLogFile();
 
         ResultSetSpy resu = (ResultSetSpy) ps.executeQuery();
-
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
-
-        assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",outputValue.contains("ResultSet.new ResultSet returned") 
+        assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",
+        		outputValue.contains("ResultSet.new ResultSet returned") 
                 && outputValue.contains("PreparedStatement.executeQuery() returned"));
 
         resu.setResultSetCollector(mockRsc);
         resu.next();
-
-        assertTrue("Wrong result returned by the getString() method of ResultSetSpy",resu.getString(1) == "Ok");
+        assertTrue("Wrong result returned by the getString() method of ResultSetSpy",
+        		resu.getString(1) == "Ok");
 
         ps.close();
         cs.close();
@@ -258,7 +242,8 @@ public class CheckLoggingFunctionalites extends TestAncestor
     @Test
     public void checkIsJdbcLoggingEnabled()
     {
-        assertTrue("isJdbcLoggingEnabled has to return true", TestSpyLogDelegator.isJdbcLoggingEnabled());
+        assertTrue("isJdbcLoggingEnabled has to return true", 
+        		TestSpyLogDelegator.isJdbcLoggingEnabled());
     }
 
     /**
@@ -281,7 +266,8 @@ public class CheckLoggingFunctionalites extends TestAncestor
 
         // Check the result
 
-        assertTrue("The logging level used by exceptionOccured is not ERRROR as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" ERROR "));
+        assertTrue("The logging level used by exceptionOccured is not ERRROR as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" ERROR "));
 
         // Read the whole output file
         String outputValue = CheckLoggingFunctionalites.readLogFile(-1);
@@ -311,15 +297,18 @@ public class CheckLoggingFunctionalites extends TestAncestor
         // Note, slf4j and log4j2 don't log this method with same the level. 
         if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
             // log4j2
-            assertTrue("The logging level used by methodReturned is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+            assertTrue("The logging level used by methodReturned is not INFO as expected",
+            		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
         else
             // slf4j
-            assertTrue("The logging level used by methodReturned is not DEBUG as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
+            assertTrue("The logging level used by methodReturned is not DEBUG as expected",
+            		CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
 
         // Read the whole output file
         String outputValue = CheckLoggingFunctionalites.readLogFile(-1);
 
-        assertTrue("Incorrect output written by methodReturned",outputValue.contains("Connection.test() returned TestMessage"));
+        assertTrue("Incorrect output written by methodReturned",
+        		outputValue.contains("Connection.test() returned TestMessage"));
 
     } 
 
@@ -344,15 +333,18 @@ public class CheckLoggingFunctionalites extends TestAncestor
         // Note, slf4j and log4j2 don't log this method with same the level. 
         if(TestSpyLogDelegator.getClass().getName() == Log4j2SpyLogDelegator.class.getName())
             // log4j2
-            assertTrue("The logging level used by sqlTimingOccurred is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+            assertTrue("The logging level used by sqlTimingOccurred is not INFO as expected",
+            		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
         else
             // slf4j
-            assertTrue("The logging level used by sqlTimingOccurred is not DEBUG as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
+            assertTrue("The logging level used by sqlTimingOccurred is not DEBUG as expected",
+            		CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
 
         // Read the whole output file
         String outputValue = CheckLoggingFunctionalites.readLogFile(-1);
 
-        assertTrue("Incorrect output written by sqlTimingOccurred", outputValue.contains("SELECT * FROM Test") 
+        assertTrue("Incorrect output written by sqlTimingOccurred", 
+        		outputValue.contains("SELECT * FROM Test") 
                 && outputValue.contains("{executed in 1000"));
 
 
@@ -375,8 +367,10 @@ public class CheckLoggingFunctionalites extends TestAncestor
         TestSpyLogDelegator.connectionOpened(cs,1000L);
 
         // Check the result
-        assertTrue("The logging level used by connectionOpened is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
-        assertTrue("Incorrect output written by connectionOpenend",CheckLoggingFunctionalites.readLogFile(-1).contains("Connection opened"));
+        assertTrue("The logging level used by connectionOpened is not INFO as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+        assertTrue("Incorrect output written by connectionOpenend",
+        		CheckLoggingFunctionalites.readLogFile(-1).contains("Connection opened"));
 
     } 
 
@@ -397,8 +391,10 @@ public class CheckLoggingFunctionalites extends TestAncestor
         TestSpyLogDelegator.connectionClosed(cs,1000L);
 
         // Check the result
-        assertTrue("The logging level used by connectionClosed is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
-        assertTrue("Incorrect output written by connectionClosed",CheckLoggingFunctionalites.readLogFile(-1).contains("Connection closed"));
+        assertTrue("The logging level used by connectionClosed is not INFO as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+        assertTrue("Incorrect output written by connectionClosed",
+        		CheckLoggingFunctionalites.readLogFile(-1).contains("Connection closed"));
 
     } 
 
@@ -420,8 +416,10 @@ public class CheckLoggingFunctionalites extends TestAncestor
         TestSpyLogDelegator.connectionAborted(cs,1000L);
 
         // Check the result
-        assertTrue("The logging level used by connectionAborted is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
-        assertTrue("Incorrect output written by connectionAborted",CheckLoggingFunctionalites.readLogFile(-1).contains("Connection aborted"));
+        assertTrue("The logging level used by connectionAborted is not INFO as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+        assertTrue("Incorrect output written by connectionAborted",
+        		CheckLoggingFunctionalites.readLogFile(-1).contains("Connection aborted"));
 
     } 
 
@@ -431,7 +429,8 @@ public class CheckLoggingFunctionalites extends TestAncestor
     @Test
     public void checkIsResultSetCollectionEnabled()
     {
-        assertTrue("isResultSetCollectionEnabled has to return true", TestSpyLogDelegator.isJdbcLoggingEnabled());
+        assertTrue("isResultSetCollectionEnabled has to return true", 
+        		TestSpyLogDelegator.isJdbcLoggingEnabled());
     }
 
     /**
@@ -440,7 +439,8 @@ public class CheckLoggingFunctionalites extends TestAncestor
     @Test
     public void checkIsResultSetCollectionEnabledWithUnreadValueFillIn()
     {
-        assertTrue("isResultSetCollectionEnabledWithUnreadValueFillIn has to return true", TestSpyLogDelegator.isResultSetCollectionEnabledWithUnreadValueFillIn());
+        assertTrue("isResultSetCollectionEnabledWithUnreadValueFillIn has to return true", 
+        		TestSpyLogDelegator.isResultSetCollectionEnabledWithUnreadValueFillIn());
     } 
 
     /**
@@ -473,14 +473,18 @@ public class CheckLoggingFunctionalites extends TestAncestor
         TestSpyLogDelegator.resultSetCollected(rsc);
 
         // Check the result
-        assertTrue("The logging level used by resultSetCollected is not INFO as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
+        assertTrue("The logging level used by resultSetCollected is not INFO as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" INFO "));
 
         // Read the whole output file
         String outputValue = CheckLoggingFunctionalites.readLogFile(-1);
 
-        assertTrue("Incorrect column header written by resultSetCollected",outputValue.contains("|Colonne1 |Colonne2 |"));    
-        assertTrue("Incorrect 1st line written by resultSetCollected",outputValue.contains("|a        |b        |"));    
-        assertTrue("Incorrect 2nd line written by resultSetCollected",outputValue.contains("|c        |d        |"));    
+        assertTrue("Incorrect column header written by resultSetCollected",
+        		outputValue.contains("|Colonne1 |Colonne2 |"));    
+        assertTrue("Incorrect 1st line written by resultSetCollected",
+        		outputValue.contains("|a        |b        |"));    
+        assertTrue("Incorrect 2nd line written by resultSetCollected",
+        		outputValue.contains("|c        |d        |"));    
 
     }  
 
@@ -498,8 +502,10 @@ public class CheckLoggingFunctionalites extends TestAncestor
         TestSpyLogDelegator.debug("DEBUGMESSAGE");
 
         // Check the result
-        assertTrue("The logging level used by debug is not DEBUG as expected",CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
-        assertTrue("Incorrect output line written by debug",CheckLoggingFunctionalites.readLogFile(-1).contains("DEBUGMESSAGE"));
+        assertTrue("The logging level used by debug is not DEBUG as expected",
+        		CheckLoggingFunctionalites.readLogFile(1).contains(" DEBUG "));
+        assertTrue("Incorrect output line written by debug",
+        		CheckLoggingFunctionalites.readLogFile(-1).contains("DEBUGMESSAGE"));
 
 
     }
