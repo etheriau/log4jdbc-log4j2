@@ -409,7 +409,7 @@ public class DriverSpy implements Driver
 			String dclass = d.getClass().getName();
 			if (dclass != null && dclass.length() > 0)
 			{
-				//r = (RdbmsSpecifics) rdbmsSpecifics.get(dclass);
+				r = (RdbmsSpecifics) rdbmsSpecifics.get(dclass);
 			}
 
 			if (r == null)
