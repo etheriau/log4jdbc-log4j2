@@ -121,7 +121,7 @@ public class DriverSpy implements Driver
 	 * Maps driver class names to RdbmsSpecifics objects for each kind of
 	 * database.
 	 */
-	private static Map rdbmsSpecifics;
+	private static Map<String, RdbmsSpecifics> rdbmsSpecifics;
 
 	/**
 	 * Default <code>RdbmsSpecifics</code>.
@@ -217,7 +217,7 @@ public class DriverSpy implements Driver
 		MySqlRdbmsSpecifics mySql = new MySqlRdbmsSpecifics();
 
 		/** create lookup Map for specific rdbms formatters */
-		Map<String, RdbmsSpecifics> rdbmsSpecifics = new HashMap<String, RdbmsSpecifics>();
+		rdbmsSpecifics = new HashMap<String, RdbmsSpecifics>();
 		rdbmsSpecifics.put("oracle.jdbc.driver.OracleDriver", oracle);
 		rdbmsSpecifics.put("oracle.jdbc.OracleDriver", oracle);
 		rdbmsSpecifics.put("net.sourceforge.jtds.jdbc.Driver", sqlServer);
@@ -247,7 +247,7 @@ public class DriverSpy implements Driver
 
 		log.debug("driver name is " + driverName);
 
-		RdbmsSpecifics r = (RdbmsSpecifics) rdbmsSpecifics.get(driverName);
+		RdbmsSpecifics r = rdbmsSpecifics.get(driverName);
 
 		if (r == null) {
 			return defaultRdbmsSpecifics;
@@ -409,7 +409,7 @@ public class DriverSpy implements Driver
 			String dclass = d.getClass().getName();
 			if (dclass != null && dclass.length() > 0)
 			{
-				r = (RdbmsSpecifics) rdbmsSpecifics.get(dclass);
+				r = rdbmsSpecifics.get(dclass);
 			}
 
 			if (r == null)
