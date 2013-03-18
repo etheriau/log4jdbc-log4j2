@@ -1,9 +1,7 @@
 package net.sf.log4jdbc;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -136,6 +134,9 @@ public class CheckLoggingFunctionalites extends TestAncestor
         		outputValue.contains("Connection opened") 
                 && outputValue.contains("Connection.new Connection returned"));
         emptyLogFile();
+        //verify that the underlying connection has been opened
+        verify(mock.getMockDriver()).connect(eq(MockDriverUtils.MOCKURL), 
+        		any(java.util.Properties.class));
 
         
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM Test");
@@ -143,19 +144,27 @@ public class CheckLoggingFunctionalites extends TestAncestor
         assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",
         		outputValue.contains("PreparedStatement.new PreparedStatement returned"));
         emptyLogFile();
+        //verify the the underlying connection returned a prepared statement
+        verify(mock.getMockConnection()).prepareStatement(eq("SELECT * FROM Test"));
 
         ResultSet resu = ps.executeQuery();
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
         assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",
         		outputValue.contains("ResultSet.new ResultSet returned") 
                 && outputValue.contains("PreparedStatement.executeQuery() returned"));
+        //verify that the underlying prepared statement has been called
+        verify(mockPrep).executeQuery();
 
         resu.next();
         assertTrue("Wrong result returned by the getString() method of ResultSetSpy",
         		resu.getString(1) == "Ok");
+        //verify that the underlying resultset has been called
+        verify(mockResu).next();
 
         ps.close();
+        verify(mockPrep).close();
         conn.close();
+        verify(mock.getMockConnection()).close();
 
         // clean all mock objects
         mock.deregister();
