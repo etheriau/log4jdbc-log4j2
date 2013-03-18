@@ -153,6 +153,14 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
      */
     private static final Marker RESULTSET_MARKER = MarkerManager.getMarker("LOG4JDBC_RESULTSET", JDBC_MARKER);
     /**
+     * <code>Marker</code> to log JDBC <code>ResultSet</code>s as table. 
+     * Functionality inherited from log4jdbc-remix.
+     * (corresponds to the "jdbc.resultsettable" logger in the log4jdbc-remix implementation)
+     * @see net.sf.log4jdbc.sql.resultsetcollector
+     */
+    private static final Marker RESULTSETTABLE_MARKER = 
+    		MarkerManager.getMarker("LOG4JDBC_RESULTSETTABLE", RESULTSET_MARKER);
+    /**
      * <code>Marker</code> to log <code>Exception</code>s.
      * These are not specific to one logger in the standard implementation,
      * and they are not logged by the loggers "jdbc.resultset" and "jdbc.connection"
@@ -195,12 +203,14 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
                 new MethodReturnedMessage(spy, methodCall, returnMsg.toString(), LOGGER.isDebugEnabled(marker)));
     }	
 
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public void constructorReturned(Spy spy, String constructionInfo) {
         //not yet used in the current implementation of log4jdbc
     }
 
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public void sqlOccurred(Spy spy, String methodCall, String sql) {
         //not implemented, 
         //as the features provided by the logger "jdbc.sqlonly" are not reproduced.
@@ -371,19 +381,19 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
     @Override
     public boolean isResultSetCollectionEnabled() {
-        return LOGGER.isInfoEnabled(RESULTSET_MARKER);
+        return LOGGER.isInfoEnabled(RESULTSETTABLE_MARKER);
     }
 
     @Override
     public boolean isResultSetCollectionEnabledWithUnreadValueFillIn() {
-        return LOGGER.isDebugEnabled(RESULTSET_MARKER);
+        return LOGGER.isDebugEnabled(RESULTSETTABLE_MARKER);
     }
 
     @Override
     public void resultSetCollected(ResultSetCollector resultSetCollector) {
         List<String> resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);		
         for(String line : resultsToPrint){
-            LOGGER.info(RESULTSET_MARKER,line);
+            LOGGER.info(RESULTSETTABLE_MARKER,line);
         }
 
     }

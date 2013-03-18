@@ -60,15 +60,6 @@ public class ResultSetSpy implements ResultSet, Spy
    */
   private ResultSetCollector resultSetCollector = null;
 
-  public ResultSetCollector getResultSetCollector()
-  {
-    return resultSetCollector;
-  }
-
-  public void setResultSetCollector(ResultSetCollector resultSetCollector)
-  {
-    this.resultSetCollector = resultSetCollector;
-  }
   /**
    * Report an exception to be logged.
    *
