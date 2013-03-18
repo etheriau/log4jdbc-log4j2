@@ -121,12 +121,12 @@ public class DriverSpy implements Driver
 	 * Maps driver class names to RdbmsSpecifics objects for each kind of
 	 * database.
 	 */
-	private static Map<String, RdbmsSpecifics> rdbmsSpecifics;
+	private final static Map<String, RdbmsSpecifics> rdbmsSpecifics;
 
 	/**
 	 * Default <code>RdbmsSpecifics</code>.
 	 */
-	static RdbmsSpecifics defaultRdbmsSpecifics = new RdbmsSpecifics();
+	static final RdbmsSpecifics defaultRdbmsSpecifics = new RdbmsSpecifics();
 
 	/**
 	 * A <code>SpyLogDelegator</code> used here for logs internal to log4jdbc 
@@ -138,7 +138,7 @@ public class DriverSpy implements Driver
 	 * A <code>String</code> representing the prefix of URL 
 	 * to use log4jdbc. 
 	 */
-	static private String log4jdbcUrlPrefix = "jdbc:log4";
+	static final private String log4jdbcUrlPrefix = "jdbc:log4";
 
 	/**
 	 * Default constructor.
