@@ -38,11 +38,14 @@ import org.apache.logging.log4j.MarkerManager;
  * <li>The <code>Marker</code> <code>CONNECTION_MARKER</code>, named "LOG4JDBC_CONNECTION"
  * <li>The <code>Marker</code> <code>RESULTSET_MARKER</code>, named "LOG4JDBC_RESULTSET", 
  * a child of the <code>Marker</code> <code>JDBC_MARKER</code>, named "LOG4JDBC_JDBC"
+ * <li>The <code>Marker</code> <code>RESULTSETTABLE_MARKER</code>, named "LOG4JDBC_RESULTSETTABLE", 
+ * a child of the <code>Marker</code> <code>RESULTSET_MARKER</code>, named "LOG4JDBC_RESULTSET"
  * <li>The <code>Marker</code> <code>AUDIT_MARKER</code>, named "LOG4JDBC_AUDIT", 
  * a child of the <code>Marker</code> <code>JDBC_MARKER</code>, named "LOG4JDBC_JDBC"
  * <li><code>JDBC_MARKER</code> and <code>CONNECTION_MARKER</code> are children of 
  * <code>NON_STATEMENT_MARKER</code>, named "LOG4JDBC_NON_STATEMENT". 
- * This is to easily reproduce standard log4jdbc loggers behavior.
+ * This is to easily reproduce standard log4jdbc loggers behavior, 
+ * and behavior of log4jdbc-remix.
  * </ul> 
  * <li>The behavior of the logger "jdbc.sqlonly" 
  * (see for instance <code>Slf4jSpyLogDelegator</code> <code>sqlOnlyLogger</code> attribute) 
