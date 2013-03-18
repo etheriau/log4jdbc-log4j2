@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -108,21 +109,19 @@ public class CheckLoggingFunctionalites extends TestAncestor
     @Test
     public void testWithAConnection() throws SQLException, IOException
     {
-
-        // Create all fake mock objects and returns
+        // Create all fake mock objects 
         MockDriverUtils mock = new MockDriverUtils();
-
-        Driver mockDriv = mock.getMockDriver();
-        Connection mockConn = mockDriv.connect(MockDriverUtils.MOCKURL, null);
         PreparedStatement mockPrep = mock(PreparedStatement.class);
         ResultSet mockResu = mock(ResultSet.class);
         ResultSetMetaData mockRsmd = mock(ResultSetMetaData.class);
-        ResultSetCollector mockRsc = mock(ResultSetCollector.class);
 
-        when(mockConn.prepareStatement("SELECT * FROM Test")).thenReturn(mockPrep);
+        when(mock.getMockConnection().prepareStatement("SELECT * FROM Test"))
+            .thenReturn(mockPrep);
         when(mockPrep.executeQuery()).thenReturn(mockResu);
         when(mockResu.getMetaData()).thenReturn(mockRsmd);
         when(mockRsmd.getColumnCount()).thenReturn(1);
+        when(mockRsmd.getColumnName(1)).thenReturn("column 1");
+        when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
         when(mockResu.next()).thenReturn(true);
         when(mockResu.getString(1)).thenReturn("Ok");
         
@@ -131,7 +130,7 @@ public class CheckLoggingFunctionalites extends TestAncestor
         String outputValue = "";
         emptyLogFile();
 
-        ConnectionSpy cs = new ConnectionSpy(mockConn);
+        Connection conn = DriverManager.getConnection("jdbc:log4" + MockDriverUtils.MOCKURL);
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
         assertTrue("The log produced by the instanciation of a ConnectionSpy is not as expected",
         		outputValue.contains("Connection opened") 
@@ -139,25 +138,24 @@ public class CheckLoggingFunctionalites extends TestAncestor
         emptyLogFile();
 
         
-        PreparedStatementSpy ps = new PreparedStatementSpy("SELECT * FROM Test",cs,mockPrep);
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Test");
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
         assertTrue("The log produced by the instanciation of a PreparedStatementSpy is not as expected",
         		outputValue.contains("PreparedStatement.new PreparedStatement returned"));
         emptyLogFile();
 
-        ResultSetSpy resu = (ResultSetSpy) ps.executeQuery();
+        ResultSet resu = ps.executeQuery();
         outputValue = CheckLoggingFunctionalites.readLogFile(-1);
         assertTrue("The log produced by PreparedStatement executeQuery() is not as expected",
         		outputValue.contains("ResultSet.new ResultSet returned") 
                 && outputValue.contains("PreparedStatement.executeQuery() returned"));
 
-        resu.setResultSetCollector(mockRsc);
         resu.next();
         assertTrue("Wrong result returned by the getString() method of ResultSetSpy",
         		resu.getString(1) == "Ok");
 
         ps.close();
-        cs.close();
+        conn.close();
 
         // clean all mock objects
         mock.deregister();
