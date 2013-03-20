@@ -31,120 +31,114 @@ import java.util.List;
 
 public class ResultSetCollectorPrinter {
 
-  private List<String> result ;
+    /**
+     * A list which contains a String for each line to print 
+     */
+    private List<String> result ;
 
-  public ResultSetCollectorPrinter() {
+    /**
+     * A <code>StringBuffer</code> used to read the logfile <code>test.out</code>
+     */
+    private StringBuffer sb = new StringBuffer();
 
-  }
-  
-  /***
-   * Generate and return all lines to be printed by a logger,
-   * based on the content of the provided resultSetCollector
-   * 
-   * @param resultSetCollector
-   * @return List<String>
-   */
-  public List<String> getResultSetToPrint(ResultSetCollector resultSetCollector) {
-    
-    this.result = new ArrayList<String>();
+    /**
+     * Default constructor
+     */
+    public ResultSetCollectorPrinter() {
 
-    int columnCount = resultSetCollector.getColumnCount();
-    int maxLength[] = new int[columnCount];
-
-    for (int column = 1; column <= columnCount; column++) {
-      maxLength[column - 1] = resultSetCollector.getColumnName(column)
-          .length();
     }
-    if (resultSetCollector.getRows() != null) {
-      for (List<Object> printRow : resultSetCollector.getRows()) {
-        int colIndex = 0;
-        for (Object v : printRow) {
-          if (v != null) {
-            int length = v.toString().length();
-            if (length > maxLength[colIndex]) {
-              maxLength[colIndex] = length;
+
+    /***
+     * Generate and return all lines to be printed by a logger,
+     * based on the content of the provided resultSetCollector
+     * 
+     * @param resultSetCollector the ResultSetCollector which has collected the data we want to print
+     * @return A <code>List</code> which contains a <code>String</code> for each line to print 
+     */
+    public List<String> getResultSetToPrint(ResultSetCollector resultSetCollector) {
+
+        this.result = new ArrayList<String>();
+
+        int columnCount = resultSetCollector.getColumnCount();
+        int maxLength[] = new int[columnCount];
+
+        for (int column = 1; column <= columnCount; column++) {
+            maxLength[column - 1] = resultSetCollector.getColumnName(column)
+                    .length();
+        }
+        if (resultSetCollector.getRows() != null) {
+            for (List<Object> printRow : resultSetCollector.getRows()) {
+                int colIndex = 0;
+                for (Object v : printRow) {
+                    if (v != null) {
+                        int length = v.toString().length();
+                        if (length > maxLength[colIndex]) {
+                            maxLength[colIndex] = length;
+                        }
+                    }
+                    colIndex++;
+                }
             }
-          }
-          colIndex++;
         }
-      }
-    }
-    for (int column = 1; column <= columnCount; column++) {
-      maxLength[column - 1] = maxLength[column - 1] + 1;
-    }
-
-    appendText("|");
-    for (int column = 1; column <= columnCount; column++) {
-      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-          + "|");
-    }
-    addLine();
-    appendText("|");
-    for (int column = 1; column <= columnCount; column++) {
-      appendText(padRight(resultSetCollector.getColumnName(column),
-          maxLength[column - 1])
-          + "|");
-    }
-    addLine();
-    appendText("|");
-    for (int column = 1; column <= columnCount; column++) {
-      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-          + "|");
-    }
-    addLine();
-    if (resultSetCollector.getRows() != null) {
-      for (List<Object> printRow : resultSetCollector.getRows()) {
-        int colIndex = 0;
-        appendText("|");
-        for (Object v : printRow) {
-          appendText(padRight(v == null ? "null" : v.toString(),
-              maxLength[colIndex])
-              + "|");
-          colIndex++;
+        for (int column = 1; column <= columnCount; column++) {
+            maxLength[column - 1] = maxLength[column - 1] + 1;
         }
-        addLine();
-      }
+
+        sb.append("|");
+        for (int column = 1; column <= columnCount; column++) {
+            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+                    + "|");
+        }
+        this.result.add(sb.toString());
+        sb.append("|");
+        for (int column = 1; column <= columnCount; column++) {
+            sb.append(padRight(resultSetCollector.getColumnName(column),
+                    maxLength[column - 1])
+                    + "|");
+        }
+        this.result.add(sb.toString());
+        sb.append("|");
+        for (int column = 1; column <= columnCount; column++) {
+            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+                    + "|");
+        }
+        this.result.add(sb.toString());
+        if (resultSetCollector.getRows() != null) {
+            for (List<Object> printRow : resultSetCollector.getRows()) {
+                int colIndex = 0;
+                sb.append("|");
+                for (Object v : printRow) {
+                    sb.append(padRight(v == null ? "null" : v.toString(),
+                            maxLength[colIndex])
+                            + "|");
+                    colIndex++;
+                }
+                this.result.add(sb.toString());
+            }
+        }
+        sb.append("|");
+        for (int column = 1; column <= columnCount; column++) {
+            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+                    + "|");
+        }
+
+        this.result.add(sb.toString());
+        sb.setLength(0);
+
+        resultSetCollector.reset();
+
+        return this.result ;
+
     }
-    appendText("|");
-    for (int column = 1; column <= columnCount; column++) {
-      appendText(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
-          + "|");
+
+    /***
+     * Add space to the provided <code>String</code> to match the provided width
+     * @param s the <code>String</code> we want to adjust
+     * @param n the width of the returned <code>String</code>
+     * @return a <code>String</code> matching the provided width
+     */
+    public static String padRight(String s, int n) {
+        return String.format("%1$-" + n + "s", s);
     }
-    addLine();
-    
-    resultSetCollector.reset();
-    
-    return this.result ;
-    
-  }
-
-  public static String padRight(String s, int n) {
-    return String.format("%1$-" + n + "s", s);
-  }
-
-  public static String padLeft(String s, int n) {
-    return String.format("%1$#" + n + "s", s);
-  }
-
-  /***
-   * Add the current StringBuffer to the returned list
-   */
-  private void addLine() {
-
-    this.result.add(sb.toString());
-    sb.setLength(0);
-    
-  }
-
-  private StringBuffer sb = new StringBuffer();
-
-  /***
-   * Add the provided String to the StringBuffer
-   * 
-   * @param s
-   */
-  private void appendText(String s) {
-    sb.append(s);
-  }
 
 }
