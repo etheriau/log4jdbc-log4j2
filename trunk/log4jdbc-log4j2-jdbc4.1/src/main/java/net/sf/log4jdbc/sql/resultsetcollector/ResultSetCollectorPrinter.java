@@ -90,6 +90,7 @@ public class ResultSetCollectorPrinter {
                     + "|");
         }
         this.result.add(sb.toString());
+        sb.setLength(0);
         sb.append("|");
         for (int column = 1; column <= columnCount; column++) {
             sb.append(padRight(resultSetCollector.getColumnName(column),
@@ -97,12 +98,14 @@ public class ResultSetCollectorPrinter {
                     + "|");
         }
         this.result.add(sb.toString());
+        sb.setLength(0);
         sb.append("|");
         for (int column = 1; column <= columnCount; column++) {
             sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
         this.result.add(sb.toString());
+        sb.setLength(0);
         if (resultSetCollector.getRows() != null) {
             for (List<Object> printRow : resultSetCollector.getRows()) {
                 int colIndex = 0;
@@ -114,6 +117,7 @@ public class ResultSetCollectorPrinter {
                     colIndex++;
                 }
                 this.result.add(sb.toString());
+                sb.setLength(0);
             }
         }
         sb.append("|");
@@ -126,7 +130,7 @@ public class ResultSetCollectorPrinter {
         sb.setLength(0);
 
         resultSetCollector.reset();
-
+        
         return this.result ;
 
     }
