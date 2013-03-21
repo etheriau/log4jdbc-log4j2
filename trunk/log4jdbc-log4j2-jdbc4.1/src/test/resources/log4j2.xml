@@ -19,7 +19,7 @@
 		<logger name="log4jdbc.log4j2" level="debug" additivity="true">
 			<appender-ref ref="test_file" />
 		</logger>
-		<logger name="log4jdbc.debug" level="debug" additivity="false">
+		<logger name="log4jdbc.debug" level="debug" additivity="true">
 			<appender-ref ref="test_file" />
 		</logger>
 	</loggers>
