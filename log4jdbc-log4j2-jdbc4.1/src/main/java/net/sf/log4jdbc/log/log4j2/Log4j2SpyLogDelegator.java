@@ -96,7 +96,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
     private static final Logger LOGGER = LogManager.getLogger("log4jdbc.log4j2");
     /**
      * Logger just for debugging things within log4jdbc itself (admin, setup, etc.)
-     * @see net.sf.log4jdbc.Slf4jSpyLogDelegator#debugLogger
+     * @see net.sf.log4jdbc.Log4j2SpyLogDelegator#debugLogger
      */
     private static final Logger DEBUGLOGGER = LogManager.getLogger("log4jdbc.debug");
 
@@ -364,7 +364,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
     }
 
     @Override
-    public void debug(String msg) 
+    public void debug(String msg)
     {
         DEBUGLOGGER.debug(msg);
     }
@@ -381,6 +381,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
     @Override
     public void resultSetCollected(ResultSetCollector resultSetCollector) {
+              
         List<String> resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);		
         for(String line : resultsToPrint){
             LOGGER.info(RESULTSETTABLE_MARKER,line);
