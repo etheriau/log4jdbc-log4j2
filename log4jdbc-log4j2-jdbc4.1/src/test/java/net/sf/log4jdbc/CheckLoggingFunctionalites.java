@@ -69,7 +69,6 @@ public class CheckLoggingFunctionalites extends TestAncestor
     @BeforeClass
     public static void initProperties()
     {
-
         Properties.getSpyLogDelegatorName();
 
         TestSpyLogDelegator = SpyLogFactory.getSpyLogDelegator();
@@ -161,6 +160,7 @@ public class CheckLoggingFunctionalites extends TestAncestor
         //verify that the underlying resultset has been called
         verify(mockResu).next();
 
+        resu.close();
         ps.close();
         verify(mockPrep).close();
         conn.close();

@@ -112,7 +112,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
    * java.lang.Object)
    */
   @Override
-  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, @SuppressWarnings("unused") Object targetObject, Object... methodParams) {
+  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, Object targetObject, Object... methodParams) {
          
     
     if (methodCall.startsWith("get") && methodParams != null && methodParams.length == 1) {
@@ -125,13 +125,13 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       }
     }
     if (methodCall.equals("wasNull()")) {
-      if (returnValue.equals("true")) {
+      if (Boolean.TRUE.equals(returnValue)) {
         row.set(colIndex - 1, NULL_RESULT_SET_VAL);
       }
     }
-    if ("next()".equals(methodCall)) {
+    if ("next()".equals(methodCall) || "close()".equals(methodCall)) {
       getMetaDataIfNeeded(resultSetSpy.getRealResultSet());
-      boolean isEndOfResultSet = "false".equals(returnValue);
+      boolean isEndOfResultSet = Boolean.FALSE.equals(returnValue) || "close()".equals(methodCall);
       if (row != null) {
         if (rows == null)
           rows = new ArrayList<List<Object>>();
@@ -184,7 +184,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   }
 
   @Override
-  public void preMethod(ResultSetSpy resultSetSpy, String methodCall, @SuppressWarnings("unused") Object... methodParams) {
+  public void preMethod(ResultSetSpy resultSetSpy, String methodCall, Object... methodParams) {
     if (methodCall.equals("next()") && fillInUnreadValues) {
       if (row != null) {
         int colIndex = 0;

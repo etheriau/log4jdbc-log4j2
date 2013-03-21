@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 import net.sf.log4jdbc.Properties;
-import net.sf.log4jdbc.Utilities;
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.Utilities;
 
 
 /**
