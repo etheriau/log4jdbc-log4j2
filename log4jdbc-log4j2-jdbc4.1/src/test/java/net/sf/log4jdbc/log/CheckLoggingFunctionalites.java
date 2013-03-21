@@ -1,4 +1,4 @@
-package net.sf.log4jdbc;
+package net.sf.log4jdbc.log;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -18,8 +18,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.log4jdbc.TestAncestor;
 import net.sf.log4jdbc.log.SpyLogDelegator;
-import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.log.log4j2.Log4j2SpyLogDelegator;
 import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
 import net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy;
@@ -28,11 +28,8 @@ import net.sf.log4jdbc.sql.jdbcapi.PreparedStatementSpy;
 import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -42,12 +39,10 @@ import org.junit.Test;
  * @author Mathieu Seppey
  * @version 1.0
  */
-public class CheckLoggingFunctionalites extends TestAncestor
+public abstract class CheckLoggingFunctionalites extends TestAncestor
 {
 
-    private final static Logger log = LogManager.getLogger(CheckLoggingFunctionalites.class.getName());
-
-    private static SpyLogDelegator TestSpyLogDelegator ;
+    protected static SpyLogDelegator TestSpyLogDelegator ;
 
     /**
      * Default constructor.
@@ -56,38 +51,6 @@ public class CheckLoggingFunctionalites extends TestAncestor
     {
         super();
     }
-
-    @Override
-    protected Logger getLogger()
-    {
-        return log;
-    }
-
-    /**
-     * Init the properties before the tests, 
-     */
-    @BeforeClass
-    public static void initProperties()
-    {
-        Properties.getSpyLogDelegatorName();
-
-        TestSpyLogDelegator = SpyLogFactory.getSpyLogDelegator();
-
-        log.info("========Start testing with " + TestSpyLogDelegator.getClass().getName() + " =========");    
-
-
-    }
-    /**
-     * Reinit the properties after the tests, 
-     * so that the properties are reset to be used for other test classes.
-     */
-    @AfterClass
-    public static void reinitProperties()
-    {
-        log.info("========End testing=========");
-        System.clearProperty("log4jdbc.log4j2.properties.file");
-    }
-
     /**
      * Delete the test output file at the end of all tests
      */
