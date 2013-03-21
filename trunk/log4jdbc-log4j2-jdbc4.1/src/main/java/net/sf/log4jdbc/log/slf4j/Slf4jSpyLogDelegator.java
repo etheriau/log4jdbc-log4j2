@@ -175,29 +175,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
                 logger.info(header);
             }
         }
-    }
-
-    @Override
-    public void methodReturned(Spy spy, String methodCall, Object returnValue,
-            Object targetObject, Object... methodParams)
-    {
-        String classType = spy.getClassType();
-        Logger logger=ResultSetSpy.classTypeDescription.equals(classType)?
-                resultSetLogger:jdbcLogger;
-        if (logger.isInfoEnabled())
-        {
-            String header = spy.getConnectionNumber() + ". " + classType + "." +
-                    methodCall + " returned " + " ";
-            if (logger.isDebugEnabled())
-            {
-                logger.debug(header + " " + getDebugInfo());
-            }
-            else
-            {
-                logger.info(header);
-            }
-        }
-    } 	
+    }	
 
     @Override
     public void constructorReturned(Spy spy, String constructionInfo)

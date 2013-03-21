@@ -193,26 +193,13 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
         LOGGER.info(marker, 
                 new MethodReturnedMessage(spy, methodCall, returnMsg, LOGGER.isDebugEnabled(marker)));
-    }
-
-    @Override
-    public void methodReturned(Spy spy, String methodCall, Object returnMsg, Object object, Object... methodParams)
-    {
-        String classType = spy.getClassType();
-        Marker marker = ResultSetSpy.classTypeDescription.equals(classType)?
-                RESULTSET_MARKER:AUDIT_MARKER;
-
-        LOGGER.info(marker, 
-                new MethodReturnedMessage(spy, methodCall, returnMsg.toString(), LOGGER.isDebugEnabled(marker)));
     }	
 
-    @SuppressWarnings("unused")
 	@Override
     public void constructorReturned(Spy spy, String constructionInfo) {
         //not yet used in the current implementation of log4jdbc
     }
 
-    @SuppressWarnings("unused")
 	@Override
     public void sqlOccurred(Spy spy, String methodCall, String sql) {
         //not implemented, 

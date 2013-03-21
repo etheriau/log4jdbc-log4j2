@@ -197,8 +197,8 @@ public class DriverSpy implements Driver
 		// instantiate all the supported drivers and remove
 		// those not found
 		String driverClass;
-		for (Iterator i = subDrivers.iterator(); i.hasNext();) {
-			driverClass = (String) i.next();
+		for (Iterator<String> i = subDrivers.iterator(); i.hasNext();) {
+			driverClass = i.next();
 			try {
 				Class.forName(driverClass);
 				log.debug("  FOUND DRIVER " + driverClass);
@@ -340,11 +340,11 @@ public class DriverSpy implements Driver
 		if (url.startsWith(log4jdbcUrlPrefix)) {
 			url = this.getRealUrl(url);
 
-			Enumeration e = DriverManager.getDrivers();
+			Enumeration<Driver> e = DriverManager.getDrivers();
 
 			Driver d;
 			while (e.hasMoreElements()) {
-				d = (Driver) e.nextElement();
+				d = e.nextElement();
 
 				if (d.acceptsURL(url)) {
 					return d;

@@ -93,8 +93,12 @@ public class ResultSetSpy implements ResultSet, Spy
         resultSetCollector.reset();
       }
     }
-        
-    log.methodReturned(this, methodCall, returnValue, realResultSet, methodParams);
+    
+    String toString = "void";
+    if (returnValue != null) {
+    	toString = returnValue.toString();
+    }
+    log.methodReturned(this, methodCall, toString);
   }  
 
   private ResultSet realResultSet;
@@ -107,6 +111,19 @@ public class ResultSetSpy implements ResultSet, Spy
   public ResultSet getRealResultSet()
   {
     return realResultSet;
+  }
+  
+  /**
+   * Sets the <code>ResultSetCollector</code> used by this <code>ResultSetSpy</code> 
+   * to log result set content. Useful for developers who want to use 
+   * their own custom collector. 
+   * 
+   * @param resultSetCollector 	A <code>ResultSetCollector</code> used to collect 
+   * 							the data of this <code>ResultSetSpy</code>.
+   */
+  public void setResultSetCollector(ResultSetCollector resultSetCollector)
+  {
+    this.resultSetCollector = resultSetCollector;
   }
 
   private StatementSpy parent;
@@ -1488,7 +1505,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   @Override
   public void close() throws SQLException
-  {
+  {System.out.println("TEST");
     String methodCall = "close()";
     try
     {

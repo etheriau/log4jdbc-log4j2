@@ -76,17 +76,6 @@ public interface SpyLogDelegator
    *                   return types this will be null for void return types.
    */
   public void methodReturned(Spy spy, String methodCall, String returnMsg);
-  
-  /**
-   * Called when spied upon method call returns.
-   *
-   * @param spy        the Spy wrapping the class that called the method that returned.
-   * @param methodCall a description of the name and call parameters of the method that returned.
-   * @param returnValue  return value from the method call, null for void return types.
-   * @param targetObject the target object method call (E.g. a CallableStatement, ResultSet etc) 
-   * @param methodParams the params passed to the method
-   */
-  public void methodReturned(Spy spy, String methodCall, Object returnValue, Object targetObject, Object... methodParams);  
 
   /**
    * Called when a spied upon object is constructed.
