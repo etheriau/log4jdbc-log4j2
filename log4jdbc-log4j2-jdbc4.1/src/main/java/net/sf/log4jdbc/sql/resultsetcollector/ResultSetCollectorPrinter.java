@@ -37,7 +37,7 @@ public class ResultSetCollectorPrinter {
     private List<String> result ;
 
     /**
-     * A <code>StringBuffer</code> used to read the logfile <code>test.out</code>
+     * A <code>StringBuffer</code> used to build a single line
      */
     private StringBuffer sb = new StringBuffer();
 
