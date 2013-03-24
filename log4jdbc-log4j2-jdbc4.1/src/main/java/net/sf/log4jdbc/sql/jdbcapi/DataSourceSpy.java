@@ -77,16 +77,32 @@ public class DataSourceSpy implements DataSource, Spy {
 	private DataSource realDataSource;
 	private static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
 
+	/**
+	 * Constructor
+	 * @param realDataSource the real DataSource
+	 */
 	public DataSourceSpy(DataSource realDataSource)
 	{
 		this.realDataSource = realDataSource;
 	}
 
+	/**
+	 * Report to the logger all exceptions which have to be reported by this class
+	 * @param methodCall the method which threw an exception
+	 * @param exception the thrown exception
+	 */
 	protected void reportException(String methodCall, SQLException exception)
 	{
 		log.exceptionOccured(this, methodCall, exception, null, -1L);
 	}    
 
+	/**
+	 * Report to the logger all returns which have to be reported by this class
+	 * and which are not exceptions
+	 * @param methodCall the method which report the value
+	 * @param value the reported value
+	 * @return Object The object originally returned by the method called
+	 */
 	private Object reportReturn(String methodCall, Object value)
 	{
 		log.methodReturned(this, methodCall, "");
