@@ -18,7 +18,6 @@
 
 package net.sf.log4jdbc.sql.resultsetcollector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /***
@@ -34,7 +33,7 @@ public class ResultSetCollectorPrinter {
     /**
      * A list which contains a String for each line to print 
      */
-    private List<String> result ;
+    private String result ;
 
     /**
      * A <code>StringBuffer</code> used to build a single line
@@ -55,9 +54,9 @@ public class ResultSetCollectorPrinter {
      * @param resultSetCollector the ResultSetCollector which has collected the data we want to print
      * @return A <code>List</code> which contains a <code>String</code> for each line to print 
      */
-    public List<String> getResultSetToPrint(ResultSetCollector resultSetCollector) {
+    public String getResultSetToPrint(ResultSetCollector resultSetCollector) {
 
-        this.result = new ArrayList<String>();
+        this.result = System.getProperty("line.separator");
 
         int columnCount = resultSetCollector.getColumnCount();
         int maxLength[] = new int[columnCount];
@@ -89,7 +88,7 @@ public class ResultSetCollectorPrinter {
             sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
-        this.result.add(sb.toString());
+        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
         sb.setLength(0);
         sb.append("|");
         for (int column = 1; column <= columnCount; column++) {
@@ -97,14 +96,14 @@ public class ResultSetCollectorPrinter {
                     maxLength[column - 1])
                     + "|");
         }
-        this.result.add(sb.toString());
+        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
         sb.setLength(0);
         sb.append("|");
         for (int column = 1; column <= columnCount; column++) {
             sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
-        this.result.add(sb.toString());
+        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
         sb.setLength(0);
         if (resultSetCollector.getRows() != null) {
             for (List<Object> printRow : resultSetCollector.getRows()) {
@@ -116,7 +115,7 @@ public class ResultSetCollectorPrinter {
                             + "|");
                     colIndex++;
                 }
-                this.result.add(sb.toString());
+                this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
                 sb.setLength(0);
             }
         }
@@ -126,7 +125,7 @@ public class ResultSetCollectorPrinter {
                     + "|");
         }
 
-        this.result.add(sb.toString());
+        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
         sb.setLength(0);
 
         resultSetCollector.reset();
