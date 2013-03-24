@@ -606,9 +606,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
 
     @Override
     public void resultSetCollected(ResultSetCollector resultSetCollector) {
-        List<String> resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);    
-        for(String line : resultsToPrint){
-            resultSetTableLogger.info(line);
-        }
+        String resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);    
+        resultSetTableLogger.info(resultsToPrint);
     }
 }

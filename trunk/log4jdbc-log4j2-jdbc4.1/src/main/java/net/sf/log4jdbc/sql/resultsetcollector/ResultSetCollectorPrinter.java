@@ -48,11 +48,23 @@ public class ResultSetCollectorPrinter {
     }
 
     /***
-     * Generate and return all lines to be printed by a logger,
-     * based on the content of the provided resultSetCollector
+     * Return a table which represents a <code>ResultSet</code>,
+     * to be printed by a logger,
+     * based on the content of the provided <code>resultSetCollector</code>.
+     * 
+     * This method will be actually called by a <code>SpyLogDelegator</code>
+     * when the <code>next()</code> method of the spied <code>ResultSet</code>
+     * return <code>false</code> meaning that its end is reached.
+     * It will be also called if the statement that generated the <code>ResultSet</code> is closed. 
+     * 
      * 
      * @param resultSetCollector the ResultSetCollector which has collected the data we want to print
-     * @return A <code>List</code> which contains a <code>String</code> for each line to print 
+     * @return A <code>String</code> which contains the formatted table to print
+     * 
+     * @see net.sf.log4jdbc.ResultSetSpy
+     * @see net.sf.log4jdbc.sql.resultsetcollector.DefaultResultSetCollector
+     * @see net.sf.log4jdbc.log.SpyLogDelegator
+     * 
      */
     public String getResultSetToPrint(ResultSetCollector resultSetCollector) {
 
@@ -129,7 +141,7 @@ public class ResultSetCollectorPrinter {
         sb.setLength(0);
 
         resultSetCollector.reset();
-        
+
         return this.result ;
 
     }

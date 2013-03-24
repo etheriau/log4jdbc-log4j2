@@ -162,7 +162,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
      * @see net.sf.log4jdbc.sql.resultsetcollector
      */
     private static final Marker RESULTSETTABLE_MARKER = 
-    		MarkerManager.getMarker("LOG4JDBC_RESULTSETTABLE", RESULTSET_MARKER);
+            MarkerManager.getMarker("LOG4JDBC_RESULTSETTABLE", RESULTSET_MARKER);
     /**
      * <code>Marker</code> to log <code>Exception</code>s.
      * These are not specific to one logger in the standard implementation,
@@ -195,12 +195,12 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
                 new MethodReturnedMessage(spy, methodCall, returnMsg, LOGGER.isDebugEnabled(marker)));
     }	
 
-	@Override
+    @Override
     public void constructorReturned(Spy spy, String constructionInfo) {
         //not yet used in the current implementation of log4jdbc
     }
 
-	@Override
+    @Override
     public void sqlOccurred(Spy spy, String methodCall, String sql) {
         //not implemented, 
         //as the features provided by the logger "jdbc.sqlonly" are not reproduced.
@@ -381,11 +381,11 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
 
     @Override
     public void resultSetCollected(ResultSetCollector resultSetCollector) {
-              
-        List<String> resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);		
-        for(String line : resultsToPrint){
-            LOGGER.info(RESULTSETTABLE_MARKER,line);
-        }
+
+        String resultToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);		
+
+        LOGGER.info(RESULTSETTABLE_MARKER,resultToPrint);
+
 
     }
 
