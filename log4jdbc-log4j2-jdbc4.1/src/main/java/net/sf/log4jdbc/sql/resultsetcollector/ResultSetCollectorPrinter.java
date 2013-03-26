@@ -55,7 +55,7 @@ public class ResultSetCollectorPrinter {
      * This method will be actually called by a <code>SpyLogDelegator</code>
      * when the <code>next()</code> method of the spied <code>ResultSet</code>
      * return <code>false</code> meaning that its end is reached.
-     * It will be also called if the statement that generated the <code>ResultSet</code> is closed. 
+     * It will be also called if the <code>ResultSet</code> is closed. 
      * 
      * 
      * @param resultSetCollector the ResultSetCollector which has collected the data we want to print

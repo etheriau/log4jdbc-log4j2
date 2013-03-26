@@ -163,7 +163,7 @@ public interface SpyLogDelegator
      * This method will be actually called
      * when the <code>next()</code> method of the spied <code>ResultSet</code>
      * return <code>false</code> meaning that its end is reached.
-     * It will be also called if the statement that generated the <code>ResultSet</code> is closed. 
+     * It will be also called if the <code>ResultSet</code> is closed. 
      * 
      * @see net.sf.log4jdbc.ResultSetSpy
      * @see net.sf.log4jdbc.sql.resultsetcollector.DefaultResultSetCollector
