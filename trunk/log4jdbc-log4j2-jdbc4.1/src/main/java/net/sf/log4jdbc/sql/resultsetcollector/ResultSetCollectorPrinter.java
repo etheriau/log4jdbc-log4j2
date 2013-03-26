@@ -31,14 +31,9 @@ import java.util.List;
 public class ResultSetCollectorPrinter {
 
     /**
-     * A list which contains a String for each line to print 
+     * A StringBuffer which is used to build the formatted table to print
      */
-    private String result ;
-
-    /**
-     * A <code>StringBuffer</code> used to build a single line
-     */
-    private StringBuffer sb = new StringBuffer();
+    private StringBuffer table = new StringBuffer(); ;
 
     /**
      * Default constructor
@@ -68,7 +63,7 @@ public class ResultSetCollectorPrinter {
      */
     public String getResultSetToPrint(ResultSetCollector resultSetCollector) {
 
-        this.result = System.getProperty("line.separator");
+        this.table.append(System.getProperty("line.separator"));
 
         int columnCount = resultSetCollector.getColumnCount();
         int maxLength[] = new int[columnCount];
@@ -95,54 +90,50 @@ public class ResultSetCollectorPrinter {
             maxLength[column - 1] = maxLength[column - 1] + 1;
         }
 
-        sb.append("|");
+        this.table.append("|");
+
         for (int column = 1; column <= columnCount; column++) {
-            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+            this.table.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
-        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
-        sb.setLength(0);
-        sb.append("|");
+        this.table.append(System.getProperty("line.separator"));
+        this.table.append("|");
         for (int column = 1; column <= columnCount; column++) {
-            sb.append(padRight(resultSetCollector.getColumnName(column),
+            this.table.append(padRight(resultSetCollector.getColumnName(column),
                     maxLength[column - 1])
                     + "|");
         }
-        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
-        sb.setLength(0);
-        sb.append("|");
+        this.table.append(System.getProperty("line.separator"));
+        this.table.append("|");
         for (int column = 1; column <= columnCount; column++) {
-            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+            this.table.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
-        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
-        sb.setLength(0);
+        this.table.append(System.getProperty("line.separator"));
         if (resultSetCollector.getRows() != null) {
             for (List<Object> printRow : resultSetCollector.getRows()) {
                 int colIndex = 0;
-                sb.append("|");
+                this.table.append("|");
                 for (Object v : printRow) {
-                    sb.append(padRight(v == null ? "null" : v.toString(),
+                    this.table.append(padRight(v == null ? "null" : v.toString(),
                             maxLength[colIndex])
                             + "|");
                     colIndex++;
                 }
-                this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
-                sb.setLength(0);
+                this.table.append(System.getProperty("line.separator"));
             }
         }
-        sb.append("|");
+        this.table.append("|");
         for (int column = 1; column <= columnCount; column++) {
-            sb.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
+            this.table.append(padRight("-", maxLength[column - 1]).replaceAll(" ", "-")
                     + "|");
         }
 
-        this.result = this.result.concat(sb.toString()).concat(System.getProperty("line.separator"));
-        sb.setLength(0);
+        this.table.append(System.getProperty("line.separator"));
 
         resultSetCollector.reset();
 
-        return this.result ;
+        return this.table.toString() ;
 
     }
 
@@ -152,8 +143,7 @@ public class ResultSetCollectorPrinter {
      * @param n the width of the returned <code>String</code>
      * @return a <code>String</code> matching the provided width
      */
-    public static String padRight(String s, int n) {
+    private static String padRight(String s, int n) {
         return String.format("%1$-" + n + "s", s);
     }
-
 }
