@@ -1,7 +1,5 @@
 package net.sf.log4jdbc.log.log4j2;
 
-import java.util.List;
-
 import net.sf.log4jdbc.Properties;
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage;

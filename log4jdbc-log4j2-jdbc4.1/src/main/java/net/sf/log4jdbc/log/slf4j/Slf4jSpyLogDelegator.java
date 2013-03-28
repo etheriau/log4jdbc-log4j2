@@ -18,7 +18,6 @@ package net.sf.log4jdbc.log.slf4j;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.util.List;
 import java.util.StringTokenizer;
 
 

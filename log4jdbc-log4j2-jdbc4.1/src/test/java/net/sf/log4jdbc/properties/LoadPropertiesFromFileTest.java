@@ -11,24 +11,24 @@ import org.junit.Test;
 
 /**
  * Class testing the loading of the {@link net.sf.log4jdbc.Properties Properties} 
- * from the System Properties. This has to be done in a separate class, 
+ * from a property file. This has to be done in a separate class, 
  * as the properties are loaded only at class loading (static initializer), 
  * so only once for a given <code>ClassLoader</code>.
  * <p>
- * See {@link LoadPropertiesFromFile} for a class testing the loading of the properties 
- * from a property file.
+ * See {@link LoadPropertiesFromSysPropsTest} for a class testing the loading of the properties 
+ * from the System properties.
  * 
  * @author Frederic Bastian
  * @version 1.1
  * @since 1.1
  */
-public class LoadPropertiesFromSysProps extends TestAncestor
+public class LoadPropertiesFromFileTest extends TestAncestor
 {
-	private final static Logger log = LogManager.getLogger(LoadPropertiesFromSysProps.class.getName());
+	private final static Logger log = LogManager.getLogger(LoadPropertiesFromFileTest.class.getName());
 	/**
 	 * Default constructor.
 	 */
-	public LoadPropertiesFromSysProps()
+	public LoadPropertiesFromFileTest()
 	{
 		super();
 	}
@@ -38,26 +38,22 @@ public class LoadPropertiesFromSysProps extends TestAncestor
 	}
 
 	/**
-	 * Try to load the properties from the System properties. 
+	 * Try to load the properties from a properties file. 
 	 */
 	@Test
-	public void shouldLoadPropertiesFromSysProps()
+	public void shouldLoadPropertiesFromFile()
 	{
-		//set the property to test
-		//(this is not the default value)
-		System.setProperty("log4jdbc.spylogdelegator.name", 
-				"net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator");
-		//set the properties file to an non-existing file, 
-		//so that System properties are used 
-		System.setProperty("log4jdbc.log4j2.properties.file", "/none");
+		//set a system properties to provide the name of the properties file 
+		//(default is log4jdbc.properties, but we want to use a test file)
+		System.setProperty("log4jdbc.log4j2.properties.file", "/test.properties");
 		
-		//check if the properties correspond to values set
+		//check if the properties correspond to values in the test file
+		//(this is not the default value)
 		assertEquals("Incorrect property SpyLogDelegatorName", 
 				"net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator", 
 				Properties.getSpyLogDelegatorName());
 		
 		//clear the System properties
 		System.clearProperty("log4jdbc.log4j2.properties.file");
-		System.clearProperty("log4jdbc.spylogdelegator.name");
 	}
 }
