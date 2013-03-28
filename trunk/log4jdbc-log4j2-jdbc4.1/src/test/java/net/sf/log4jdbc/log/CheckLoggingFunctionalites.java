@@ -36,10 +36,17 @@ import org.junit.Test;
 
 /**
  * Class which tests all the logging actions of log4jdbc-log4j2 SpyDelegator implementation
- * The logger output is written in the file /test.out where it is checked
+ * The logger output is written in the file /test.out where it is checked. 
+ * 
+ * This class is used to run the same tests for the log4j2 logger or the slf4j logger. 
+ * It is used by {@link net.sf.log4jdbc.log.log4j2.TestLoggingFunctionalitesWithLog4j2} and 
+ * {@link net.sf.log4jdbc.log.slf4j.TestLoggingFunctionalitesWithSl4j}, 
+ * and is not meant to be run on its own. 
  * 
  * @author Mathieu Seppey
  * @version 1.0
+ * @see net.sf.log4jdbc.log.log4j2.TestLoggingFunctionalitesWithLog4j2
+ * @see net.sf.log4jdbc.log.slf4j.TestLoggingFunctionalitesWithSl4j
  */
 public abstract class CheckLoggingFunctionalites extends TestAncestor
 {

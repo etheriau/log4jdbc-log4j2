@@ -608,7 +608,6 @@ public class StatementSpy implements Statement, Spy
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public Connection getConnection() throws SQLException
 	{
