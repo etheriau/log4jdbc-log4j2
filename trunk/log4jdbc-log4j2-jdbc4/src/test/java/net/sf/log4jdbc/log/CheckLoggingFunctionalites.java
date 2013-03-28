@@ -52,6 +52,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 {
 
     protected static SpyLogDelegator TestSpyLogDelegator ;
+    private static final String testOutputFile = "test.out";
 
     /**
      * Default constructor.
@@ -66,7 +67,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     @AfterClass
     public static void removeLogFile()
     {
-        File test = new File("test.out");
+        File test = new File(testOutputFile);
         test.delete();
     }  
 
@@ -482,7 +483,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
      */
     private static String readLogFile(int lineNumber) throws IOException
     {
-        BufferedReader br = new BufferedReader(new FileReader("test.out"));
+        BufferedReader br = new BufferedReader(new FileReader(testOutputFile));
         String ret = "" ;
 
         if(lineNumber > 0){
@@ -506,7 +507,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
      * Clear the test output file
      */
     private void emptyLogFile() throws IOException{
-        FileOutputStream logCleaner = new FileOutputStream("test.out");
+        FileOutputStream logCleaner = new FileOutputStream(testOutputFile);
         logCleaner.write(1);
         logCleaner.close();
     }    

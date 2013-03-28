@@ -1505,7 +1505,7 @@ public class ResultSetSpy implements ResultSet, Spy
 
   @Override
   public void close() throws SQLException
-  {System.out.println("TEST");
+  {
     String methodCall = "close()";
     try
     {
