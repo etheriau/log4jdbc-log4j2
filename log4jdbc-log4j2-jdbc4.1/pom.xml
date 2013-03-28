@@ -26,6 +26,11 @@
               <artifactId>maven-compiler-plugin</artifactId>
               <version>3.0</version>
               <configuration>
+                  <!-- 
+                  Here we assume that the default JDK version on the machine compiling the project 
+                  is 1.7. Otherwise, you need to provide the path to the JDK 1.7 
+                  (see for instance the pom.xml in log4jdbc-log4j2-jdbc4, using a JDK 1.6)
+                  -->
                   <source>1.7</source>
                   <target>1.7</target>
               </configuration>
