@@ -753,7 +753,7 @@ public class ResultSetSpy implements ResultSet, Spy
   }
 
   public void close() throws SQLException
-  {System.out.println("TEST");
+  {
     String methodCall = "close()";
     try
     {
