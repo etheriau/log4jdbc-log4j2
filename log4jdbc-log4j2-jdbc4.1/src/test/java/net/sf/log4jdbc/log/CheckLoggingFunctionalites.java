@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy;
 import net.sf.log4jdbc.sql.jdbcapi.MockDriverUtils;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -52,7 +50,6 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 {
 
     protected static SpyLogDelegator TestSpyLogDelegator ;
-    private static final String testOutputFile = "test.out";
 
     /**
      * Default constructor.
@@ -60,16 +57,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     public CheckLoggingFunctionalites()
     {
         super();
-    }
-    /**
-     * Delete the test output file at the end of all tests
-     */
-    @AfterClass
-    public static void removeLogFile()
-    {
-        File test = new File(testOutputFile);
-        test.delete();
-    }  
+    } 
 
     /**
      * A test which goes through the whole process => Connection, statement, ResultSet
