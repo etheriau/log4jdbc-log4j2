@@ -1,12 +1,17 @@
 package net.sf.log4jdbc;
 
+import java.io.File;
+
 import org.apache.logging.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 public abstract class TestAncestor 
 {
+    protected static final String testOutputFile = "test.out";
+    
 	/**
 	 * Default Constructor. 
 	 */
@@ -40,4 +45,15 @@ public abstract class TestAncestor
 	 * @return 	A <code>Logger</code>
 	 */
 	protected abstract Logger getLogger();
+	
+
+    /**
+     * Delete the test output file at the end of all tests
+     */
+    @AfterClass
+    public static void removeLogFile()
+    {
+        File test = new File(testOutputFile);
+        test.delete();
+    }
 }
