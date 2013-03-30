@@ -144,8 +144,7 @@
           <id>release</id>
           <activation>
               <property>
-                  <name>performRelease</name>
-                  <value>true</value>
+                  <name>test2</name>
               </property>
           </activation>
           <build>
@@ -162,6 +161,10 @@
                               <goals>
                                   <goal>sign</goal>
                               </goals>
+                               <configuration>
+                                   <keyname>828B80AB</keyname>
+                                   <useAgent>true</useAgent>
+                               </configuration>
                           </execution>
                       </executions>
                   </plugin>
@@ -176,9 +179,6 @@
                                <goals>
                                    <goal>jar</goal>
                                </goals>
-                               <configuration>
-                                   <keyname>828B80AB</keyname>
-                               </configuration>
                            </execution>
                       </executions>
                   </plugin>
