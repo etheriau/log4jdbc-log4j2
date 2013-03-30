@@ -134,41 +134,14 @@
                     <reuseForks>false</reuseForks>
                 </configuration>
           </plugin>
-          <!-- attach the source code -->
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-source-plugin</artifactId>
-              <version>2.2.1</version>
-              <executions>
-                   <execution>
-                       <id>attach-sources</id>
-                       <goals>
-                           <goal>jar</goal>
-                       </goals>
-                   </execution>
-              </executions>
-          </plugin>
-          <!-- attach the javadoc -->
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.9</version>
-              <executions>
-                   <execution>
-                       <id>attach-javadocs</id>
-                       <goals>
-                           <goal>jar</goal>
-                       </goals>
-                   </execution>
-              </executions>
-          </plugin>
       </plugins>
   </build> 
   
-  <!-- PGP signature to release to the central repository -->
+  <!-- Actions to perform only for official releases, 
+       profile for performRelease=true (e.g., when running: mvn release:perform) -->
   <profiles>
       <profile>
-          <id>release-sign-artifacts</id>
+          <id>release</id>
           <activation>
               <property>
                   <name>performRelease</name>
@@ -177,6 +150,7 @@
           </activation>
           <build>
               <plugins>
+                  <!-- PGP signature to release to the central repository -->
                   <plugin>
                       <groupId>org.apache.maven.plugins</groupId>
                       <artifactId>maven-gpg-plugin</artifactId>
@@ -189,6 +163,37 @@
                                   <goal>sign</goal>
                               </goals>
                           </execution>
+                      </executions>
+                  </plugin>
+                  <!-- attach the source code -->
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-source-plugin</artifactId>
+                      <version>2.2.1</version>
+                      <executions>
+                           <execution>
+                               <id>attach-sources</id>
+                               <goals>
+                                   <goal>jar</goal>
+                               </goals>
+                               <configuration>
+                                   <keyname>828B80AB</keyname>
+                               </configuration>
+                           </execution>
+                      </executions>
+                  </plugin>
+                  <!-- attach the javadoc -->
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-javadoc-plugin</artifactId>
+                      <version>2.9</version>
+                      <executions>
+                           <execution>
+                               <id>attach-javadocs</id>
+                               <goals>
+                                   <goal>jar</goal>
+                               </goals>
+                           </execution>
                       </executions>
                   </plugin>
               </plugins>
