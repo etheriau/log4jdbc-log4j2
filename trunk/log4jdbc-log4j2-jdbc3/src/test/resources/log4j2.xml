@@ -13,7 +13,7 @@
 		<root level="off">
 			<appender-ref ref="Console" />
 		</root>
-		<logger name="net.sf.log4jdbc" level="info" additivity="false">
+		<logger name="net.sf.log4jdbc" level="error" additivity="false">
 			<appender-ref ref="Console" />
 		</logger>
 		<logger name="log4jdbc.log4j2" level="debug" additivity="false">
