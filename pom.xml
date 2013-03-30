@@ -10,17 +10,32 @@
 	<name>log4jdbc-log4j2</name>
 	<url>http://code.google.com/p/log4jdbc-log4j2/</url>
 	<description>log4jdbc-log4j2 is a modification of log4jdbc to natively use Log4j2, to provide a support for JDBC 4.1, and that includes all the improvements of log4jdbc-remix. It also provides some slight improvements on its own.</description>
+	<licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:svn:http://log4jdbc-log4j2.googlecode.com/svn/trunk/</connection>
+        <developerConnection>scm:svn:https://log4jdbc-log4j2.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/log4jdbc-log4j2/source/browse/</url>
+    </scm>
+	<organization>
+        <name>Bgee - Swiss Institute of Bioinformatics</name>
+        <url>http://www.bgee.org</url>
+    </organization>
 	<developers>
 		<developer>
 			<name>Frederic Bastian</name>
-			<email>frederic.bastian@gmail.com</email>
+			<email>frederic.bastian@unil.ch</email>
 		</developer>
 	</developers>
 	<contributors>
-		<contributor>
-			<name></name>
-			<email></email>
-		</contributor>
+	    <contributor>
+			<name>Mathieu Seppey</name>
+	    </contributor>
 	</contributors>
 	<mailingLists>
 		<mailingList>
@@ -107,10 +122,10 @@
 	
 	<build>
         <plugins>
+            <!-- In order to have each test class run into its own JVM 
+                 (many properties are initialized only at class loading, 
+                 so we need a different ClassLoader for each test class) -->
             <plugin>
-                <!-- In order to have each test class run into its own JVM 
-                     (many properties are initialized only at class loading, 
-                     so we need a different ClassLoader for each test class) -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.14</version>
@@ -119,7 +134,66 @@
                     <reuseForks>false</reuseForks>
                 </configuration>
           </plugin>
+          <!-- attach the source code -->
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <version>2.2.1</version>
+              <executions>
+                   <execution>
+                       <id>attach-sources</id>
+                       <goals>
+                           <goal>jar</goal>
+                       </goals>
+                   </execution>
+              </executions>
+          </plugin>
+          <!-- attach the javadoc -->
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.9</version>
+              <executions>
+                   <execution>
+                       <id>attach-javadocs</id>
+                       <goals>
+                           <goal>jar</goal>
+                       </goals>
+                   </execution>
+              </executions>
+          </plugin>
       </plugins>
   </build> 
+  
+  <!-- PGP signature to release to the central repository -->
+  <profiles>
+      <profile>
+          <id>release-sign-artifacts</id>
+          <activation>
+              <property>
+                  <name>performRelease</name>
+                  <value>true</value>
+              </property>
+          </activation>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-gpg-plugin</artifactId>
+                      <version>1.4</version>
+                      <executions>
+                          <execution>
+                              <id>sign-artifacts</id>
+                              <phase>verify</phase>
+                              <goals>
+                                  <goal>sign</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+  </profiles>
 
 </project>

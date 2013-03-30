@@ -37,7 +37,7 @@
                        <profile>
                          <id>compiler</id>
                            <properties>
-                             <JAVA_1_5_HOME>/Library/Java/JavaVirtualMachines/1.5.0-leopard/Home</JAVA_1_5_HOME>
+                             <JAVA_1_5_HOME>/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home</JAVA_1_5_HOME>
                            </properties>
                        </profile> 
                        [...]
