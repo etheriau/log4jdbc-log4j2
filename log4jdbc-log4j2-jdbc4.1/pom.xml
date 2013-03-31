@@ -33,7 +33,7 @@
               </configuration>
           </plugin>
       </plugins>
-      <finalName>log4jdbc-log4j2-jdbc4.1</finalName>
+      <finalName>log4jdbc-log4j2-jdbc4.1-${project.version}</finalName>
   </build>  
   
 </project>

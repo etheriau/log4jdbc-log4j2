@@ -20,7 +20,7 @@
 	</modules>
 	
 	<url>http://code.google.com/p/log4jdbc-log4j2/</url>
-	<description>log4jdbc-log4j2 is a modification of log4jdbc to natively use Log4j2, to provide a support for JDBC 4.1, and that includes all the improvements of log4jdbc-remix. It also provides some slight improvements on its own.</description>
+	<description>A modification of log4jdbc to natively use Log4j 2 (or SLF4J as usual), that supports from JDBC 4.1 to JDBC 3, includes all the improvements of log4jdbc-remix, and provides new improvements on its own.</description>
 	<licenses>
         <license>
             <name>Apache 2</name>
