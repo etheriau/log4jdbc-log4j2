@@ -140,9 +140,14 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
      */
     private static final Marker CONNECTION_MARKER = MarkerManager.getMarker("LOG4JDBC_CONNECTION", NON_STATEMENT_MARKER);
     /**
+     * <code>Marker</code> to log all JDBC calls including <code>ResultSet</code>s, 
+     * and result sets as tables.
+     */
+    private static final Marker OTHER_MARKER = MarkerManager.getMarker("LOG4JDBC_OTHER", NON_STATEMENT_MARKER);
+    /**
      * <code>Marker</code> to log all JDBC calls including <code>ResultSet</code>s
      */
-    private static final Marker JDBC_MARKER = MarkerManager.getMarker("LOG4JDBC_JDBC", NON_STATEMENT_MARKER);
+    private static final Marker JDBC_MARKER = MarkerManager.getMarker("LOG4JDBC_JDBC", OTHER_MARKER);
     /**
      * <code>Marker</code> to log all JDBC calls except for <code>ResultSet</code>s
      * (corresponds to the "jdbc.audit" logger in the standard implementation)
@@ -160,7 +165,7 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
      * @see net.sf.log4jdbc.sql.resultsetcollector
      */
     private static final Marker RESULTSETTABLE_MARKER = 
-            MarkerManager.getMarker("LOG4JDBC_RESULTSETTABLE", RESULTSET_MARKER);
+            MarkerManager.getMarker("LOG4JDBC_RESULTSETTABLE", OTHER_MARKER);
     /**
      * <code>Marker</code> to log <code>Exception</code>s.
      * These are not specific to one logger in the standard implementation,
