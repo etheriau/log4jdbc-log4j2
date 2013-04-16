@@ -90,9 +90,9 @@ public class SpyLogFactory
             try{
                 setSpyLogDelegator(new Log4j2SpyLogDelegator());
             }
-            catch(Error e){
-                throw new NoClassDefFoundError("Unable to find Log4j2 as default logging library.\n" +
-                        "Please provide a logging library and configure a valid spyLogDelegator name in the properties file.\n");
+            catch(NoClassDefFoundError e){
+                throw new NoClassDefFoundError("Unable to find Log4j2 as default logging library. " +
+                        "Please provide a logging library and configure a valid spyLogDelegator name in the properties file.");
             }		   
         } else {
             try {
