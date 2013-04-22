@@ -122,9 +122,48 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.14</version>
                 <configuration>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
+                        <forkCount>1</forkCount>
+                        <reuseForks>false</reuseForks>
                 </configuration>
+                
+                  <executions>
+                   
+                    <!-- Regular execution, where all libraries are available -->
+                    <execution>
+                      <id>default-test</id>
+                      <phase>test</phase>
+                      <goals>
+                        <goal>test</goal>
+                      </goals>
+                      <configuration>
+                        <excludes>
+                          <exclude>**/NoLog4j2LoggerIT.java</exclude>
+                        </excludes>
+                      </configuration>
+                    </execution>
+                    
+                    <!-- Test when a logging library is missing (more like an integration test, 
+                         but simple enough to be handled here) -->
+                    <execution>
+                      <id>it-test</id>
+                      <phase>test</phase>
+                      <goals>
+                        <goal>test</goal>
+                      </goals>
+                      <configuration>
+                        <includes>
+                          <include>**/No*LoggerIT.java</include>
+                        </includes>
+                        <classpathDependencyExcludes>
+                          <classpathDependencyExcludes>org.apache.logging.log4j:log4j-core</classpathDependencyExcludes>
+                          <classpathDependencyExcludes>org.apache.logging.log4j:log4j-api</classpathDependencyExcludes>
+                          <classpathDependencyExcludes>org.slf4j:slf4j-api</classpathDependencyExcludes>
+                          <classpathDependencyExcludes>org.slf4j:slf4j-log4j12</classpathDependencyExcludes>
+                        </classpathDependencyExcludes>
+                      </configuration>
+                    </execution>
+                    
+                </executions>
           </plugin>
       </plugins>
   </build> 

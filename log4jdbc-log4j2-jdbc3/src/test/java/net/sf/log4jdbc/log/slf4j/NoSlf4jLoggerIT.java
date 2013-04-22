@@ -1,6 +1,8 @@
-package net.sf.log4jdbc.log;
+package net.sf.log4jdbc.log.slf4j;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
+import net.sf.log4jdbc.log.SpyLogFactory;
 
 import org.junit.Test;
 
@@ -11,7 +13,7 @@ import org.junit.Test;
  * @version 1.0
  * @see net.sf.log4jdbc.log.SpyLogFactory
  */
-public class TestErrorIfNoLogger
+public class NoSlf4jLoggerIT
 {
 
     /**
@@ -21,14 +23,17 @@ public class TestErrorIfNoLogger
     @Test(expected=NoClassDefFoundError.class)
     public void test()
     {
-        try{
+    	System.setProperty("log4jdbc.spylogdelegator.name", 
+        		Slf4jSpyLogDelegator.class.getName());
+    	
+    	try{
             // try to get a logger through the creation of a SpyLogDelegator
             SpyLogFactory.getSpyLogDelegator();
-        }catch(NoClassDefFoundError e){
+        } catch (NoClassDefFoundError e){
             // check the content of the error message
-            assertTrue("Wrong error message attached to the NoClassDefFoundError",
-                    e.getMessage().equals("Unable to find Log4j2 as default logging library. " +
-                    "Please provide a logging library and configure a valid spyLogDelegator name in the properties file."));
+            assertEquals("Wrong error message attached to the NoClassDefFoundError",
+                    e.getMessage(), "Cannot find a library corresponding to the property log4jdbc.spylogdelegator.name. " +
+                		"Please provide a logging library and configure a valid spyLogDelegator name in the properties file.");
             // re throw it to pass the test
             throw(e);
         }
