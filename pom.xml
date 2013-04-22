@@ -4,7 +4,7 @@
 	<groupId>org.bgee.log4jdbc-log4j2</groupId>
 	<artifactId>log4jdbc-log4j2</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.11-SNAPSHOT</version>
 	<name>log4jdbc-log4j2</name>
 	
 	<parent>
