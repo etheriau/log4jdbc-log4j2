@@ -107,6 +107,9 @@ public class SpyLogFactory
                 throw new IllegalArgumentException(
                         "spyLogDelegatorName does not allow to load a valid SpyLogDelegator: " + 
                                 e.getMessage());
+            } catch (NoClassDefFoundError e) {
+            	throw new NoClassDefFoundError("Cannot find a library corresponding to the property log4jdbc.spylogdelegator.name. " +
+                		"Please provide a logging library and configure a valid spyLogDelegator name in the properties file.");
             }
         }
     } 
