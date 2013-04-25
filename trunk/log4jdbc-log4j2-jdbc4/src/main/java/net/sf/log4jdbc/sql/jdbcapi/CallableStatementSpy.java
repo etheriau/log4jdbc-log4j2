@@ -1706,7 +1706,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	@Override
 	public Array getArray(String parameterName) throws SQLException
 	{
-		String methodCall = "getURL(" + parameterName + ")";
+		String methodCall = "getArray(" + parameterName + ")";
 		try
 		{
 			return (Array) reportReturn(methodCall, realCallableStatement.getArray(parameterName));
