@@ -1273,21 +1273,7 @@ public class ResultSetSpy implements ResultSet, Spy
   public Statement getStatement() throws SQLException
   {
     String methodCall = "getStatement()";
-    try
-    {
-      Statement s = realResultSet.getStatement();
-      if (s == null)
-      {
-        return reportReturn(methodCall, s, (Object[]) null);
-      }
-      // todo: what's going on here?
-      return reportReturn(methodCall, new StatementSpy(new ConnectionSpy(s.getConnection()), s), (Object[]) null);
-    }
-    catch (SQLException s)
-    {
-      reportException(methodCall, s);
-      throw s;
-    }
+    return (Statement) reportReturn(methodCall, parent);
   }
 
   public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException
