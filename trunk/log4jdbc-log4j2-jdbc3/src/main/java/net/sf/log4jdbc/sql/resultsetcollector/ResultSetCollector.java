@@ -15,6 +15,7 @@
  */
 package net.sf.log4jdbc.sql.resultsetcollector;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
@@ -60,6 +61,23 @@ public interface ResultSetCollector {
    * Clear the result set so far.
    */
   public void reset();
-
+  
+  /**
+   * Allow this <code>ResultSetCollector</code> to obtain a <code>ResultSetMetaData</code> 
+   * from the real underlying JDBC <code>ResultSet</code>, and store it in an internal 
+   * attribute for later use. The <code>ResultSetMetaData</code> should be requested 
+   * to the real JDBC <code>ResultSet</code> by this method only once, 
+   * if not already obtained and stored in an internal attribute, and should first check 
+   * if <code>rs</code> is not already closed. 
+   * This methods is usually called under the hood by the <code>ResultSetCollector</code> 
+   * itself, but it might by required to manually load the <code>ResultSetMetaData</code> 
+   * if, for instance, the real <code>ResultSet</code> is about to be closed before 
+   * the <code>ResultSetCollector</code> requested for the <code>ResultSetMetaData</code> 
+   * (for instance, if the method <code>next</code> was not previously called). 
+   * 
+   * @param rs 		The real JDBC <code>ResultSet</code> that was wrapped into 
+   * 				a <code>ResultSetSpy</code>.
+   */
+  public void loadMetaDataIfNeeded(ResultSet rs);
 
 }
