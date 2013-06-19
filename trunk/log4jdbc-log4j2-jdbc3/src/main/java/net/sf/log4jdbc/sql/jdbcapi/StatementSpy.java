@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import net.sf.log4jdbc.Properties;
 import net.sf.log4jdbc.log.SpyLogDelegator;
-import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.Utilities;
 
@@ -89,8 +88,12 @@ public class StatementSpy implements Statement, Spy
 	 *
 	 * @param connectionSpy Connection that created this Statement.
 	 * @param realStatement real underlying Statement that this StatementSpy wraps.
+     * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+     * 						this <code>StatementSpy</code> and all resources obtained from it 
+     * 						(<code>ResultSet</code>s)
 	 */
-	public StatementSpy(ConnectionSpy connectionSpy, Statement realStatement)
+	public StatementSpy(ConnectionSpy connectionSpy, Statement realStatement, 
+			SpyLogDelegator logDelegator)
 	{
 		if (realStatement == null)
 		{
@@ -103,7 +106,7 @@ public class StatementSpy implements Statement, Spy
 		this.realStatement = realStatement;
 		this.connectionSpy = connectionSpy;
 
-		log = SpyLogFactory.getSpyLogDelegator();
+		log = logDelegator;
 
 		if (realStatement instanceof CallableStatement)
 		{
@@ -624,7 +627,7 @@ public class StatementSpy implements Statement, Spy
 			{
 				return (ResultSet) reportReturn(methodCall, r);
 			}
-			return (ResultSet) reportReturn(methodCall, new ResultSetSpy(this, r));
+			return (ResultSet) reportReturn(methodCall, new ResultSetSpy(this, r, this.log));
 		}
 		catch (SQLException s)
 		{
@@ -705,7 +708,7 @@ public class StatementSpy implements Statement, Spy
 		{
 			ResultSet result = realStatement.executeQuery(sql);
 			reportStatementSqlTiming(System.currentTimeMillis() - tstart, sql, methodCall);
-			ResultSetSpy r = new ResultSetSpy(this, result);
+			ResultSetSpy r = new ResultSetSpy(this, result, this.log);
 			return (ResultSet) reportReturn(methodCall, r);
 		}
 		catch (SQLException s)
@@ -940,7 +943,7 @@ public class StatementSpy implements Statement, Spy
 			{
 				return (ResultSet) reportReturn(methodCall, r);
 			}
-			return (ResultSet) reportReturn(methodCall, new ResultSetSpy(this, r));
+			return (ResultSet) reportReturn(methodCall, new ResultSetSpy(this, r, this.log));
 		}
 		catch (SQLException s)
 		{

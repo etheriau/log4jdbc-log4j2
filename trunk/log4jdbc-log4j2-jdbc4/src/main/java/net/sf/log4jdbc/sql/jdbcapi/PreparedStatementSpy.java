@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
 
@@ -184,10 +185,14 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
    * @param sql                   SQL for the prepared statement that is being spied upon.
    * @param connectionSpy         ConnectionSpy that was called to produce this PreparedStatement.
    * @param realPreparedStatement The actual PreparedStatement that is being spied upon.
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>PreparedStatementSpy</code> and all resources obtained 
+   * 						from it (<code>ResultSet</code>s)
    */
-  public PreparedStatementSpy(String sql, ConnectionSpy connectionSpy, PreparedStatement realPreparedStatement)
+  public PreparedStatementSpy(String sql, ConnectionSpy connectionSpy, 
+		  PreparedStatement realPreparedStatement, SpyLogDelegator logDelegator)
   {
-    super(connectionSpy, realPreparedStatement);  // does null check for us
+    super(connectionSpy, realPreparedStatement, logDelegator);  // does null check for us
     this.sql = sql;
     this.realPreparedStatement = realPreparedStatement;
     rdbmsSpecifics = connectionSpy.getRdbmsSpecifics();
@@ -774,7 +779,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
     {
       ResultSet r = realPreparedStatement.executeQuery();
       reportSqlTiming(System.currentTimeMillis() - tstart, dumpedSql, methodCall);
-      ResultSetSpy rsp = new ResultSetSpy(this, r);
+      ResultSetSpy rsp = new ResultSetSpy(this, r, this.log);
       return (ResultSet) reportReturn(methodCall, rsp);
     }
     catch (SQLException s)
