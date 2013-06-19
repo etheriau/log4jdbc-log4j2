@@ -70,10 +70,13 @@ public class DefaultResultSetCollector implements ResultSetCollector {
     if (metaData == null) {
       try {
     	  metaData = rs.getMetaData();
+          setupColNameToColIndexMap();
       } catch (SQLException e) {
-        throw new RuntimeException(e);
+    	  //as we cannot check that the ResultSet is closed before calling getMetaData 
+    	  //in JDBC 3, we are going to assume that if there is an Exception, 
+    	  //it is because the ResultSet is closed, and we do nothing. 
+          //throw new RuntimeException(e);
       }
-      setupColNameToColIndexMap();
     }
   }
 
