@@ -2,9 +2,11 @@ package net.sf.log4jdbc.log;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -210,7 +212,98 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         // clean all mock objects
         mock.deregister();
 
-    }    
+    }      
+    
+    /**
+     * Test the functionality of setting different custom <code>SpyLogFactory</code>s
+     * at the <code>DataSourceSpy</code> level.
+     * @throws SQLException 
+     * @throws IOException 
+     */
+    @Test
+    public void testDataSourceSpyCustomLog() throws SQLException
+    {
+        // Create all fake mock objects and returns
+        MockDriverUtils mock = new MockDriverUtils();
+        DataSource mockDataSource = mock(DataSource.class);
+        DatabaseMetaData mockDbmd = mock(DatabaseMetaData.class);
+        when(mockDataSource.getConnection()).thenReturn(mock.getMockConnection());
+        when(mock.getMockConnection().getMetaData()).thenReturn(mockDbmd);
+        
+        DataSourceSpy dss = new DataSourceSpy(mockDataSource);
+
+        //mock a custom SpyLogDelegator to check that it is actually used by the DataSource
+        //when set
+        SpyLogDelegator customLog1 = mock(SpyLogDelegator.class);
+        when(customLog1.isJdbcLoggingEnabled()).thenReturn(true);
+        dss.setLogDelegator(customLog1);
+        
+        //get a connection and check that the custom logger was used
+        Connection conn1 = dss.getConnection();
+        verify(customLog1).connectionOpened(eq((ConnectionSpy) conn1), anyLong());
+        
+        //get a new custom logger, set it to the DataSource
+        SpyLogDelegator customLog2 = mock(SpyLogDelegator.class);
+        when(customLog2.isJdbcLoggingEnabled()).thenReturn(true);
+        dss.setLogDelegator(customLog2);
+        
+        //get a new connection, the new logger should be used
+        Connection conn2 = dss.getConnection();
+        verify(customLog2).connectionOpened(eq((ConnectionSpy) conn2), anyLong());
+        //the first logger should not have been used anymore
+        verify(customLog1, times(1)).connectionOpened(any(ConnectionSpy.class), anyLong());
+        
+        //if we perform an operation on the first connection, the first logger should be used, 
+        //not the second one
+        conn1.close();
+        verify(customLog1).connectionClosed(eq((ConnectionSpy) conn1), anyLong());
+        verify(customLog2, never()).connectionClosed(any(ConnectionSpy.class), anyLong());       
+
+        // clean all mock objects
+        mock.deregister();
+    }   
+    
+    /**
+     * Test a <code>DataSourceSpy</code> returns a standard 
+     * <code>java.sql.Connection</code> if JDBC logging is disable.
+     * @throws SQLException 
+     * @throws IOException 
+     */
+    @Test
+    public void testDataSourceLoggingDisabled() throws SQLException
+    {
+        // Create all fake mock objects and returns
+        MockDriverUtils mock = new MockDriverUtils();
+        DataSource mockDataSource = mock(DataSource.class);
+        DatabaseMetaData mockDbmd = mock(DatabaseMetaData.class);
+        when(mockDataSource.getConnection()).thenReturn(mock.getMockConnection());
+        when(mock.getMockConnection().getMetaData()).thenReturn(mockDbmd);
+        
+        DataSourceSpy dss = new DataSourceSpy(mockDataSource);
+
+        //mock a custom SpyLogDelegator with JDBC logging enabled
+        SpyLogDelegator customLog1 = mock(SpyLogDelegator.class);
+        when(customLog1.isJdbcLoggingEnabled()).thenReturn(true);
+        dss.setLogDelegator(customLog1);
+        //The connection should be a ConnectionSpy
+        Connection conn1 = dss.getConnection();
+        if (!(conn1 instanceof ConnectionSpy)) {
+        	throw new AssertionError("The DataSource did not returned a ConnectionSpy " +
+        			"when it should have");
+        }
+        
+        //then disable JDBC logging
+        when(customLog1.isJdbcLoggingEnabled()).thenReturn(false);
+        //The connection should be a ConnectionSpy
+        Connection conn2 = dss.getConnection();
+        if (conn2 instanceof ConnectionSpy) {
+        	throw new AssertionError("The DataSource returned a ConnectionSpy " +
+        			"when it should not have");
+        }     
+
+        // clean all mock objects
+        mock.deregister();
+    } 
 
     /**
      * Unit test for the method isJdbcLoggingEnabled
@@ -237,7 +330,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 
         MockDriverUtils mock = new MockDriverUtils();
 
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();
@@ -269,7 +363,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     {   
         // Create a fake connection using Mockito
         MockDriverUtils mock = new MockDriverUtils();
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();
@@ -309,7 +404,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 
         // Create a fake connection using Mockito
         MockDriverUtils mock = new MockDriverUtils();
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();
@@ -351,7 +447,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 
         // Create a fake connection using Mockito
         MockDriverUtils mock = new MockDriverUtils();
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();
@@ -379,7 +476,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 
         // Create a fake connection using Mockito
         MockDriverUtils mock = new MockDriverUtils();
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();
@@ -408,7 +506,8 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
 
         // Create a fake connection using Mockito
         MockDriverUtils mock = new MockDriverUtils();
-        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection());
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+        		TestSpyLogDelegator);
 
         // Run the method after ensuring the log file is empty 
         emptyLogFile();

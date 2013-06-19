@@ -39,7 +39,6 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 import net.sf.log4jdbc.log.SpyLogDelegator;
-import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
 
@@ -132,10 +131,13 @@ public class ConnectionSpy implements Connection, Spy
    * Create a new ConnectionSpy that wraps a given Connection.
    *
    * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>ConnectionSpy</code> and all resources obtained from it 
+   * 						(<code>StatementSpy</code>s, ...)
    */
-  public ConnectionSpy(Connection realConnection)
+  public ConnectionSpy(Connection realConnection, SpyLogDelegator logDelegator)
   {
-    this(realConnection, DriverSpy.defaultRdbmsSpecifics);
+    this(realConnection, DriverSpy.defaultRdbmsSpecifics, logDelegator);
   }
 
   /**
@@ -144,10 +146,13 @@ public class ConnectionSpy implements Connection, Spy
    * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
    * @param execTime 	a <code>long</code> defining the time in ms 
    * 					taken to open the connection to <code>realConnection</code>. 
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>ConnectionSpy</code> and all resources obtained from it 
+   * 						(<code>StatementSpy</code>s, ...)
    */
-  public ConnectionSpy(Connection realConnection, long execTime)
+  public ConnectionSpy(Connection realConnection, long execTime, SpyLogDelegator logDelegator)
   {
-    this(realConnection, null, execTime);
+    this(realConnection, null, execTime, logDelegator);
   }
 
   /**
@@ -155,10 +160,14 @@ public class ConnectionSpy implements Connection, Spy
    *
    * @param realConnection &quot;real&quot; Connection that this ConnectionSpy wraps.
    * @param rdbmsSpecifics the RdbmsSpecifics object for formatting logging appropriate for the Rdbms used.
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>ConnectionSpy</code> and all resources obtained from it 
+   * 						(<code>StatementSpy</code>s, ...)
    */
-  public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics)
+  public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics, 
+		  SpyLogDelegator logDelegator)
   {
-    this(realConnection, rdbmsSpecifics, -1L);
+    this(realConnection, rdbmsSpecifics, -1L, logDelegator);
   }
 
   /**
@@ -169,9 +178,12 @@ public class ConnectionSpy implements Connection, Spy
    * @param execTime 	a <code>long</code> defining the time in ms 
    * 					taken to open the connection to <code>realConnection</code>. 
    * 					Should be equals to -1 if not used. 
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>ConnectionSpy</code> and all resources obtained from it 
+   * 						(<code>StatementSpy</code>s, ...)
    */
   public ConnectionSpy(Connection realConnection, RdbmsSpecifics rdbmsSpecifics, 
-		  long execTime)
+		  long execTime, SpyLogDelegator logDelegator)
   {
     if (rdbmsSpecifics == null)
     {
@@ -183,7 +195,7 @@ public class ConnectionSpy implements Connection, Spy
       throw new IllegalArgumentException("Must pass in a non null real Connection");
     }
     this.realConnection = realConnection;
-    log = SpyLogFactory.getSpyLogDelegator();
+    log = logDelegator;
 
     synchronized (connectionTracker)
     {
@@ -396,7 +408,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       Statement statement = realConnection.createStatement();
-      return reportReturn(methodCall, new StatementSpy(this, statement));
+      return reportReturn(methodCall, new StatementSpy(this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -412,7 +424,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       Statement statement = realConnection.createStatement(resultSetType, resultSetConcurrency);
-      return reportReturn(methodCall, new StatementSpy(this, statement));
+      return reportReturn(methodCall, new StatementSpy(this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -429,7 +441,7 @@ public class ConnectionSpy implements Connection, Spy
     {
       Statement statement = realConnection.createStatement(resultSetType, resultSetConcurrency,
         resultSetHoldability);
-      return reportReturn(methodCall, new StatementSpy(this, statement));
+      return reportReturn(methodCall, new StatementSpy(this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -461,7 +473,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       PreparedStatement statement = realConnection.prepareStatement(sql);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -477,7 +489,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       PreparedStatement statement = realConnection.prepareStatement(sql, autoGeneratedKeys);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -493,7 +505,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       PreparedStatement statement = realConnection.prepareStatement(sql, resultSetType, resultSetConcurrency);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -511,7 +523,7 @@ public class ConnectionSpy implements Connection, Spy
     {
       PreparedStatement statement = realConnection.prepareStatement(sql, resultSetType, resultSetConcurrency,
         resultSetHoldability);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -528,7 +540,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       PreparedStatement statement = realConnection.prepareStatement(sql, columnIndexes);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -560,7 +572,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       PreparedStatement statement = realConnection.prepareStatement(sql, columnNames);
-      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new PreparedStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -766,7 +778,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       CallableStatement statement = realConnection.prepareCall(sql);
-      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -782,7 +794,7 @@ public class ConnectionSpy implements Connection, Spy
     try
     {
       CallableStatement statement = realConnection.prepareCall(sql, resultSetType, resultSetConcurrency);
-      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {
@@ -800,7 +812,7 @@ public class ConnectionSpy implements Connection, Spy
     {
       CallableStatement statement = realConnection.prepareCall(sql, resultSetType, resultSetConcurrency,
         resultSetHoldability);
-      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement));
+      return reportReturn(methodCall, new CallableStatementSpy(sql, this, statement, this.log));
     }
     catch (SQLException s)
     {

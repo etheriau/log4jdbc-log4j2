@@ -32,6 +32,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import net.sf.log4jdbc.log.SpyLogDelegator;
+
 /**
  * Wraps a CallableStatement and reports method calls, returns and exceptions.
  *
@@ -66,10 +68,14 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	 * @param sql                   The SQL used for this CallableStatement
 	 * @param connectionSpy         The ConnectionSpy which produced this CallableStatementSpy
 	 * @param realCallableStatement The real CallableStatement that is being spied upon
+     * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+     * 						this <code>CallableStatementSpy</code> and all resources obtained 
+     * 						from it (<code>ResultSet</code>s)
 	 */
-	public CallableStatementSpy(String sql, ConnectionSpy connectionSpy, CallableStatement realCallableStatement)
+	public CallableStatementSpy(String sql, ConnectionSpy connectionSpy, 
+			CallableStatement realCallableStatement, SpyLogDelegator logDelegator)
 	{
-		super(sql, connectionSpy, realCallableStatement);
+		super(sql, connectionSpy, realCallableStatement, logDelegator);
 		this.realCallableStatement = realCallableStatement;
 	}
 

@@ -38,7 +38,6 @@ import java.util.Calendar;
 import java.util.Map;
 
 import net.sf.log4jdbc.log.SpyLogDelegator;
-import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.resultsetcollector.DefaultResultSetCollector;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
@@ -146,8 +145,11 @@ public class ResultSetSpy implements ResultSet, Spy
    *
    * @param parent Statement that generated this ResultSet.
    * @param realResultSet real underlying ResultSet that is being wrapped.
+   * @param logDelegator 	The <code>SpyLogDelegator</code> used by 
+   * 						this <code>ResultSetSpy</code>.
    */
-  public ResultSetSpy(StatementSpy parent, ResultSet realResultSet)
+  public ResultSetSpy(StatementSpy parent, ResultSet realResultSet, 
+		  SpyLogDelegator logDelegator)
   {
     if (realResultSet == null)
     {
@@ -155,7 +157,7 @@ public class ResultSetSpy implements ResultSet, Spy
     }
     this.realResultSet = realResultSet;
     this.parent = parent;
-    this.log = SpyLogFactory.getSpyLogDelegator();
+    this.log = logDelegator;
     if (log.isResultSetCollectionEnabled())
     {
       resultSetCollector = new DefaultResultSetCollector(log.isResultSetCollectionEnabledWithUnreadValueFillIn());

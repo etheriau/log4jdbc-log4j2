@@ -73,7 +73,12 @@ import net.sf.log4jdbc.sql.Spy;
  */
 public class DataSourceSpy implements DataSource, Spy {
 	private DataSource realDataSource;
-	private static final SpyLogDelegator log = SpyLogFactory.getSpyLogDelegator();
+	/**
+	 * The <code>SpyLogDelegator</code> used by this <code>DataSource</code> 
+	 * and used by all resources obtained starting from this <code>DataSource</code> 
+	 * (<code>Connection</code>s, <code>ResultSet</code>s, ...).
+	 */
+	private SpyLogDelegator log;
 
 	/**
 	 * Constructor
@@ -82,6 +87,31 @@ public class DataSourceSpy implements DataSource, Spy {
 	public DataSourceSpy(DataSource realDataSource)
 	{
 		this.realDataSource = realDataSource;
+		this.log = SpyLogFactory.getSpyLogDelegator();
+	}
+	
+	/**
+	 * Get the <code>SpyLogDelegator</code> that are used by all resources 
+	 * obtained starting from this <code>DataSource</code> 
+	 * (<code>Connection</code>s, <code>ResultSet</code>s, ...). 
+	 * @return 		The <code>SpyLogDelegator</code> currently used 
+	 * 				by this <code>DataSource</code>.
+	 */
+	public SpyLogDelegator getLogDelegator() {
+		return this.log;
+	}
+	/**
+	 * Set a custom <code>SpyLogDelegator</code> to be used by all resources 
+	 * provided by this <code>DataSource</code>, rather than the default 
+	 * <code>SpyLogDelegator</code> returned by 
+	 * {@link net.sf.log4jdbc.log.SpyLogFactory#getSpyLogDelegator() 
+	 * SpyLogFactory#getSpyLogDelegator()}.
+	 * @param spyLogDelegator	The <code>SpyLogDelegator</code> to be used by all resources 
+	 * 							obtained starting from this <code>DataSource</code> 
+	 * 							(<code>Connection</code>s, <code>ResultSet</code>s, ...).
+	 */
+	public void setLogDelegator(SpyLogDelegator spyLogDelegator) {
+		this.log = spyLogDelegator;
 	}
 
 	/**
@@ -118,7 +148,7 @@ public class DataSourceSpy implements DataSource, Spy {
 			if (log.isJdbcLoggingEnabled()) {
 			    return (Connection) reportReturn(methodCall, 
 					new ConnectionSpy(connection, DriverSpy.getRdbmsSpecifics(connection), 
-							          System.currentTimeMillis() - tstart));  
+							          System.currentTimeMillis() - tstart, this.log));  
 			}
 			//if logging is not enable, return the real connection, 
 			//so that there is no useless costs 
@@ -143,7 +173,7 @@ public class DataSourceSpy implements DataSource, Spy {
 			if (log.isJdbcLoggingEnabled()) {
 			    return (Connection) reportReturn(methodCall, 
 					new ConnectionSpy(connection, DriverSpy.getRdbmsSpecifics(connection), 
-							          System.currentTimeMillis() - tstart));  
+							          System.currentTimeMillis() - tstart, this.log));  
 			}
 			//if logging is not enable, return the real connection, 
 			//so that there is no useless costs 
