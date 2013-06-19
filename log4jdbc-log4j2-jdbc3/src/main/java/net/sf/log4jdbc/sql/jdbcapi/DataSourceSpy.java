@@ -114,9 +114,14 @@ public class DataSourceSpy implements DataSource, Spy {
 		try
 		{
 			final Connection connection = realDataSource.getConnection();
-			return (Connection) reportReturn(methodCall, 
+			if (log.isJdbcLoggingEnabled()) {
+			    return (Connection) reportReturn(methodCall, 
 					new ConnectionSpy(connection, DriverSpy.getRdbmsSpecifics(connection), 
 							          System.currentTimeMillis() - tstart));  
+			}
+			//if logging is not enable, return the real connection, 
+			//so that there is no useless costs 
+			return connection;  
 		}
 		catch (SQLException s)
 		{
@@ -133,9 +138,14 @@ public class DataSourceSpy implements DataSource, Spy {
 		try
 		{
 			final Connection connection = realDataSource.getConnection(username, password);
-			return (Connection) reportReturn(methodCall, 
-					new ConnectionSpy(connection,DriverSpy.getRdbmsSpecifics(connection), 
+			if (log.isJdbcLoggingEnabled()) {
+			    return (Connection) reportReturn(methodCall, 
+					new ConnectionSpy(connection, DriverSpy.getRdbmsSpecifics(connection), 
 							          System.currentTimeMillis() - tstart));  
+			}
+			//if logging is not enable, return the real connection, 
+			//so that there is no useless costs 
+			return connection;
 		}
 		catch (SQLException s)
 		{
