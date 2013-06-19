@@ -368,7 +368,8 @@ public class ResultSetSpy implements ResultSet, Spy
     String methodCall = "getTimestamp(" + columnIndex + ", " + cal + ")";
     try
     {
-      return reportReturn(methodCall, realResultSet.getTimestamp(columnIndex, cal), columnIndex, cal);
+      return reportReturn(methodCall, realResultSet.getTimestamp(columnIndex, cal), 
+    		  columnIndex, cal);
     }
     catch (SQLException s)
     {
@@ -384,7 +385,8 @@ public class ResultSetSpy implements ResultSet, Spy
     String methodCall = "getTimestamp(" + columnName + ", " + cal + ")";
     try
     {
-      return reportReturn(methodCall, realResultSet.getTimestamp(columnName, cal), cal);
+      return reportReturn(methodCall, realResultSet.getTimestamp(columnName, cal), 
+    		  columnName, cal);
     }
     catch (SQLException s)
     {

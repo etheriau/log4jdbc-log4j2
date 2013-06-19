@@ -384,7 +384,8 @@ public class ResultSetSpy implements ResultSet, Spy
     String methodCall = "getTimestamp(" + columnName + ", " + cal + ")";
     try
     {
-      return reportReturn(methodCall, realResultSet.getTimestamp(columnName, cal), cal);
+      return reportReturn(methodCall, realResultSet.getTimestamp(columnName, cal), 
+    		  columnName, cal);
     }
     catch (SQLException s)
     {
