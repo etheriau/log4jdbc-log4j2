@@ -66,12 +66,10 @@ public class DefaultResultSetCollector implements ResultSetCollector {
     colIndex = -1;
   }
 
-  private void getMetaDataIfNeeded(Object object) {
+  public void loadMetaDataIfNeeded(ResultSet rs) {
     if (metaData == null) {
-      ResultSet rs = (ResultSet) object;
-
       try {
-        metaData = rs.getMetaData();
+    	  metaData = rs.getMetaData();
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
@@ -129,7 +127,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       }
     }
     if ("next()".equals(methodCall) || "close()".equals(methodCall)) {
-      getMetaDataIfNeeded(resultSetSpy.getRealResultSet());
+      loadMetaDataIfNeeded(resultSetSpy.getRealResultSet());
       boolean isEndOfResultSet = Boolean.FALSE.equals(returnValue) || "close()".equals(methodCall);
       if (row != null) {
         if (rows == null)

@@ -6,6 +6,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import org.mockito.stubbing.Answer;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -31,6 +33,7 @@ import net.sf.log4jdbc.sql.jdbcapi.MockDriverUtils;
 import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
 
 /**
  * Class which tests all the logging actions of log4jdbc-log4j2 SpyDelegator implementation
@@ -76,10 +79,12 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         when(mock.getMockConnection().prepareStatement("SELECT * FROM Test"))
         .thenReturn(mockPrep);
         when(mockPrep.executeQuery()).thenReturn(mockResu);
-        when(mockResu.getMetaData()).thenReturn(mockRsmd);
-        when(mockRsmd.getColumnCount()).thenReturn(1);
-        when(mockRsmd.getColumnName(1)).thenReturn("column 1");
-        when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+        
+    	when(mockRsmd.getColumnCount()).thenReturn(1);
+    	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
+    	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+    	when(mockResu.getMetaData()).thenReturn(mockRsmd);
+    	
         when(mockResu.next()).thenReturn(true);
         when(mockResu.getString(1)).thenReturn("Ok");
 
@@ -126,6 +131,51 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         verify(mockPrep).close();
         conn.close();
         verify(mock.getMockConnection()).close();
+
+        // clean all mock objects
+        mock.deregister();
+    }
+    
+    /**
+     * Unit test related to 
+     * {@link http://code.google.com/p/log4jdbc-log4j2/issues/detail?id=4 issue 4}.
+     */
+    @Test
+    public void testCloseResultSetWithoutNext() throws SQLException
+    {
+    	 // Create all fake mock objects 
+        MockDriverUtils mock = new MockDriverUtils();
+        PreparedStatement mockPrep = mock(PreparedStatement.class);
+        ResultSet mockResu = mock(ResultSet.class);
+
+        when(mock.getMockConnection().prepareStatement("SELECT * FROM Test"))
+        .thenReturn(mockPrep);
+        when(mockPrep.executeQuery()).thenReturn(mockResu);
+        when(mockResu.getMetaData()).thenAnswer(new Answer<ResultSetMetaData>() {
+        	@Override
+            public ResultSetMetaData answer(InvocationOnMock invocation) {
+                try {
+            		//if the resultset was already closed, an exception should be thrown 
+            		//when calling this method (JDBC specifications)
+					verify((ResultSet) invocation.getMock(), never()).close();
+                	ResultSetMetaData mockRsmd = mock(ResultSetMetaData.class);
+                	when(mockRsmd.getColumnCount()).thenReturn(1);
+                	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
+                	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+                	return mockRsmd;
+                } catch (SQLException e) {
+                	throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Connection conn = DriverManager.getConnection("jdbc:log4" + MockDriverUtils.MOCKURL);
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Test");
+        ResultSet resu = ps.executeQuery();
+        //the bug appeared when close() was called on the ResultSet 
+        //without any prior calls to next(), 
+        //because log4jdbc was calling getMetaData() on a closed ResultSet
+        resu.close();
 
         // clean all mock objects
         mock.deregister();

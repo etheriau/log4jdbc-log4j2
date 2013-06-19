@@ -72,6 +72,19 @@ public class ResultSetSpy implements ResultSet, Spy
   }
   
   /**
+   * Give a chance to the <code>resultSetCollector</code> (if one is set) 
+   * to obtain a <code>ResultSetMetaData</code> before <code>realResultSet</code> 
+   * is closed.
+   * @see #close()
+   */
+  private void loadMetaDataIfNeeded()
+  {
+	  if (resultSetCollector != null) {
+		  resultSetCollector.loadMetaDataIfNeeded(realResultSet);
+	  }
+  }
+  
+  /**
    * Report (for logging) that a method returned.  All the other reportReturn methods are convenience methods that call
    * this method.
    *
@@ -1509,7 +1522,15 @@ public class ResultSetSpy implements ResultSet, Spy
     String methodCall = "close()";
     try
     {
-      realResultSet.close();
+    	//this line fixes the issue 4 
+    	//http://code.google.com/p/log4jdbc-log4j2/issues/detail?id=4
+    	//Other alternatives would be possible, for instance, 
+    	//externalizing ResultSetCollector calls from reportAllReturns, 
+    	//and calling the new method here. This would have required changes to other methods 
+    	//of this class. 
+    	this.loadMetaDataIfNeeded();
+    	
+        realResultSet.close();
     }
     catch (SQLException s)
     {
