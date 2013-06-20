@@ -4,7 +4,7 @@
 	<groupId>org.bgee.log4jdbc-log4j2</groupId>
 	<artifactId>log4jdbc-log4j2</artifactId>
 	<packaging>pom</packaging>
-	<version>1.15</version>
+	<version>1.16-SNAPSHOT</version>
 	<name>log4jdbc-log4j2</name>
 	
 	<parent>
@@ -29,9 +29,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:http://log4jdbc-log4j2.googlecode.com/svn/tags/log4jdbc-log4j2-1.15</connection>
-        <developerConnection>scm:svn:https://log4jdbc-log4j2.googlecode.com/svn/tags/log4jdbc-log4j2-1.15</developerConnection>
-        <url>http://code.google.com/p/log4jdbc-log4j2/source/browse/tags/log4jdbc-log4j2-1.15</url>
+        <connection>scm:svn:http://log4jdbc-log4j2.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://log4jdbc-log4j2.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/log4jdbc-log4j2/source/browse</url>
     </scm>
 	<organization>
         <name>Bgee - Swiss Institute of Bioinformatics</name>
