@@ -1,14 +1,17 @@
 package net.sf.log4jdbc.log;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import org.mockito.stubbing.Answer;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -23,6 +26,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -35,7 +40,6 @@ import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Class which tests all the logging actions of log4jdbc-log4j2 SpyDelegator implementation
@@ -81,10 +85,12 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         when(mock.getMockConnection().prepareStatement("SELECT * FROM Test"))
         .thenReturn(mockPrep);
         when(mockPrep.executeQuery()).thenReturn(mockResu);
-        when(mockResu.getMetaData()).thenReturn(mockRsmd);
-        when(mockRsmd.getColumnCount()).thenReturn(1);
-        when(mockRsmd.getColumnName(1)).thenReturn("column 1");
-        when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+        
+    	when(mockRsmd.getColumnCount()).thenReturn(1);
+    	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
+    	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+    	when(mockResu.getMetaData()).thenReturn(mockRsmd);
+    	
         when(mockResu.next()).thenReturn(true);
         when(mockResu.getString(1)).thenReturn("Ok");
 
@@ -152,7 +158,6 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         .thenReturn(mockPrep);
         when(mockPrep.executeQuery()).thenReturn(mockResu);
         when(mockResu.getMetaData()).thenAnswer(new Answer<ResultSetMetaData>() {
-        	
             public ResultSetMetaData answer(InvocationOnMock invocation) {
                 try {
             		//if the resultset was already closed, an exception should be thrown 
@@ -176,7 +181,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         //without any prior calls to next(), 
         //because log4jdbc was calling getMetaData() on a closed ResultSet
         resu.close();
-        
+
         // clean all mock objects
         mock.deregister();
     }
@@ -212,7 +217,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         // clean all mock objects
         mock.deregister();
 
-    }      
+    }    
     
     /**
      * Test the functionality of setting different custom <code>SpyLogFactory</code>s
@@ -588,6 +593,82 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
                 outputValue.contains("|c        |d        |"));    
 
     }  
+    
+    /**
+     * In log4jdbc-log4j2, the behavior of the 
+     * {@link net.sf.log4jdbc.sql.resultsetcollector.DefaultResultSetCollector 
+     * DefaultResultSetCollector} has been changed so that results are collected 
+     * also when <code>close</code> is called on a <code>ResultSet</code> 
+     * (and not only when calling <code>next</code> on the <code>ResultSet</code> returns 
+     * <code>false</code>, as in the log4jdbc-remix implementation). 
+     * This leads to print the result set twice if <code>next</code> is called 
+     * and returns <code>false</code>, followed by a call to <code>close</code>.
+     * This methods check that the problem has been fixed. 
+     */
+    @Test
+    public void checkResultSetCollectedOnlyOnce() throws SQLException, IOException
+    {
+    	// Create all fake mock objects 
+        MockDriverUtils mock = new MockDriverUtils();
+        PreparedStatement mockPrep = mock(PreparedStatement.class);
+        ResultSet mockResu = mock(ResultSet.class);
+        ResultSetMetaData mockRsmd = mock(ResultSetMetaData.class);
+
+        when(mock.getMockConnection().prepareStatement("SELECT * FROM Test"))
+        .thenReturn(mockPrep);
+        when(mockPrep.executeQuery()).thenReturn(mockResu);
+        
+    	when(mockRsmd.getColumnCount()).thenReturn(1);
+    	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
+    	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+        when(mockResu.getString(1)).thenReturn("1: Ok");
+    	when(mockResu.getMetaData()).thenReturn(mockRsmd);
+    	
+
+        Connection conn = DriverManager.getConnection("jdbc:log4" + MockDriverUtils.MOCKURL);
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Test");
+        ResultSet resu = ps.executeQuery();
+        
+        emptyLogFile();
+        when(mockResu.next()).thenReturn(true);
+        resu.next();
+        resu.getString(1);
+        
+        when(mockResu.next()).thenReturn(false);
+        //here, the next should trigger the print
+        resu.next();
+        String outputValue = CheckLoggingFunctionalites.readLogFile(-1);
+        assertTrue("next() did not trigger the printing", 
+        		outputValue.contains("|column 1 |"));
+        //not close
+        resu.close();
+        outputValue = CheckLoggingFunctionalites.readLogFile(-1);
+        Pattern pattern = Pattern.compile("\\|column 1 \\|");
+        Matcher matcher = pattern.matcher(outputValue);
+        int count = 0;
+        while (matcher.find()) count++;
+        assertEquals("The ResultSet was printed more than once", 1, count);
+
+        emptyLogFile();
+        when(mockResu.next()).thenReturn(true);
+        //here, next should not trigger the printing
+        resu.next();
+        resu.getString(1);
+        outputValue = CheckLoggingFunctionalites.readLogFile(-1);
+        assertFalse("next() did trigger the printing", 
+        		outputValue.contains("|column 1 |"));
+        //close should have
+        resu.close();
+        outputValue = CheckLoggingFunctionalites.readLogFile(-1);
+        matcher = pattern.matcher(outputValue);
+        count = 0;
+        while (matcher.find()) count++;
+        assertEquals("The ResultSet was printed more than once, or was not printed", 
+        		1, count);
+
+        // clean all mock objects
+        mock.deregister();
+    }
 
     /**
      * Unit test for the method debug

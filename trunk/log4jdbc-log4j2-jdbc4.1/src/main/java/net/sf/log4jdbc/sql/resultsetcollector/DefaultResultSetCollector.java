@@ -37,6 +37,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   public DefaultResultSetCollector(boolean fillInUnreadValues) {
 	  this.reset();
       this.fillInUnreadValues = fillInUnreadValues;
+      this.lastValueReturnedByNext = true;
   }
   /**
    * An <code>Integer</code> representing the number of columns 
@@ -65,6 +66,24 @@ public class DefaultResultSetCollector implements ResultSetCollector {
    * for each column (see {@link #columnCount}).
    */
   private Map<Integer, String> columnNames;
+  /**
+   * A <code>boolean</code> that is the last value returned by a call 
+   * to <code>next</code> (or <code>first</code>) on the related <code>ResultSet</code>. 
+   * This allows to know if this <code>ResultSetCollector</code> must be printed 
+   * when <code>close</code> is called on the related <code>ResultSet</code>: 
+   * if the previous call to <code>next</code> returned <code>true</code>, 
+   * then this <code>ResultSetCollector</code> must be printed 
+   * on the call to <code>close</code>; otherwise, it was already printed following 
+   * the previous call to <code>next</code>, and should not be printed 
+   * on the call to <code>close</code>.
+   * <p>
+   * This attribute must not be reset after a printing (the other attributes are, through a call 
+   * to <code>reset</code>), in case the related <code>ResultSet</code> is reused. 
+   * <p>
+   * Default value at initialization is <code>true</code> (<code>ResultSetCollector</code> 
+   * not printed).
+   */
+  private boolean lastValueReturnedByNext;
   private List<Object> row;
   private List<List<Object>> rows;
   private Map<String, Integer> colNameToColIndex;
@@ -155,9 +174,10 @@ public class DefaultResultSetCollector implements ResultSetCollector {
    * java.lang.Object)
    */
   @Override
-  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, Object targetObject, Object... methodParams) {
+  public boolean methodReturned(ResultSetSpy resultSetSpy, String methodCall, Object returnValue, 
+		  Object targetObject, Object... methodParams) 
+  {
          
-    
     if (methodCall.startsWith("get") && methodParams != null && methodParams.length == 1) {
             
       String methodName = methodCall.substring(0, methodCall.indexOf('('));
@@ -172,9 +192,17 @@ public class DefaultResultSetCollector implements ResultSetCollector {
         row.set(colIndex - 1, NULL_RESULT_SET_VAL);
       }
     }
-    if ("next()".equals(methodCall) || "close()".equals(methodCall)) {
+    if ("next()".equals(methodCall) || "first()".equals(methodCall)) {
+    	this.lastValueReturnedByNext = (Boolean) returnValue;
+    }
+    if ("next()".equals(methodCall) || "first()".equals(methodCall) || 
+    		"close()".equals(methodCall)) {
       loadMetaDataIfNeeded(resultSetSpy.getRealResultSet());
-      boolean isEndOfResultSet = Boolean.FALSE.equals(returnValue) || "close()".equals(methodCall);
+      boolean isEndOfResultSet = 
+    		  //"close" triggers a printing only if the previous call to next 
+    		  //did not return false (end of result set already reached)
+    		  ("close()".equals(methodCall) && this.lastValueReturnedByNext != false) || 
+    		  Boolean.FALSE.equals(returnValue) ;
       if (row != null) {
         if (rows == null)
           rows = new ArrayList<List<Object>>();
@@ -228,7 +256,8 @@ public class DefaultResultSetCollector implements ResultSetCollector {
 
   @Override
   public void preMethod(ResultSetSpy resultSetSpy, String methodCall, Object... methodParams) {
-    if (methodCall.equals("next()") && fillInUnreadValues) {
+    if ((methodCall.equals("next()") || methodCall.equals("close()")) && 
+    		fillInUnreadValues) {
       if (row != null) {
         int colIndex = 0;
         for (Object v : row) {

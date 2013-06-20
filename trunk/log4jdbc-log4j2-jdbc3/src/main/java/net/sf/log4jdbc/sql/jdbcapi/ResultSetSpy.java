@@ -781,6 +781,12 @@ public class ResultSetSpy implements ResultSet, Spy
     	//of this class. 
     	this.loadMetaDataIfNeeded();
     	
+    	if (resultSetCollector != null)
+        {
+          // Give the result set collector a chance to fill in unread values from the result set row if that option has been selected
+          resultSetCollector.preMethod(this, methodCall, (Object[]) null);
+        }
+    	
         realResultSet.close();
     }
     catch (SQLException s)
