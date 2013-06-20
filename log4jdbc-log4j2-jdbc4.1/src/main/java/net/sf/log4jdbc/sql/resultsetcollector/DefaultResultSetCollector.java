@@ -35,14 +35,40 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   private boolean fillInUnreadValues = false;
 
   public DefaultResultSetCollector(boolean fillInUnreadValues) {
-    this.fillInUnreadValues = fillInUnreadValues;
+	  this.reset();
+      this.fillInUnreadValues = fillInUnreadValues;
   }
-
-  private ResultSetMetaData metaData = null;
-  private List<Object> row = null;
-  private List<List<Object>> rows = null;
+  /**
+   * An <code>Integer</code> representing the number of columns 
+   * in the real <code>ResultSet</code> object, obtained by calling 
+   * <code>getColumnCount</code> on the related <code>ResultSetMetaData</code> object.
+   * This attribute is an <code>Integer</code> rather than an <code>int</code>, 
+   * so that we can distinguish the case where the column count has not yet been obtained, 
+   * from the case when the column count is 0 (should never happend, but still...)
+   */
+  private Integer columnCount;
+  /**
+   * A <code>Map</code> where the key is an <code>Integer</code> representing 
+   * the index of a column, and the corresponding value is a <code>String</code> 
+   * being the label of the column. 
+   * This <code>Map</code> is populated by calling <code>getColumnLabel</code> 
+   * on the <code>ResultSetMetaData</code> object of the real <code>ResultSet</code> object, 
+   * for each column (see {@link #columnCount}).
+   */
+  private Map<Integer, String> columnLabels;
+  /**
+   * A <code>Map</code> where the key is an <code>Integer</code> representing 
+   * the index of a column, and the corresponding value is a <code>String</code> 
+   * being the name of the column. 
+   * This <code>Map</code> is populated by calling <code>getColumnLabel</code> 
+   * on the <code>ResultSetMetaData</code> object of the real <code>ResultSet</code> object, 
+   * for each column (see {@link #columnCount}).
+   */
+  private Map<Integer, String> columnNames;
+  private List<Object> row;
+  private List<List<Object>> rows;
   private Map<String, Integer> colNameToColIndex;
-  private int colIndex = -1; // Useful for wasNull calls
+  private int colIndex; 
   private static final List<String> GETTERS = Arrays.asList(new String[] { "getString", "getLong", "getInt", "getDate", "getTimestamp", "getTime",
       "getBigDecimal", "getFloat", "getDouble", "getByte", "getShort", "getObject", "getBoolean", });
 
@@ -51,58 +77,74 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   }
 
   public int getColumnCount() {
-    try {
-      return metaData.getColumnCount();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    return columnCount;
   }
 
   public void reset() {
     rows = null;
     row = null;
-    metaData = null;
     colNameToColIndex = null;
-    colIndex = -1;
+    colIndex = -1;// Useful for wasNull calls
+    columnCount = null;
+    columnLabels = new HashMap<Integer, String>();
+    columnNames = new HashMap<Integer, String>();
   }
 
   @Override
   public void loadMetaDataIfNeeded(ResultSet rs) {
-    if (metaData == null) {
+	  //if data already loaded
+	  if (this.columnCount != null) {
+		  return;
+	  }
+	  //otherwise, get all data now, so that we don't need 
+	  //to use the ResultSetMetaData later (with some drivers, 
+	  //it cannot be used once the ResultSet has been closed)
       try {
     	  if (!rs.isClosed()) {
-              metaData = rs.getMetaData();
+    		  this.loadMetaDataIfNeeded(rs.getMetaData());
     	  }
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
-      setupColNameToColIndexMap();
-    }
   }
-
-  private void setupColNameToColIndexMap() {
-    int columnCount = getColumnCount();
-    colNameToColIndex = new HashMap<String, Integer>(columnCount);
-    for (int column = 1; column <= columnCount; column++) {
-      colNameToColIndex.put(getColumnName(column).toLowerCase(), column);
-      colNameToColIndex.put(getColumnLabel(column).toLowerCase(), column);
-    }
+  
+  /**
+   * Perform the operations requested by {@link #loadMetaDataIfNeeded(ResultSet)}, 
+   * using directly the related <code>ResultSetMetaData</code>.
+   * @param metaData 	The <code>ResultSetMetaData</code> through which the information 
+   * 					needed by {@link #loadMetaDataIfNeeded(ResultSet)} are obtained. 
+   */
+  private void loadMetaDataIfNeeded(ResultSetMetaData metaData)
+  {
+	  //if data already loaded
+	  if (this.columnCount != null) {
+		  return;
+	  }
+	  //otherwise, get all data now, so that we don't need 
+	  //to use the ResultSetMetaData later (with some drivers, 
+	  //it cannot be used once the ResultSet has been closed)
+      try {
+    	  this.columnCount = metaData.getColumnCount();
+    	  this.colNameToColIndex = new HashMap<String, Integer>(this.columnCount);
+    	  for (int column = 1; column <= this.columnCount; column++) {
+    		  String label = metaData.getColumnLabel(column).toLowerCase();
+    		  String name  = metaData.getColumnName(column).toLowerCase();
+    		  this.columnLabels.put(column, label);
+    		  this.columnNames.put(column, name);
+    		  colNameToColIndex.put(label, column);
+    		  colNameToColIndex.put(name, column);
+    	  }
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
   }
 
   public String getColumnName(int column) {
-    try {
-      return metaData.getColumnName(column);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+      return this.columnNames.get(column);
   }
   
   public String getColumnLabel(int column) {
-    try {
-      return metaData.getColumnLabel(column);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+	  return this.columnLabels.get(column);
   }
 
   /*
@@ -147,8 +189,8 @@ public class DefaultResultSetCollector implements ResultSetCollector {
 
     if ("getMetaData()".equals(methodCall)) {
       // If the client code calls getMetaData then we don't have to
-      metaData = (ResultSetMetaData) returnValue;
-      setupColNameToColIndexMap();
+      //here we assume that the real ResultSet is not yet closed. 
+      this.loadMetaDataIfNeeded((ResultSetMetaData) returnValue);
     }
     return false;
   }

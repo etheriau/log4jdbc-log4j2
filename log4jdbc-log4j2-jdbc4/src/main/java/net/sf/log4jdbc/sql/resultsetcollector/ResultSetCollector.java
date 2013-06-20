@@ -53,7 +53,10 @@ public interface ResultSetCollector {
   public int getColumnCount();
 
   /**
-   * @return the result set column name for a given column number via the result set meta data
+   * @return the result set column name for a given column number previously obtained 
+   * from the <code>ResultSetMetaData</code>. Index starts from 1.
+   * @column 	An <code>int</code> representing the index of the column for which 
+   * 			the name will be returned. Index starts from 1. 
    */
   public String getColumnName(int column);
 
@@ -64,10 +67,18 @@ public interface ResultSetCollector {
   
   /**
    * Allow this <code>ResultSetCollector</code> to obtain a <code>ResultSetMetaData</code> 
-   * from the real underlying JDBC <code>ResultSet</code>, and store it in an internal 
-   * attribute for later use. The <code>ResultSetMetaData</code> should be requested 
-   * to the real JDBC <code>ResultSet</code> by this method only once, 
-   * if not already obtained and stored in an internal attribute, and should first check 
+   * from the real underlying JDBC <code>ResultSet</code>, and obtains immediately 
+   * from it the column count, the column names and column labels. This information 
+   * needs to be stored, to be later used by the methods <code>getColumnCount</code> and 
+   * <code>getColumnName</code>, when this <code>ResultSetCollector</code> is printed. 
+   * It is not possible to simply store the <code>ResultSetMetaData</code>, 
+   * as the <code>ResultSet</code> might be closed at the time of printing, and some drivers 
+   * do not support to query the <code>ResultSetMetaData</code> when the <code>ResultSet</code> 
+   * is closed.
+   * <p>
+   * The <code>ResultSetMetaData</code> should be requested and the data obtained 
+   * by this method only once, so a control needs to be done before obtaining 
+   * the <code>ResultSetMetaData</code>. This method should also first check 
    * if <code>rs</code> is not already closed. 
    * This methods is usually called under the hood by the <code>ResultSetCollector</code> 
    * itself, but it might by required to manually load the <code>ResultSetMetaData</code> 
