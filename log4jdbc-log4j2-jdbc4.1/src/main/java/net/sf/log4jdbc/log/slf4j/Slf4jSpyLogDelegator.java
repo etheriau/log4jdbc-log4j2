@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 
 import net.sf.log4jdbc.Properties;
@@ -486,7 +487,7 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
                         firstLog4jdbcCall = i;
                     }
                     else if (Properties.isTraceFromApplication() &&
-                            className.startsWith(Properties.getDebugStackPrefix()))
+                    		Pattern.matches(Properties.getDebugStackPrefix(), className))
                     {
                         lastApplicationCall = i;
                         break;
