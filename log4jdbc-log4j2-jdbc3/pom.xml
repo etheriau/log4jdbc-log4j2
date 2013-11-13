@@ -48,6 +48,7 @@
                          <id>compiler</id>
                            <properties>
                              <JAVA_1_5_HOME>/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home</JAVA_1_5_HOME>
+                             <JAVA_1_5_BOOTCLASSPATH>/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0_30/Classes/classes.jar</JAVA_1_5_BOOTCLASSPATH>
                            </properties>
                        </profile> 
                        [...]
@@ -56,8 +57,27 @@
                        </activeProfiles>
                    -->
                   <executable>${JAVA_1_5_HOME}/bin/javac</executable>
+                  <bootclasspath>${JAVA_1_5_BOOTCLASSPATH}</bootclasspath>
+                  <verbose>true</verbose>
               </configuration>
           </plugin>
+          
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                  <jvm>${JAVA_1_5_HOME}/bin/java</jvm>
+              </configuration>
+          </plugin>
+          
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                  <jvm>${JAVA_1_5_HOME}/bin/java</jvm>
+              </configuration>
+            </plugin>
       </plugins>
       <finalName>log4jdbc-log4j2-jdbc3-${project.version}</finalName>
   </build>  

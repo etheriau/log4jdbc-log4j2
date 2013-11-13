@@ -35,6 +35,7 @@
                          <id>compiler</id>
                            <properties>
                              <JAVA_1_6_HOME>/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home</JAVA_1_6_HOME>
+                             <JAVA_1_6_BOOTCLASSPATH>/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar</JAVA_1_6_BOOTCLASSPATH>
                            </properties>
                        </profile> 
                        [...]
@@ -43,6 +44,16 @@
                        </activeProfiles>
                    -->
                   <executable>${JAVA_1_6_HOME}/bin/javac</executable>
+                  <bootclasspath>${JAVA_1_6_BOOTCLASSPATH}</bootclasspath>
+                  <verbose>true</verbose>
+              </configuration>
+          </plugin>
+          
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                  <jvm>${JAVA_1_6_HOME}/bin/java</jvm>
               </configuration>
           </plugin>
       </plugins>
