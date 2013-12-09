@@ -397,7 +397,7 @@ public class DriverSpy implements Driver
 			throw new SQLException("invalid or unknown driver url: " + url);
 		}
 		if (log.isJdbcLoggingEnabled()) {
-			ConnectionSpy cspy = new ConnectionSpy(c, System.currentTimeMillis() - tstart, this.log);
+			ConnectionSpy cspy = new ConnectionSpy(c, System.currentTimeMillis() - tstart, log);
 			RdbmsSpecifics r = null;
 			String dclass = d.getClass().getName();
 			if (dclass != null && dclass.length() > 0)
