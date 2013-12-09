@@ -12,8 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
 
-import org.h2.jdbcx.JdbcDataSource;
-
 import org.mockito.stubbing.Answer;
 
 import java.io.BufferedReader;
@@ -694,23 +692,6 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
                 CheckLoggingFunctionalites.readLogFile(-1).contains("DEBUGMESSAGE"));
 
 
-    }
-    
-    /**
-     * Regression test for 
-     * <a href='http://code.google.com/p/log4jdbc-log4j2/issues/detail?id=9'>
-     * issue #9</a>.
-     * @throws ClassNotFoundException 
-     * @throws SQLException 
-     */
-    @Test
-    public void testEmptyResultSet() throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        JdbcDataSource realSource = new JdbcDataSource();
-        realSource.setURL("jdbc:h2:mem:db1");
-        DataSource source = new DataSourceSpy(realSource);
-        Connection con = source.getConnection();
-        
     }
 
     /**
