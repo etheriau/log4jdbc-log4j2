@@ -131,6 +131,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
           //it is because the ResultSet is closed, and we do nothing.
           //throw new RuntimeException(e);
       }
+      this.loaded = true;
   }
   
   /**

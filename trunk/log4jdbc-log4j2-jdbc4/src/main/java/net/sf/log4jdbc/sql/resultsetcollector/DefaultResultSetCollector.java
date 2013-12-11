@@ -131,6 +131,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
+      this.loaded = true;
   }
   
   /**
