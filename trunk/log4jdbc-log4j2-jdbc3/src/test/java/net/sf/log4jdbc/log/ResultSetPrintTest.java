@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import net.sf.log4jdbc.TestAncestor;
+import net.sf.log4jdbc.sql.jdbcapi.DriverSpy;
 import net.sf.log4jdbc.sql.jdbcapi.MockDriverUtils;
 
 public class ResultSetPrintTest extends TestAncestor {
@@ -31,7 +32,10 @@ public class ResultSetPrintTest extends TestAncestor {
      * @throws SQLException 
      */
     @Test
-    public void testEmptyResultSet() throws SQLException {
+    public void testEmptyResultSet() throws SQLException, ClassNotFoundException {
+        //with JDBC 3 we need to load the DriverSpy manually
+        Class.forName(DriverSpy.class.getName());
+        
         MockDriverUtils mock = new MockDriverUtils();
         PreparedStatement mockPrep = mock(PreparedStatement.class);
         ResultSet mockResu = mock(ResultSet.class);

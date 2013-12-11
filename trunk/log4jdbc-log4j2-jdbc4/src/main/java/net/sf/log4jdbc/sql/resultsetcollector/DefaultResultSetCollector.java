@@ -40,14 +40,19 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       this.lastValueReturnedByNext = true;
   }
   /**
-   * An <code>Integer</code> representing the number of columns 
+   * A {@code boolean} defining whether parameters of this {@code DefaultResultSetColector} 
+   * has already been obtained from a {@code ResultSetMetaData}.
+   */
+  private boolean loaded;
+  /**
+   * An <code>int</code> representing the number of columns 
    * in the real <code>ResultSet</code> object, obtained by calling 
    * <code>getColumnCount</code> on the related <code>ResultSetMetaData</code> object.
    * This attribute is an <code>Integer</code> rather than an <code>int</code>, 
    * so that we can distinguish the case where the column count has not yet been obtained, 
    * from the case when the column count is 0 (should never happend, but still...)
    */
-  private Integer columnCount;
+  private int columnCount;
   /**
    * A <code>Map</code> where the key is an <code>Integer</code> representing 
    * the index of a column, and the corresponding value is a <code>String</code> 
@@ -100,11 +105,12 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   }
 
   public void reset() {
+    loaded = false;
     rows = null;
     row = null;
     colNameToColIndex = null;
     colIndex = -1;// Useful for wasNull calls
-    columnCount = null;
+    columnCount = 0;
     columnLabels = new HashMap<Integer, String>();
     columnNames = new HashMap<Integer, String>();
   }
@@ -112,7 +118,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   @Override
   public void loadMetaDataIfNeeded(ResultSet rs) {
 	  //if data already loaded
-	  if (this.columnCount != null) {
+	  if (this.loaded) {
 		  return;
 	  }
 	  //otherwise, get all data now, so that we don't need 
@@ -136,14 +142,18 @@ public class DefaultResultSetCollector implements ResultSetCollector {
   private void loadMetaDataIfNeeded(ResultSetMetaData metaData)
   {
 	  //if data already loaded
-	  if (this.columnCount != null) {
+	  if (this.loaded) {
 		  return;
 	  }
 	  //otherwise, get all data now, so that we don't need 
 	  //to use the ResultSetMetaData later (with some drivers, 
 	  //it cannot be used once the ResultSet has been closed)
       try {
-    	  this.columnCount = metaData.getColumnCount();
+          if (metaData == null) {
+              this.columnCount = 0;
+          } else {
+              this.columnCount = metaData.getColumnCount();
+          }
     	  this.colNameToColIndex = new HashMap<String, Integer>(this.columnCount);
     	  for (int column = 1; column <= this.columnCount; column++) {
     		  String label = metaData.getColumnLabel(column).toLowerCase();
@@ -153,6 +163,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
     		  colNameToColIndex.put(label, column);
     		  colNameToColIndex.put(name, column);
     	  }
+    	  this.loaded = true;
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
@@ -181,13 +192,13 @@ public class DefaultResultSetCollector implements ResultSetCollector {
     if (methodCall.startsWith("get") && methodParams != null && methodParams.length == 1) {
             
       String methodName = methodCall.substring(0, methodCall.indexOf('('));
-      if (GETTERS.contains(methodName)) {
+      if (GETTERS.contains(methodName) && getColumnCount() != 0) {
         setColIndexFromGetXXXMethodParams(methodParams);
         makeRowIfNeeded();
         row.set(colIndex - 1, returnValue);
       }
     }
-    if (methodCall.equals("wasNull()")) {
+    if (methodCall.equals("wasNull()") && getColumnCount() != 0) {
       if (Boolean.TRUE.equals(returnValue)) {
         row.set(colIndex - 1, NULL_RESULT_SET_VAL);
       }
