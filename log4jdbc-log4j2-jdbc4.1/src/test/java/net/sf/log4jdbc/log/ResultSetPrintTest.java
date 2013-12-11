@@ -57,4 +57,35 @@ public class ResultSetPrintTest extends TestAncestor {
         mock.deregister();
         removeLogFile();
     }
+    /**
+     * Regression test for 
+     * <a href='http://code.google.com/p/log4jdbc-log4j2/issues/detail?id=9'>
+     * issue #9</a>.
+     * @throws SQLException 
+     */
+    @Test
+    public void testResultSetClosedWhenEmpty() throws SQLException {
+        MockDriverUtils mock = new MockDriverUtils();
+        PreparedStatement mockPrep = mock(PreparedStatement.class);
+        ResultSet mockResu = mock(ResultSet.class);
+        String query = "SELECT * FROM Test";
+
+        when(mock.getMockConnection().prepareStatement(query))
+        .thenReturn(mockPrep);
+        when(mockPrep.executeQuery()).thenReturn(mockResu);
+        
+        Connection conn = DriverManager.getConnection("jdbc:log4" + MockDriverUtils.MOCKURL);
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet resu = ps.executeQuery();
+        
+        when(mockResu.next()).thenReturn(false);
+        when(mockResu.isClosed()).thenReturn(true);
+        when(mockResu.getMetaData()).thenThrow(
+                new AssertionError("getMetaData should not have been called"));
+        
+        resu.next();
+
+        mock.deregister();
+        removeLogFile();
+    }
 }
