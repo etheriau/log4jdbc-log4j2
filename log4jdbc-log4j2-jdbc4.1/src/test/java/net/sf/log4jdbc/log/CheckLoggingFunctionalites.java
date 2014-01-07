@@ -243,7 +243,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         //when set
         SpyLogDelegator customLog1 = mock(SpyLogDelegator.class);
         when(customLog1.isJdbcLoggingEnabled()).thenReturn(true);
-        dss.setLogDelegator(customLog1);
+        dss.setSpyLogDelegator(customLog1);
         
         //get a connection and check that the custom logger was used
         Connection conn1 = dss.getConnection();
@@ -252,7 +252,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         //get a new custom logger, set it to the DataSource
         SpyLogDelegator customLog2 = mock(SpyLogDelegator.class);
         when(customLog2.isJdbcLoggingEnabled()).thenReturn(true);
-        dss.setLogDelegator(customLog2);
+        dss.setSpyLogDelegator(customLog2);
         
         //get a new connection, the new logger should be used
         Connection conn2 = dss.getConnection();
@@ -291,7 +291,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         //mock a custom SpyLogDelegator with JDBC logging enabled
         SpyLogDelegator customLog1 = mock(SpyLogDelegator.class);
         when(customLog1.isJdbcLoggingEnabled()).thenReturn(true);
-        dss.setLogDelegator(customLog1);
+        dss.setSpyLogDelegator(customLog1);
         //The connection should be a ConnectionSpy
         Connection conn1 = dss.getConnection();
         if (!(conn1 instanceof ConnectionSpy)) {
