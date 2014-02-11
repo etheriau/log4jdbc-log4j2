@@ -163,6 +163,13 @@ public class DefaultResultSetCollector implements ResultSetCollector {
     		  this.columnNames.put(column, name);
     		  colNameToColIndex.put(label, column);
     		  colNameToColIndex.put(name, column);
+    		  //get also the table name to resolve calls such as: 
+              //rs.getString("myTable.myColumn")
+              String table = metaData.getTableName(column).toLowerCase();
+              colNameToColIndex.put(table + "." + name, column);
+              //not sure whether table name can be mixed with column label, 
+              //but just in case...
+              colNameToColIndex.put(table + "." + label, column);
     	  }
     	  this.loaded = true;
       } catch (SQLException e) {
@@ -262,7 +269,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       }
       colIndex = idx;
     } else {
-      throw new RuntimeException("ResultSet.getXXX called with: " + param1.getClass().getName());
+      throw new AssertionError("ResultSet.getXXX called with: " + param1.getClass().getName());
     }
   }
 
