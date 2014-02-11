@@ -89,6 +89,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     	when(mockRsmd.getColumnCount()).thenReturn(1);
     	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
     	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+    	when(mockRsmd.getTableName(1)).thenReturn("mytable");
     	when(mockResu.getMetaData()).thenReturn(mockRsmd);
     	
         when(mockResu.next()).thenReturn(true);
@@ -167,6 +168,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
                 	when(mockRsmd.getColumnCount()).thenReturn(1);
                 	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
                 	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+                	when(mockRsmd.getTableName(1)).thenReturn("mytable");
                 	return mockRsmd;
                 } catch (SQLException e) {
                 	throw new RuntimeException(e);
@@ -621,6 +623,7 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     	when(mockRsmd.getColumnCount()).thenReturn(1);
     	when(mockRsmd.getColumnName(1)).thenReturn("column 1");
     	when(mockRsmd.getColumnLabel(1)).thenReturn("column 1 renamed");
+    	when(mockRsmd.getTableName(1)).thenReturn("mytable");
         when(mockResu.getString(1)).thenReturn("1: Ok");
     	when(mockResu.getMetaData()).thenReturn(mockRsmd);
     	
