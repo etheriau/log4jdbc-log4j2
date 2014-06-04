@@ -309,8 +309,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		// redirect to one more method call ONLY so that stack trace search is consistent
 		// with the reportReturn calls
-		_reportSql((Properties.isStatementUsageWarn()?StatementSqlWarning:"") +
-				sql, methodCall);
+		_reportSql(getStatementSqlWarning() + sql, methodCall);
 	}
 
 	/**
@@ -324,8 +323,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		// redirect to one more method call ONLY so that stack trace search is consistent
 		// with the reportReturn calls
-		_reportSqlTiming(execTime, (Properties.isStatementUsageWarn()?StatementSqlWarning:"") +
-				sql, methodCall);
+		_reportSqlTiming(execTime, getStatementSqlWarning() + sql, methodCall);
 	}
 
 	/**
@@ -363,6 +361,15 @@ public class StatementSpy implements Statement, Spy
 	private void _reportSqlTiming(long execTime, String sql, String methodCall)
 	{
 		log.sqlTimingOccurred(this, execTime, methodCall, sql);
+	}
+	
+	/**
+	 * @return A {@code String} that is {@link #StatementSqlWarning} if 
+	 *         {@code net.sf.log4jdbc.Properties#isStatementUsageWarn()} returns {@code true}, 
+	 *         or an empty {@code String} if it returns {@code false}.
+	 */
+	private String getStatementSqlWarning() {
+	    return Properties.isStatementUsageWarn() ? StatementSqlWarning : "";
 	}
 
 	// implementation of interface methods
@@ -480,7 +487,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		String methodCall = "addBatch(" + sql + ")";
 
-		currentBatch.add(StatementSqlWarning + sql);
+		currentBatch.add(getStatementSqlWarning() + sql);
 		try
 		{
 			realStatement.addBatch(sql);
