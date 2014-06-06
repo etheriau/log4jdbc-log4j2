@@ -40,6 +40,7 @@ public class TestLoggingFunctionalitesWithLog4j2 extends CheckLoggingFunctionali
     @BeforeClass
     public static void initProperties()
     {
+        CheckLoggingFunctionalites.initProperties();
         System.setProperty("log4jdbc.spylogdelegator.name", 
         		Log4j2SpyLogDelegator.class.getName());
         TestSpyLogDelegator = SpyLogFactory.getSpyLogDelegator(); 
@@ -51,6 +52,7 @@ public class TestLoggingFunctionalitesWithLog4j2 extends CheckLoggingFunctionali
     @AfterClass
     public static void reinitProperties()
     {
+        CheckLoggingFunctionalites.reinitProperties();
         System.clearProperty("log4jdbc.spylogdelegator.name");
     }
 
