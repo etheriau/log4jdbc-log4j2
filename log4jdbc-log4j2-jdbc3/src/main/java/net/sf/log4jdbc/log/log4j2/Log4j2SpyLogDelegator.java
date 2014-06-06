@@ -1,7 +1,7 @@
 package net.sf.log4jdbc.log.log4j2;
 
 import net.sf.log4jdbc.Properties;
-import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.AbstractSpyLogDelegator;
 import net.sf.log4jdbc.log.log4j2.message.ConnectionMessage;
 import net.sf.log4jdbc.log.log4j2.message.ExceptionOccuredMessage;
 import net.sf.log4jdbc.log.log4j2.message.MethodReturnedMessage;
@@ -86,7 +86,7 @@ import org.apache.logging.log4j.MarkerManager;
  * @see net.sf.log4jdbc.DriverSpy
  * @see net.sf.log4jdbc.SpyLogFactory
  */
-public class Log4j2SpyLogDelegator implements SpyLogDelegator
+public class Log4j2SpyLogDelegator extends AbstractSpyLogDelegator
 {
     /**
      * Logger responsible of logging all spy events
@@ -178,7 +178,8 @@ public class Log4j2SpyLogDelegator implements SpyLogDelegator
         return LOGGER.isErrorEnabled();
     }
 
-    public void exceptionOccured(Spy spy, String methodCall, Exception e,
+    @Override
+    public void filteredExceptionOccured(Spy spy, String methodCall, Exception e,
             String sql, long execTime) {
 
         LOGGER.error(EXCEPTION_MARKER, new ExceptionOccuredMessage(spy, methodCall, 

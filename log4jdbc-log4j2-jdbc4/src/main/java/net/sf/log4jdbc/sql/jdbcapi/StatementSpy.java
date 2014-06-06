@@ -25,7 +25,6 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
 
-import net.sf.log4jdbc.Properties;
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.Utilities;
@@ -47,6 +46,13 @@ import net.sf.log4jdbc.sql.Utilities;
  * which allows to launch a <code>reportSqlTiming(long, String, String)</code>. 
  * <li><code>getGeneratedKeys()</code> now delegates to this method <code>getGeneratedKeys(String)</code>, 
  * by providing the <code>sql</code> attribute.
+ * <li>Removal of the option {@code log4jdbc.statement.warn}. The aim was to remove 
+ * dependency to the {@code Properties} class, and this option was useless.
+ * <li>It is now the responsibility of the logger to determine whether 
+ * {@code getGeneratedKeys()} exceptions should be logged (option 
+ * {@code log4jdbc.suppress.generated.keys.exception}), not anymore the responsibility 
+ * of this {@code StatementSpy}. The aim was to remove dependency to 
+ * the {@code Properties} class.
  * </ul>
  *
  * @author Arthur Blake
@@ -294,12 +300,6 @@ public class StatementSpy implements Statement, Spy
 	}
 
 	/**
-	 * Running one-off statement sql is generally inefficient and a bad idea for various reasons,
-	 * so give a warning when this is done.
-	 */
-	private static final String StatementSqlWarning = "{WARNING: Statement used to run SQL} ";
-
-	/**
 	 * Report SQL for logging with a warning that it was generated from a statement.
 	 *
 	 * @param sql        the SQL being run
@@ -309,7 +309,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		// redirect to one more method call ONLY so that stack trace search is consistent
 		// with the reportReturn calls
-		_reportSql(getStatementSqlWarning() + sql, methodCall);
+		_reportSql(sql, methodCall);
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		// redirect to one more method call ONLY so that stack trace search is consistent
 		// with the reportReturn calls
-		_reportSqlTiming(execTime, getStatementSqlWarning() + sql, methodCall);
+		_reportSqlTiming(execTime, sql, methodCall);
 	}
 
 	/**
@@ -362,15 +362,6 @@ public class StatementSpy implements Statement, Spy
 	{
 		log.sqlTimingOccurred(this, execTime, methodCall, sql);
 	}
-    
-    /**
-     * @return A {@code String} that is {@link #StatementSqlWarning} if 
-     *         {@code net.sf.log4jdbc.Properties#isStatementUsageWarn()} returns {@code true}, 
-     *         or an empty {@code String} if it returns {@code false}.
-     */
-    private String getStatementSqlWarning() {
-        return Properties.isStatementUsageWarn() ? StatementSqlWarning : "";
-    }
 
 	// implementation of interface methods
 	@Override
@@ -487,7 +478,7 @@ public class StatementSpy implements Statement, Spy
 	{
 		String methodCall = "addBatch(" + sql + ")";
 
-		currentBatch.add(getStatementSqlWarning() + sql);
+		currentBatch.add(sql);
 		try
 		{
 			realStatement.addBatch(sql);
@@ -640,7 +631,10 @@ public class StatementSpy implements Statement, Spy
 	 */
 	protected ResultSet getGeneratedKeys(String sql) throws SQLException
 	{
-		String methodCall = "getGeneratedKeys()";
+        //use SpyLogDelegator.GET_GENERATED_KEYS_METHOD_CALL to make sure 
+        //SpyLogDelegator implementations recognize the method call to getGeneratedKeys, 
+        //in order to satisfy the property log4jdbc.suppress.generated.keys.exception
+        String methodCall = SpyLogDelegator.GET_GENERATED_KEYS_METHOD_CALL;
 		String generatedSql = "getGeneratedKeys on query: " + sql;
 		long tstart = System.currentTimeMillis();
 		try
@@ -655,10 +649,14 @@ public class StatementSpy implements Statement, Spy
 		}
 		catch (SQLException s)
 		{
-			if (!Properties.isSuppressGetGeneratedKeysException())
-			{
+		    //NOTE log4jdbc-log4j2 1.17-SNAPSHOT: it is now the responsibility of 
+		    //the SpyLogDelegator implementations to filter exceptions depending on 
+		    //the property log4jdbc.suppress.generated.keys.exception. Disabling 
+		    //the condition isSuppressGetGeneratedKeysException.
+//			if (!Properties.isSuppressGetGeneratedKeysException())
+//			{
 				reportException(methodCall, s, generatedSql, System.currentTimeMillis() - tstart);
-			}
+//			}
 			throw s;
 		}
 	}
