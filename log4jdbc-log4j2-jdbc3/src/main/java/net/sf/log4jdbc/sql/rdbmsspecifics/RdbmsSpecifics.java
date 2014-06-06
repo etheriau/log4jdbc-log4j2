@@ -18,14 +18,18 @@ package net.sf.log4jdbc.sql.rdbmsspecifics;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import net.sf.log4jdbc.Properties;
-
 
 /**
  * Encapsulate sql formatting details about a particular relational database management system so that
  * accurate, useable SQL can be composed for that RDMBS.
+ * 
+ * Modification for log4jdbc-log4j2: {@code Properties.isDumpBooleanAsTrueFalse()} is not used 
+ * anymore, because the way a boolean value should be returned is DBMS specific, and as such, 
+ * should be handled by different extensions of RdbmsSpecifics. This allows to remove 
+ * the dependency to the {@code Properties} class. 
  *
  * @author Arthur Blake
+ * @author Frederic Bastian
  */
 public class RdbmsSpecifics
 {
@@ -64,9 +68,18 @@ public class RdbmsSpecifics
 		}
 		else if (object instanceof Boolean)
 		{
-			return Properties.isDumpBooleanAsTrueFalse()?
-					((Boolean)object).booleanValue()?"true":"false"
-						:((Boolean)object).booleanValue()?"1":"0";
+			//NOTE: as of log4jdbc-log4j2 1.17-SNAPSHOT, RdbmsSpecifics should not 
+		    //use the Properties class anymore (because the Properties mechanism 
+		    //is being updated). 
+		    //The way a boolean value should be returned is DBMS specific, and as such, 
+		    //should be handled by different extensions of RdbmsSpecifics 
+		    //(as with, for instance, OracleRdbmsSpecifics, etc)
+//		    return Properties.isDumpBooleanAsTrueFalse()?
+//					((Boolean)object).booleanValue()?"true":"false"
+//						:((Boolean)object).booleanValue()?"1":"0";
+		    
+		    //Default value of Properties.isDumpBooleanAsTrueFalse() was false
+		    return ((Boolean)object).booleanValue() ? "1" : "0";
 		}
 		else
 		{
