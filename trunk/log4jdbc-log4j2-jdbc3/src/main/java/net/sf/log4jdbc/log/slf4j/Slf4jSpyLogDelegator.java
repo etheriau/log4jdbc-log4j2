@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 
 import net.sf.log4jdbc.Properties;
-import net.sf.log4jdbc.log.SpyLogDelegator;
+import net.sf.log4jdbc.log.AbstractSpyLogDelegator;
 import net.sf.log4jdbc.sql.Spy;
 import net.sf.log4jdbc.sql.jdbcapi.ConnectionSpy;
 import net.sf.log4jdbc.sql.jdbcapi.ResultSetSpy;
@@ -54,7 +54,7 @@ import org.slf4j.Logger;
  * @author Frederic Bastian
  * @author Mathieu Seppey
  */
-public class Slf4jSpyLogDelegator implements SpyLogDelegator
+public class Slf4jSpyLogDelegator extends AbstractSpyLogDelegator
 {
     /**
      * Create a SpyLogDelegator specific to the Simple Logging Facade for Java (slf4j).
@@ -115,8 +115,8 @@ public class Slf4jSpyLogDelegator implements SpyLogDelegator
                 sqlTimingLogger.isErrorEnabled() || connectionLogger.isErrorEnabled();
     }
 
-
-    public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime)
+    @Override
+    public void filteredExceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime)
     {
         String classType = spy.getClassType();
         Integer spyNo = spy.getConnectionNumber();

@@ -40,6 +40,10 @@ import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
  * defining the time elapsed to close the connection in ms. 
  * This execution time can always be computed by <code>ConnectionSpy#close()</code>.
  * <li><code>Slf4jSpyLogDelegator</code> has been modified accordingly.
+ * <li>It is now the responsibility of the {@code SpyLogDelegator} implementations 
+ * to handle the property {@code log4jdbc.suppress.generated.keys.exception}. See 
+ * {@link #GET_GENERATED_KEYS_METHOD_CALL} and 
+ * {@link #exceptionOccured(Spy, String, Exception, String, long)}.
  * </ul>
  *
  * @author Arthur Blake
@@ -49,6 +53,20 @@ import net.sf.log4jdbc.sql.resultsetcollector.ResultSetCollector;
 public interface SpyLogDelegator
 {
     /**
+     * A {@code String} corresponding to the value of the argument {@code methodCall} 
+     * of the method {@link #exceptionOccured(Spy, String, Exception, String, long)}, 
+     * when the method was called following a call to the JDBC method 
+     * {@code java.sql.Statement#getGeneratedKeys()}.
+     * <p>
+     * This attribute is used so that {@code SpyLogDelegator} implementations can recognize 
+     * an error occurring following a call to {@code java.sql.Statement#getGeneratedKeys()}, 
+     * and discard them if the property {@code log4jdbc.suppress.generated.keys.exception} 
+     * is {@code true}.
+     * 
+     * @see #exceptionOccured(Spy, String, Exception, String, long)
+     */
+    public static final String GET_GENERATED_KEYS_METHOD_CALL = "getGeneratedKeys()";
+    /**
      * Determine if any of the jdbc or sql loggers are turned on.
      *
      * @return true if any of the jdbc or sql loggers are enabled at error level or higher.
@@ -57,6 +75,11 @@ public interface SpyLogDelegator
 
     /**
      * Called when a spied upon method throws an Exception.
+     * <p>
+     * Note that it is the responsibility of the {@code SpyLogDelegator} implementations 
+     * to discard exceptions for {@code methodCall} equals to 
+     * {@link #GET_GENERATED_KEYS_METHOD_CALL}, when the option 
+     * {@code log4jdbc.suppress.generated.keys.exception} is {@code true}.
      *
      * @param spy        the Spy wrapping the class that threw an Exception.
      * @param methodCall a description of the name and call parameters of the method generated the Exception.
@@ -64,6 +87,7 @@ public interface SpyLogDelegator
      * @param sql        optional sql that occured just before the exception occured.
      * @param execTime   optional amount of time that passed before an exception was thrown when sql was being executed.
      *                   caller should pass -1 if not used
+     * @see #GET_GENERATED_KEYS_METHOD_CALL
      */
     public void exceptionOccured(Spy spy, String methodCall, Exception e, String sql, long execTime);
 
