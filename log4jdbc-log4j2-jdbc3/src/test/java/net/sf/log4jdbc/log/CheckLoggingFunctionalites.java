@@ -67,6 +67,22 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
     {
         super();
     } 
+    
+    /**
+     * Init properties common to tests for any logger. Extending classes should override 
+     * this method with a tag {@code BeforeClass}, and call this parent method.
+     */
+    public static void initProperties() {
+        System.setProperty("log4jdbc.suppress.generated.keys.exception", "true");
+    } 
+    
+    /**
+     * Reinit the properties common to tests for any logger. Extending classes should override 
+     * this method with a tag {@code AfterClass}, and call this parent method.
+     */
+    public static void reinitProperties() {
+        System.clearProperty("log4jdbc.suppress.generated.keys.exception");
+    }
 
     /**
      * A test which goes through the whole process => Connection, statement, ResultSet
@@ -358,6 +374,37 @@ public abstract class CheckLoggingFunctionalites extends TestAncestor
         // clean all mock objects
         mock.deregister();
 
+    }
+    
+    /**
+     * Check that loggers respect the property 
+     * {@code log4jdbc.suppress.generated.keys.exception}, that is set to {@code true} 
+     * by the method {@code #initProperties()}.
+     */
+    @Test
+    public void checkFilteredExceptionOccured() throws IOException {
+        // Creation of fake parameters
+        Exception e = new Exception("test");
+        // Create a fake connection using Mockito
+
+        MockDriverUtils mock = new MockDriverUtils();
+
+        ConnectionSpy cs = new ConnectionSpy(mock.getMockConnection(), 
+                TestSpyLogDelegator);
+
+        // Run the method after ensuring the log file is empty 
+        emptyLogFile();
+        TestSpyLogDelegator.exceptionOccured(cs, 
+                SpyLogDelegator.GET_GENERATED_KEYS_METHOD_CALL, e, "SELECT * FROM Test", 1L);
+
+        // Check the result
+
+        assertFalse("The logger did not respect the property " +
+                "log4jdbc.suppress.generated.keys.exception",
+                CheckLoggingFunctionalites.readLogFile(1).contains(" ERROR "));
+        
+        // clean all mock objects
+        mock.deregister();
     }
 
     /**

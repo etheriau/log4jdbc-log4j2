@@ -41,6 +41,7 @@ public class TestLoggingFunctionalitesWithSl4j extends CheckLoggingFunctionalite
     @BeforeClass
     public static void initProperties()
     {
+        CheckLoggingFunctionalites.initProperties();
         //with JDBC 3 we need to load the DriverSpy manually, but loading 
         //Slf4jSpyLogDelegator will do it.
         System.setProperty("log4jdbc.spylogdelegator.name", 
@@ -54,6 +55,7 @@ public class TestLoggingFunctionalitesWithSl4j extends CheckLoggingFunctionalite
     @AfterClass
     public static void reinitProperties()
     {
+        CheckLoggingFunctionalites.reinitProperties();
         System.clearProperty("log4jdbc.spylogdelegator.name");
     }
 
