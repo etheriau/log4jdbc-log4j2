@@ -23,12 +23,12 @@ import java.util.Date;
  *
  * @author qxo(qxodream@gmail.com)
  */
-class Db2RdbmsSpecifics extends RdbmsSpecifics {
+public class Db2RdbmsSpecifics extends RdbmsSpecifics {
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"'TIMESTAMP('''yyyy-MM-dd HH:mm:ss.SSS''')'");
 
-	Db2RdbmsSpecifics() {
+	public Db2RdbmsSpecifics() {
 		super();
 	}
 

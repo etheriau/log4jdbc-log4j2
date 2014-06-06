@@ -32,6 +32,7 @@ import net.sf.log4jdbc.Properties;
 import net.sf.log4jdbc.log.SpyLogDelegator;
 import net.sf.log4jdbc.log.SpyLogFactory;
 import net.sf.log4jdbc.sql.Spy;
+import net.sf.log4jdbc.sql.rdbmsspecifics.Db2RdbmsSpecifics;
 import net.sf.log4jdbc.sql.rdbmsspecifics.MySqlRdbmsSpecifics;
 import net.sf.log4jdbc.sql.rdbmsspecifics.OracleRdbmsSpecifics;
 import net.sf.log4jdbc.sql.rdbmsspecifics.RdbmsSpecifics;
@@ -213,6 +214,7 @@ public class DriverSpy implements Driver
 		SqlServerRdbmsSpecifics sqlServer = new SqlServerRdbmsSpecifics();
 		OracleRdbmsSpecifics oracle = new OracleRdbmsSpecifics();
 		MySqlRdbmsSpecifics mySql = new MySqlRdbmsSpecifics();
+        Db2RdbmsSpecifics db2 = new Db2RdbmsSpecifics();
 
 		/** create lookup Map for specific rdbms formatters */
 		rdbmsSpecifics = new HashMap<String, RdbmsSpecifics>();
@@ -223,6 +225,9 @@ public class DriverSpy implements Driver
 				sqlServer);
 		rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
 		rdbmsSpecifics.put("com.mysql.jdbc.Driver", mySql);
+        rdbmsSpecifics.put("com.ibm.db2.jcc.DB2Driver", db2);
+        rdbmsSpecifics.put("COM.ibm.db2.jdbc.app.DB2Driver", db2);
+        rdbmsSpecifics.put("COM.ibm.db2.jdbc.net.DB2Driver", db2);
 
 		log.debug("DriverSpy intialization done.");
 	}
