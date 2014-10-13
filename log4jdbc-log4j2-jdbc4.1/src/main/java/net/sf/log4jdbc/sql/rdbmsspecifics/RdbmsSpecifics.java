@@ -18,6 +18,8 @@ package net.sf.log4jdbc.sql.rdbmsspecifics;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.codec.binary.Hex;
+
 
 /**
  * Encapsulate sql formatting details about a particular relational database management system so that
@@ -80,6 +82,10 @@ public class RdbmsSpecifics
             
             //Default value of Properties.isDumpBooleanAsTrueFalse() was false
             return ((Boolean)object).booleanValue() ? "1" : "0";
+		}
+		else if (object instanceof byte[])
+		{
+		  return "x'" + Hex.encodeHexString( (byte[]) object ) + "'";
 		}
 		else
 		{
