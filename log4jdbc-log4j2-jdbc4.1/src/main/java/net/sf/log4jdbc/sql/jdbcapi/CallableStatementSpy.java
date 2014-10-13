@@ -682,8 +682,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	@Override
 	public void setBytes(String parameterName, byte[] x) throws SQLException
 	{
-		//todo: dump byte array?
-		String methodCall = "setBytes(" + parameterName + ", " + x + ")";
+		String methodCall = "setBytes(" + parameterName + ", " + rdbmsSpecifics.formatParameterObject(x) + ")";
 		try
 		{
 			realCallableStatement.setBytes(parameterName, x);
@@ -792,7 +791,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	@Override
 	public void setObject(String parameterName, Object x) throws SQLException
 	{
-		String methodCall = "setObject(" + parameterName + ", " + x + ")";
+		String methodCall = "setObject(" + parameterName + ", " + rdbmsSpecifics.formatParameterObject(x) + ")";
 		try
 		{
 			realCallableStatement.setObject(parameterName, x);
@@ -808,7 +807,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	@Override
 	public void setObject(String parameterName, Object x, int targetSqlType) throws SQLException
 	{
-		String methodCall = "setObject(" + parameterName + ", " + x + ", " + targetSqlType + ")";
+		String methodCall = "setObject(" + parameterName + ", " + rdbmsSpecifics.formatParameterObject(x) + ", " + targetSqlType + ")";
 		try
 		{
 			realCallableStatement.setObject(parameterName, x, targetSqlType);
@@ -824,7 +823,7 @@ public class CallableStatementSpy extends PreparedStatementSpy implements Callab
 	@Override
 	public void setObject(String parameterName, Object x, int targetSqlType, int scale) throws SQLException
 	{
-		String methodCall = "setObject(" + parameterName + ", " + x + ", " + targetSqlType + ", " + scale + ")";
+		String methodCall = "setObject(" + parameterName + ", " + rdbmsSpecifics.formatParameterObject(x) + ", " + targetSqlType + ", " + scale + ")";
 		try
 		{
 			realCallableStatement.setObject(parameterName, x, targetSqlType, scale);

@@ -576,8 +576,8 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   public void setBytes(int parameterIndex, byte[] x) throws SQLException
   {
     //todo: dump array?
-    String methodCall = "setBytes(" + parameterIndex + ", " + x + ")";
-    argTraceSet(parameterIndex, "(byte[])", "<byte[]>");
+    String methodCall = "setBytes(" + parameterIndex + ", " + rdbmsSpecifics.formatParameterObject(x) + ")";
+    argTraceSet(parameterIndex, "(byte[])", x);
     try
     {
       realPreparedStatement.setBytes(parameterIndex, x);
@@ -801,7 +801,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   @Override
   public void setObject(int parameterIndex, Object x, int targetSqlType, int scale) throws SQLException
   {
-    String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ", " + scale + ")";
+    String methodCall = "setObject(" + parameterIndex + ", " + rdbmsSpecifics.formatParameterObject(x) + ", " + targetSqlType + ", " + scale + ")";
     argTraceSet(parameterIndex, getTypeHelp(x), x);
 
     try
@@ -1003,7 +1003,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   @Override
   public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException
   {
-    String methodCall = "setObject(" + parameterIndex + ", " + x + ", " + targetSqlType + ")";
+    String methodCall = "setObject(" + parameterIndex + ", " + rdbmsSpecifics.formatParameterObject(x) + ", " + targetSqlType + ")";
     argTraceSet(parameterIndex, getTypeHelp(x), x);
     try
     {
@@ -1020,7 +1020,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
   @Override
   public void setObject(int parameterIndex, Object x) throws SQLException
   {
-    String methodCall = "setObject(" + parameterIndex + ", " + x + ")";
+    String methodCall = "setObject(" + parameterIndex + ", " + rdbmsSpecifics.formatParameterObject(x) + ")";
     argTraceSet(parameterIndex, getTypeHelp(x), x);
     try
     {
