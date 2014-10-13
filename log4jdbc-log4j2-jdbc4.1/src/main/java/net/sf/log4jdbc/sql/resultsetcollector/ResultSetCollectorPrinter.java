@@ -31,9 +31,9 @@ import java.util.List;
 public class ResultSetCollectorPrinter {
 
     /**
-     * A StringBuffer which is used to build the formatted table to print
+     * A StringBuilder which is used to build the formatted table to print
      */
-    private StringBuffer table = new StringBuffer(); ;
+    private StringBuilder table = new StringBuilder(); ;
 
     /**
      * Default constructor

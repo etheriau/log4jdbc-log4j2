@@ -77,7 +77,7 @@ public class SqlTimingOccurredMessage extends SqlMessage implements Message
 	@Override
 	protected void buildMessage() 
 	{
-	    StringBuffer out = new StringBuffer();
+	    StringBuilder out = new StringBuilder();
 
 	    if (this.isDebugEnabled())
 	    {

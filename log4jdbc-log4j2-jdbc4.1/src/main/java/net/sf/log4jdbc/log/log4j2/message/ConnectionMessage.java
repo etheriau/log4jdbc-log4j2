@@ -88,7 +88,7 @@ public class ConnectionMessage extends SqlMessage implements Message
   @Override
   protected void buildMessage() 
   {
-    StringBuffer buildMsg = new StringBuffer();
+    StringBuilder buildMsg = new StringBuilder();
 
     if (this.isDebugEnabled()) {
       buildMsg.append(SqlMessage.getDebugInfo());

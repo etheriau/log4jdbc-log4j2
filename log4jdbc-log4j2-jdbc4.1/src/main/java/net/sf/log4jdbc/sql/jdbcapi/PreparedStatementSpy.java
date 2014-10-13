@@ -114,7 +114,7 @@ public class PreparedStatementSpy extends StatementSpy implements PreparedStatem
 
   protected String dumpedSql()
   {
-    StringBuffer dumpSql = new StringBuffer();
+    StringBuilder dumpSql = new StringBuilder();
     int lastPos = 0;
     int Qpos = sql.indexOf('?', lastPos);  // find position of first question mark
     int argIdx = 0;

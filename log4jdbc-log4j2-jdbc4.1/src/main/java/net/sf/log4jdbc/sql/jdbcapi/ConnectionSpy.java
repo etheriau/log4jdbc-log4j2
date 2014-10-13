@@ -98,7 +98,7 @@ public class ConnectionSpy implements Connection, Spy
    */
   public static String getOpenConnectionsDump()
   {
-    StringBuffer dump = new StringBuffer();
+    StringBuilder dump = new StringBuilder();
     int size;
     Integer[] keysArr;
     synchronized (connectionTracker)
