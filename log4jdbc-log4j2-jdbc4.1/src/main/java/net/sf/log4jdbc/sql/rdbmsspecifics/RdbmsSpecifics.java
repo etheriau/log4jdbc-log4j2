@@ -18,6 +18,8 @@ package net.sf.log4jdbc.sql.rdbmsspecifics;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import net.sf.log4jdbc.Properties;
+
 import org.apache.commons.codec.binary.Hex;
 
 
@@ -55,6 +57,10 @@ public class RdbmsSpecifics
 	 */
 	public String formatParameterObject(Object object)
 	{
+	  if ( ! Properties.shouldFormatParameterObjects() ) {
+	    return "?";
+	  }
+
 		if (object == null)
 		{
 			return "NULL";

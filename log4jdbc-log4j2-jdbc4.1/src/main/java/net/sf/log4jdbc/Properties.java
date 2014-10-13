@@ -184,6 +184,13 @@ public final class Properties
 	 */
 	static final boolean SuppressGetGeneratedKeysException;
 
+	/**
+	 * There are some environments where you may not wish to see the actual parameters
+	 * set by applications for a variety of reasons.  This option would not escape "?"'s
+	 * with the actual parameters.
+	 */
+	static final boolean FormatParameterObjects;
+
 	
 	/**
 	 * Static initializer. 
@@ -280,6 +287,7 @@ public final class Properties
 				getBooleanOption(props, "log4jdbc.suppress.generated.keys.exception",
 						false);
 
+		FormatParameterObjects = getBooleanOption(props, "log4jdbc.sql.formatParameterObjects", true);
 		
 		log.debug("log4jdbc-logj2 properties initialization done.");
 	}   
@@ -492,6 +500,13 @@ public final class Properties
 	   */
 	  public static boolean isDumpSqlAddSemicolon() {
 	  	return DumpSqlAddSemicolon;
+	  }
+
+	  /**
+	   * @return Format the parameter objects.
+	   */
+	  public static boolean shouldFormatParameterObjects() {
+	    return FormatParameterObjects;
 	  }
 	  
 	  /**
