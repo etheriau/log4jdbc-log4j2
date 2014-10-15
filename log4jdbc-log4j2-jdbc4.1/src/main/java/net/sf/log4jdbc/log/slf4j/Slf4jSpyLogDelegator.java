@@ -415,11 +415,19 @@ public class Slf4jSpyLogDelegator extends AbstractSpyLogDelegator
         sql = processSql(sql);
 
         out.append(sql);
-        out.append(" {executed in ");
-        out.append(execTime);
-        out.append(" msec}");
+        appendExecutionTime( out, execTime );
 
         return out.toString();
+    }
+
+
+    /**
+     * Appends the execution time to the output stream. Allows for overriding.
+     */
+    protected void appendExecutionTime( StringBuilder out, long execTime ) {
+      out.append(" {executed in ");
+      out.append(execTime);
+      out.append(" msec}");
     }
 
     /**
