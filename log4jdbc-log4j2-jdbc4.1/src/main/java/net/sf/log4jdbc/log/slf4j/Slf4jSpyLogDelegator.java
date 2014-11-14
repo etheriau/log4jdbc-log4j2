@@ -617,4 +617,10 @@ public class Slf4jSpyLogDelegator extends AbstractSpyLogDelegator
         String resultsToPrint = new ResultSetCollectorPrinter().getResultSetToPrint(resultSetCollector);    
         resultSetTableLogger.info(resultsToPrint);
     }
+
+
+    @Override
+    public void sqlBatchSize( Spy spy, int batchsize ) {
+      // not used in this implementation -- yet
+    }
 }

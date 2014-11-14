@@ -128,6 +128,12 @@ public interface SpyLogDelegator
      */
     public void sqlTimingOccurred(Spy spy, long execTime, String methodCall, String sql);
 
+    /**
+     * If a batch was executed, this reports how many elements were in that batch.
+     * @param spy the Spy wrapping the class where the SQL occurred.
+     * @param batchsize How many elements were in the batch
+     */
+    public void sqlBatchSize( Spy spy, int batchsize );
 
     /**
      * Called whenever a new connection spy is created.

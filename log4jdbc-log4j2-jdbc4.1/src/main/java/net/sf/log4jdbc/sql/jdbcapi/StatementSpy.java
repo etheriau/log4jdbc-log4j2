@@ -340,7 +340,15 @@ public class StatementSpy implements Statement, Spy
 		_reportSqlTiming(execTime, sql, methodCall);
 	}
 
-	/**
+  /**
+   * For batching queries, how many entries were in the batch at the time of execution?
+   */
+  protected void reportBatchSize( int batchSize )
+  {
+    log.sqlBatchSize( this, batchSize );
+  }
+
+  /**
 	 * Report SQL for logging.
 	 *
 	 * @param sql        the SQL being run
@@ -545,21 +553,32 @@ public class StatementSpy implements Statement, Spy
 		String methodCall = "executeBatch()";
 
 		int j=currentBatch.size();
-		StringBuilder batchReport = new StringBuilder("batching " + j + " statements:");
 
 		int fieldSize = (""+j).length();
 
-		String sql;
-		for (int i=0; i < j;)
-		{
-			sql = currentBatch.get(i);
-			batchReport.append("\n");
-			batchReport.append(Utilities.rightJustify(fieldSize,""+(++i)));
-			batchReport.append(":  ");
-			batchReport.append(sql);
-		}
+		boolean batchAllTheSame = true;
+    for ( int i = 1; i < j && batchAllTheSame; ++ i ) {
+      batchAllTheSame = currentBatch.get( i ).equals( currentBatch.get( i - 1 ) );
+    }
 
-		sql = batchReport.toString();
+    StringBuilder batchReport;
+    if ( batchAllTheSame && j != 0 ) {
+      batchReport = new StringBuilder( sql = currentBatch.get( 0 ) );
+      batchReport.append( " {batchSize=" ).append( j ).append( "}" );
+    } else {
+      batchReport = new StringBuilder("batching " + j + " statements:");
+  		String sql;
+  		for (int i=0; i < j;)
+  		{
+  			sql = currentBatch.get(i);
+  			batchReport.append("\n");
+  			batchReport.append(Utilities.rightJustify(fieldSize,""+(++i)));
+  			batchReport.append(":  ");
+  			batchReport.append(sql);
+  		}
+    }
+
+		String sql = batchReport.toString();
 		reportSql(sql, methodCall);
 		long tstart = System.currentTimeMillis();
 
@@ -573,6 +592,8 @@ public class StatementSpy implements Statement, Spy
 		{
 			reportException(methodCall, s, sql, System.currentTimeMillis()-tstart);
 			throw s;
+		} finally {
+	    reportBatchSize( j );
 		}
 		currentBatch.clear();
 		return (int[])reportReturn(methodCall,updateResults);

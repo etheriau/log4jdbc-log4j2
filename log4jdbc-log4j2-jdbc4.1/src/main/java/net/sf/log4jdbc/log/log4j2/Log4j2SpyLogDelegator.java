@@ -392,4 +392,9 @@ public class Log4j2SpyLogDelegator extends AbstractSpyLogDelegator
 
     }
 
+    @Override
+    public void sqlBatchSize( Spy spy, int batchsize ) {
+      // not used in this implementation -- yet
+    }
+
 }
