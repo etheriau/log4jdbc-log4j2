@@ -267,7 +267,7 @@ public class DefaultResultSetCollector implements ResultSetCollector {
       Integer idx = colNameToColIndex.get(((String) param1).toLowerCase());
 
       if (idx == null) {
-        throw new RuntimeException("ResultSet.getXXX(colName): could not look up name");
+        throw new RuntimeException("ResultSet.getXXX(colName): could not look up name: " + param1 + " in " + colNameToColIndex.keySet());
       }
       colIndex = idx;
     } else {
